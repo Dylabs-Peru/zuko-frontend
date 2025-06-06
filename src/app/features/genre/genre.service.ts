@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { GenreResponse, GenreRequest } from './genre.model';
 import { environment } from '../../../environments/environment';
@@ -12,7 +12,12 @@ export class GenreService {
   constructor(private http: HttpClient) {}
 
   get_genres(): Observable<GenreResponse[]> {
-    return this.http.get<{data:GenreResponse[]}>(this.baseUrl).pipe(map(response => response.data));
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return this.http.get<{data:GenreResponse[]}>(this.baseUrl, {headers}).pipe(map(response => response.data));
   }
-  
+
 }
