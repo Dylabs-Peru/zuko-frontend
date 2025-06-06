@@ -15,6 +15,11 @@ export class GenreComponent implements OnInit{
   newGenre: GenreRequest = { name: '', description: '' };
   createSuccess: boolean = false;
   createError: string = '';
+  selectedGenreId: number | null = null;
+  editingGenre: GenreRequest | null = null;
+  editSuccess = false;
+  editError = '';
+
 
   constructor(private genreService: GenreService) {}
 
@@ -55,5 +60,35 @@ export class GenreComponent implements OnInit{
       }
     });
   }
+
+  onSelectGenre(): void {
+    // Busca el género seleccionado en la lista
+    const genre = this.genres.find(g => g.id === this.selectedGenreId);
+    // Precarga los datos en el form de edición (haz una copia para no mutar el original)
+    if (genre) {
+      this.editingGenre = { name: genre.name, description: genre.description };
+      this.editSuccess = false;
+      this.editError = '';
+    } else {
+      this.editingGenre = null;
+    }
+  }
+
+onUpdateGenre(): void {
+  if (!this.editingGenre || !this.selectedGenreId) return;
+  this.genreService.update_genre(this.selectedGenreId, this.editingGenre).subscribe({
+    next: (res) => {
+      this.editSuccess = true;
+      this.editError = '';
+      this.loadGenres(); // refresca la lista
+    },
+    error: (err) => {
+      this.editError = err?.error?.message || 'Error al actualizar el género';
+      this.editSuccess = false;
+    }
+  });
+}
+
+
 
 }

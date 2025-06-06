@@ -29,4 +29,13 @@ export class GenreService {
     return this.http.post<GenreResponse>(this.baseUrl, genre, { headers });
   }
 
+  update_genre(id: number, genre: GenreRequest): Observable<GenreResponse> {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return this.http.put<GenreResponse>(`${this.baseUrl}/${id}`, genre, { headers });
+  }
+
 }
