@@ -38,4 +38,13 @@ export class GenreService {
     return this.http.put<GenreResponse>(`${this.baseUrl}/${id}`, genre, { headers });
   }
 
+  delete_genre(id: number): Observable<void> {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers });
+  }
+
 }

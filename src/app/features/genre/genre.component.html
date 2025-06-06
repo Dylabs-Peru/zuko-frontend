@@ -67,5 +67,28 @@
   {{ editError }}
 </div>
 
+<!-- Dropdown para seleccionar género a borrar -->
+<h2>Eliminar Género Musical</h2>
+<label for="genreDeleteSelect">Selecciona un género para eliminar:</label>
+<select id="genreDeleteSelect" [(ngModel)]="selectedDeleteGenreId" name="genreDeleteSelect">
+  <option [ngValue]="null">-- Selecciona un género --</option>
+  <option *ngFor="let genre of genres" [ngValue]="genre.id">
+    {{ genre.name }}
+  </option>
+</select>
+
+<!-- Botón de eliminar solo si hay uno seleccionado -->
+<form *ngIf="selectedDeleteGenreId" (ngSubmit)="onDeleteGenre()" #deleteForm="ngForm">
+  <button type="submit" style="color:red;">Eliminar género</button>
+</form>
+
+<!-- Feedback de borrado -->
+<div *ngIf="deleteSuccess" style="color: green;">
+  Género eliminado exitosamente.
+</div>
+<div *ngIf="deleteError" style="color: red;">
+  {{ deleteError }}
+</div>
+
 
 

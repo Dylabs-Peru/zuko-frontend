@@ -19,6 +19,9 @@ export class GenreComponent implements OnInit{
   editingGenre: GenreRequest | null = null;
   editSuccess = false;
   editError = '';
+  selectedDeleteGenreId: number | null = null;
+  deleteSuccess = false;
+  deleteError = '';
 
 
   constructor(private genreService: GenreService) {}
@@ -85,6 +88,23 @@ onUpdateGenre(): void {
     error: (err) => {
       this.editError = err?.error?.message || 'Error al actualizar el género';
       this.editSuccess = false;
+    }
+  });
+}
+
+onDeleteGenre(): void {
+  if (!this.selectedDeleteGenreId) return;
+  if (!confirm('¿Seguro que quieres eliminar este género?')) return;
+  this.genreService.delete_genre(this.selectedDeleteGenreId).subscribe({
+    next: () => {
+      this.deleteSuccess = true;
+      this.deleteError = '';
+      this.selectedDeleteGenreId = null; // Limpia la selección
+      this.loadGenres();
+    },
+    error: (err) => {
+      this.deleteError = err?.error?.message || 'Error al eliminar el género';
+      this.deleteSuccess = false;
     }
   });
 }
