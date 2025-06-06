@@ -1,1 +1,11 @@
 <p>genre works!</p>
+<h2>Lista de Géneros Musicales</h2>
+
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul>
+  <li *ngFor="let genre of genres">
+    {{ genre.name }} - {{ genre.description }}
+  </li>
+</ul>
+
