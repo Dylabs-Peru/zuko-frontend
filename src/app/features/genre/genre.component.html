@@ -9,3 +9,28 @@
   </li>
 </ul>
 
+<!-- Formulario para crear género -->
+<form (ngSubmit)="onCreateGenre()" #genreForm="ngForm">
+  <label for="name">Nombre del género:</label>
+  <input type="text" id="name" name="name" [(ngModel)]="newGenre.name" #name="ngModel" required minlength="3">
+  <div *ngIf="name.invalid && name.touched" style="color:red;">
+  <span *ngIf="name.errors?.['required']">El nombre es obligatorio.</span>
+  <span *ngIf="name.errors?.['minlength']">El nombre debe tener al menos 3 caracteres.</span>
+</div>
+  <label for="description">Descripción (opcional):</label>
+  <input type="text" id="description" name="description" [(ngModel)]="newGenre.description" #desc="ngModel" maxlength="200">
+  <div *ngIf="desc.errors?.['maxlength'] && desc.touched" style="color:red;">
+    La descripción no puede exceder los 200 caracteres.
+  </div>
+  <button type="submit">Crear género</button>
+</form>
+
+<!-- Feedback -->
+<div *ngIf="createSuccess" style="color: green;">
+  Género creado exitosamente.
+</div>
+<div *ngIf="createError" style="color: red;">
+  {{ createError }}
+</div>
+
+
