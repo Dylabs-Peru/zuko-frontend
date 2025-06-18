@@ -1,5 +1,3 @@
-
-
 export interface CreateUserRequest {
   username: string;
   email: string;
@@ -9,7 +7,6 @@ export interface CreateUserRequest {
   roleName?: string;     // por defecto: "USER" si no se manda
   isActive?: boolean;    // por defecto: true si no se manda
 }
-
 
 export interface UpdateUserRequest {
   username?: string;
