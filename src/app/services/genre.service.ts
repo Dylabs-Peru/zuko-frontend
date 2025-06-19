@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { GenreResponse, GenreRequest } from './genre.model';
-import { environment } from '../../../environments/environment';
+import { GenreResponse, GenreRequest } from '../models/genre.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
