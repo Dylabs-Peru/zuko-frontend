@@ -33,6 +33,6 @@ export interface UserResponse {
 }
 
 export interface AuthResponse {
-  username: string;
   token: string;
-} 
+  UserResponse: UserResponse;
+}
