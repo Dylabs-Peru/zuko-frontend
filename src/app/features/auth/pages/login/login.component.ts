@@ -22,7 +22,7 @@ export class LoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
@@ -33,7 +33,8 @@ export class LoginComponent {
       this.UserService.login(this.loginForm.value).subscribe({
         next: (response) => {
           localStorage.setItem('token', response.token);
-          this.router.navigate(['/dashboard']);
+          console.log('Login exitoso:', response);
+          this.router.navigate(['/home']);
         },
         error: (error) => {
           console.error('Error en el login:', error);

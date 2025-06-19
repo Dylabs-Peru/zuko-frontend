@@ -7,7 +7,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   // Si estamos en una ruta de auth (login/register) y hay token, redirigir al dashboard
   if (state.url.startsWith('/auth') && token) {
-    router.navigate(['/dashboard']);
+    router.navigate(['/home']);
     return false;
   }
 

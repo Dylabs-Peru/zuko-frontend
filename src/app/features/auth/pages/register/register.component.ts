@@ -10,7 +10,7 @@ import { UserService } from "../../../../services/User.service";
     standalone: true,
     templateUrl:  './register.component.html',
     imports: [CommonModule, RouterLink, ReactiveFormsModule],
-    styleUrls: ['./register.component.scss']
+    styleUrls: ['./register.component.css']
 })
 
 export class RegisterComponent {

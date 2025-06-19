@@ -5,8 +5,8 @@
     </div>
     <h1 class="login-title">BIENVENIDO A ZUKO</h1>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <label for="username">Correo electrónico o nombre de usuario</label>
-      <input id="username" formControlName="username" type="text" placeholder="Correo electrónico o nombre de usuario" />
+      <label for="username">Correo electrónico</label>
+      <input id="email" formControlName="email" type="text" placeholder="Correo electrónico o nombre de usuario" />
       <label for="password">Contraseña</label>
       <input id="password" formControlName="password" type="password" placeholder="Contraseña" />
       <button class="login-btn" type="submit" [disabled]="loading">Iniciar Sesión</button>
