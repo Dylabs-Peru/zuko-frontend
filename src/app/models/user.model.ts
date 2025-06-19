@@ -31,3 +31,8 @@ export interface UserResponse {
   roleName: string;
   isActive: boolean;
 }
+
+export interface AuthResponse {
+  username: string;
+  token: string;
+} 
