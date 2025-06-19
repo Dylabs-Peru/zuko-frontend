@@ -1,5 +1,6 @@
 import { GenreComponent } from './features/genre/genre.component';
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
     {
