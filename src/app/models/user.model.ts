@@ -4,8 +4,8 @@ export interface CreateUserRequest {
   password: string;
   url_image?: string;
   description?: string;
-  roleName?: string;     // por defecto: "USER" si no se manda
-  isActive?: boolean;    // por defecto: true si no se manda
+  roleName?: string; 
+  isActive?: boolean;  
 }
 
 export interface UpdateUserRequest {
