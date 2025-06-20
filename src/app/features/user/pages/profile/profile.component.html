@@ -1,0 +1,25 @@
+<!-- Vista de perfil de usuario -->
+<div class="profile-container" *ngIf="user">
+  <h1>Mi Perfil</h1>
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <img *ngIf="user.url_image" [src]="user.url_image" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />
+      <ng-container *ngIf="!user.url_image">
+        <span style="font-size:64px;color:#888;">&#128100;</span>
+      </ng-container>
+    </div>
+    <div class="profile-info">
+      <div class="profile-name">{{ user.username }}</div>
+      <div class="profile-email">{{ user.email }}</div>
+      <button class="artist-btn">Convertirse en artista</button>
+    </div>
+    <div class="profile-actions">
+      <button class="dots-btn">&#8230;</button>
+    </div>
+  </div>
+  <div class="profile-bio-section">
+    <label><b>Biografía</b></label>
+    <div class="profile-bio">{{ user.description || 'Sin biografía' }}</div>
+  </div>
+</div>
+<!-- Aquí se puede insertar el modal de edición -->

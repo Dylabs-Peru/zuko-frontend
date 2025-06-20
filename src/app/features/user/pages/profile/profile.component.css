@@ -1,0 +1,51 @@
+/* Estilos básicos para la vista de perfil */
+.profile-container {
+  padding: 32px;
+}
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #d1d1d1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+}
+.profile-info {
+  flex: 1;
+}
+.artist-btn {
+  background: #a10000;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+.profile-actions {
+  margin-left: auto;
+}
+.dots-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #888;
+  cursor: pointer;
+}
+.profile-bio-section {
+  margin-top: 32px;
+}
+.profile-bio {
+  background: #f7f7f7;
+  min-height: 100px;
+  padding: 16px;
+  border-radius: 6px;
+  color: #bbb;
+}
