@@ -1,10 +1,27 @@
 <!-- Modal de edición de perfil -->
 <div class="modal-overlay">
   <div class="modal-content">
-    <div class="modal-avatar"></div>
-    <div class="modal-title">Nombre de usuario</div>
-    <input class="modal-input" type="text" placeholder="Nombre de usuario" />
-    <textarea class="modal-textarea" placeholder="Biografía del usuario"></textarea>
-    <button class="modal-btn">Listo</button>
+    <div class="modal-avatar" (click)="fileInput.click()" style="cursor:pointer;position:relative;">
+      <img *ngIf="imagePreview" [src]="imagePreview" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+      <span *ngIf="!imagePreview" class="avatar-icon">&#128100;</span>
+      <input #fileInput type="file" accept="image/*" style="display:none" (change)="onFileSelected($event)" />
+      <span style="position:absolute;bottom:8px;right:8px;background:#fff;color:#a10000;border-radius:50%;padding:2px 6px;font-size:14px;">✎</span>
+    </div>
+
+    <!-- Campo editable como texto -->
+    <input
+      class="modal-username-input"
+      type="text"
+      [(ngModel)]="username"
+      placeholder="Nombre de usuario"
+    />
+
+    <textarea
+      class="modal-textarea"
+      placeholder="Biografía del usuario"
+      [(ngModel)]="description"
+    ></textarea>
+
+    <button class="modal-btn" (click)="onSave()">Listo</button>
   </div>
 </div>
