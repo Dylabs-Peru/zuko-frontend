@@ -39,4 +39,23 @@ export class ProfileComponent implements OnInit {
   closeEditModal() {
     this.isEditModalOpen = false;
   }
+
+  onSaveEdit(data: { username: string; description: string; url_image: string }) {
+    if (!this.user) return;
+    this.UserService.updateUser(this.user.id, {
+      username: data.username,
+      description: data.description,
+      url_image: data.url_image
+    }).subscribe((updatedUser) => {
+      this.user = updatedUser;
+      // Actualizar el usuario en localStorage
+      const auth = localStorage.getItem('auth');
+      if (auth) {
+        const authObj = JSON.parse(auth);
+        authObj.user = updatedUser;
+        localStorage.setItem('auth', JSON.stringify(authObj));
+      }
+      this.closeEditModal();
+    });
+  }
 }

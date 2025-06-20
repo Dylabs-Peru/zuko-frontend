@@ -33,7 +33,14 @@
     </div>
   </div>
 
-  <app-edit-profile-modal *ngIf="isEditModalOpen" (close)="closeEditModal()"></app-edit-profile-modal>
+  <app-edit-profile-modal 
+    *ngIf="isEditModalOpen" 
+    [username]="user.username"
+    [description]="user.description"
+    [url_image]="user.url_image"
+    (close)="closeEditModal()" 
+    (save)="onSaveEdit($event)">
+  </app-edit-profile-modal>
 </div>
 
 <ng-template #noUser>
