@@ -8,9 +8,14 @@ export const routes: Routes = [
     loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
     },
     {
+    path: 'songs',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/song/song.routes').then(m => m.SONG_ROUTES)
+    },
+    {
     path: 'genres',
     loadChildren: () => import('./features/genre/genre.routes').then(m => m.GENRE_ROUTES)
-  },
+    },
     {
     path: '**',
     redirectTo: ''
