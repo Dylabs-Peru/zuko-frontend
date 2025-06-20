@@ -1,0 +1,14 @@
+<form>
+  <select
+    class="genre-select"
+    [(ngModel)]="selectedGenre"
+    name="genre"
+    (change)="onGenreChange()"
+    required
+  >
+    <option value="" disabled selected hidden>Género</option>
+    <option *ngFor="let genre of genres" [value]="genre.id">
+      {{ genre.name }}
+    </option>
+  </select>
+</form>

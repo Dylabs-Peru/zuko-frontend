@@ -13,6 +13,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/song/song.routes').then(m => m.SONG_ROUTES)
     },
     {
+    path: 'genres',
+    loadChildren: () => import('./features/genre/genre.routes').then(m => m.GENRE_ROUTES)
+    },
+    {
     path: '**',
     redirectTo: ''
     }
