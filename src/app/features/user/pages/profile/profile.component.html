@@ -16,7 +16,7 @@
     </div>
 
     <div class="profile-actions">
-      <button class="dots-btn">&#8230;</button>
+      <button class="dots-btn" (click)="openEditModal()">&#8230;</button>
     </div>
   </div>
 
@@ -32,6 +32,8 @@
       {{ user.description || 'El usuario no tiene biografía' }}
     </div>
   </div>
+
+  <app-edit-profile-modal *ngIf="isEditModalOpen" (close)="closeEditModal()"></app-edit-profile-modal>
 </div>
 
 <ng-template #noUser>

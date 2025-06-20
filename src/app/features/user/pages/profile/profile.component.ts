@@ -3,14 +3,17 @@ import { UserService } from "../../../../services/User.service";
 import { UserResponse } from '../../../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { EditProfileModalComponent } from '../../components/edit-profile-modal/edit-profile-modal.component';
+
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule],
+  imports: [CommonModule, EditProfileModalComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
   user: UserResponse | null = null;
+  isEditModalOpen = false;
 
   constructor(
     private UserService: UserService,
@@ -27,5 +30,13 @@ export class ProfileComponent implements OnInit {
       console.log('UserResponse:', this.user);
     }
     // Si necesitas refrescar datos del backend, puedes usar userService.getUserById(this.user.id)
+  }
+
+  openEditModal() {
+    this.isEditModalOpen = true;
+  }
+
+  closeEditModal() {
+    this.isEditModalOpen = false;
   }
 }
