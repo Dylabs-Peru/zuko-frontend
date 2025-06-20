@@ -33,6 +33,8 @@ export class LoginComponent {
       this.UserService.login(this.loginForm.value).subscribe({
         next: (response) => {
           localStorage.setItem('token', response.token);
+          // Guardar también el objeto auth completo para el perfil
+          localStorage.setItem('auth', JSON.stringify(response));
           console.log('Login exitoso:', response);
           this.router.navigate(['/home']);
         },
@@ -44,4 +46,4 @@ export class LoginComponent {
       });
     }
   }
-} 
+}
