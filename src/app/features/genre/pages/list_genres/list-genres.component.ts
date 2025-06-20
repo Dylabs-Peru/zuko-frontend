@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { GenreService } from './../../../../services/genre.service';
 import { GenreResponse } from './../../../../models/genre.model';
-import { NgFor, NgIf, NgStyle } from '@angular/common';
+import { NgFor, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-list-genres',
   standalone: true,
-  imports: [NgFor, NgStyle, FormsModule],
+  imports: [NgFor, FormsModule, CommonModule],
   templateUrl: './list-genres.component.html',
   styleUrls: ['./list-genres.component.css']
 })
@@ -16,6 +16,7 @@ export class ListGenresComponent implements OnInit {
   error: string = '';
   selectedGenre: number | null = null;
 
+  @Output() genreSelected = new EventEmitter<number>();
   constructor(private genreService: GenreService) {}
 
   ngOnInit(): void {
@@ -32,6 +33,12 @@ export class ListGenresComponent implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  onGenreChange() {
+    if (this.selectedGenre !== null) {
+      this.genreSelected.emit(this.selectedGenre);
+    } 
   }
 
 

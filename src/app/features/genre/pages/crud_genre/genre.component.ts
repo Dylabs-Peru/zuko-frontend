@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GenreService } from './../../../../services/genre.service';
-import { GenreRequest, GenreResponse } from './../../../../models/genre.model';
+import { GenreService } from '../../../../services/genre.service';
+import { GenreRequest, GenreResponse } from '../../../../models/genre.model';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 @Component({
