@@ -21,14 +21,16 @@
 }
 
 .profile-avatar {
-  width: 180px;
-  height: 180px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   background: #b3b3b3;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  margin-left: 30px;
+  margin-bottom: 40px;
 }
 
 .profile-avatar img {
@@ -89,11 +91,12 @@
 }
 
 .dots-btn {
-  font-size: 32px;
+  font-size: 50px;
   color: #666;
   background: none;
   border: none;
   cursor: pointer;
+  margin-right: 80px;
 }
 
 .profile-bio-section {
