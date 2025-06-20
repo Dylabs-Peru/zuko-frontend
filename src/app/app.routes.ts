@@ -13,6 +13,11 @@ export const routes: Routes = [
     loadChildren: () => import('./features/song/song.routes').then(m => m.SONG_ROUTES)
     },
     {
+    path: 'user',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/user/user.routes').then(m => m.USER_ROUTES)
+    },
+    {
     path: '**',
     redirectTo: ''
     }
