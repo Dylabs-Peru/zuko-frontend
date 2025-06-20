@@ -1,0 +1,74 @@
+<div class="container">
+  <h1 class="title">Mis canciones</h1>
+
+  <div *ngIf="loading">Cargando...</div>
+
+  <div *ngIf="!loading && !isArtist" class="no-profile">
+    Este usuario no tiene un perfil de artista.
+  </div>
+
+  <div *ngIf="!loading && isArtist && songs.length === 0" class="no-songs">
+    No tienes canciones disponibles.
+    <button class="create-button-inline" (click)="openCreateForm()">Crear canción</button>
+  </div>
+
+  <ul *ngIf="isArtist && songs.length > 0">
+    <li *ngFor="let song of songs; let i = index" class="song-item">
+      <span>{{ i + 1 }}. {{ song.title }}</span>
+      <div class="actions">
+        <button (click)="toggleMenu(i)" class="menu-button" title="Opciones">&#8942;</button>
+        <div *ngIf="openMenuIndex === i" class="dropdown-menu">
+          <button (click)="openEditForm(song)">Editar canción</button>
+          <button (click)="confirmDelete(song)">Eliminar canción</button>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <button class="create-button" (click)="openCreateForm()">+</button>
+
+  <!-- Modal Crear/Editar -->
+  <div *ngIf="showSongForm" class="modal">
+    <div class="modal-content">
+      <h2>{{ editingSong.id ? 'Editar canción' : 'Crear canción' }}</h2>
+      <form (submit)="onSubmit($event)">
+        <label for="title">Título:</label>
+        <input
+          id="title"
+          type="text"
+          [(ngModel)]="editingSong.title"
+          name="title"
+          required
+        />
+
+        <!-- Mensaje de error -->
+        <div class="form-error" *ngIf="formError">{{ formError }}</div>
+
+        <label for="isPublicSong">¿Es pública?</label>
+        <input
+          id="isPublicSong"
+          type="checkbox"
+          [(ngModel)]="editingSong.isPublicSong"
+          name="isPublicSong"
+        />
+
+        <div class="form-buttons">
+          <button type="submit" class="save-button">Guardar</button>
+          <button type="button" (click)="closeForm()" class="cancel-button">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar Eliminar -->
+  <div *ngIf="showDeleteConfirm" class="modal">
+    <div class="modal-content">
+      <h3>¿Eliminar canción?</h3>
+      <p>¿Estás segura de que deseas eliminar la canción "<strong>{{ songToDelete?.title }}</strong>"?</p>
+      <div class="form-buttons">
+        <button (click)="deleteConfirmed()" class="save-button">Sí</button>
+        <button (click)="cancelDelete()" class="cancel-button">No</button>
+      </div>
+    </div>
+  </div>
+</div>
