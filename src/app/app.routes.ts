@@ -18,7 +18,7 @@ export const routes: Routes = [
     loadChildren: () => import('./features/user/user.routes').then(m => m.USER_ROUTES)
     },
     {
-    path: 'genres',
+    path: 'admin/genres',
     canActivate: [authGuard],
     loadChildren: () => import('./features/genre/genre.routes').then(m => m.GENRE_ROUTES)
     },
