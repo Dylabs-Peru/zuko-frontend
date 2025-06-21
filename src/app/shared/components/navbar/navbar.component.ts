@@ -58,7 +58,7 @@ export class NavbarComponent {
   }
 
   goToUser(username: string) {
-    this.router.navigate(['/user/profile'], { queryParams: { username } });
+    this.router.navigate(['/user/profile', username]);
     this.showResults = false;
   }
 
