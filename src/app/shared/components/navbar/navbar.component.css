@@ -1,0 +1,45 @@
+/* Estilos solo para el navbar */
+
+.navbar {
+    font-family: 'Manrope', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo img {
+  height: 40px;
+}
+
+.nav-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #333;
+}
+
+.search-bar {
+  flex: 1;
+  margin: 0 30px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
