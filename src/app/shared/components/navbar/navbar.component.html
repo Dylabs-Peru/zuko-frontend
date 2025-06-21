@@ -8,6 +8,24 @@
     <div class="search-bar">
       <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Buscar canciones, artistas, usuarios...">
       <span *ngIf="errorMsg" style="color:red; font-size:12px;">{{ errorMsg }}</span>
+      <div *ngIf="showResults && (userResults.length || songResults.length)" class="search-results">
+        <div *ngIf="userResults.length">
+          <strong>Usuarios:</strong>
+          <ul>
+            <li *ngFor="let user of userResults">
+              <a (click)="goToUser(user.username)">{{ user.username }}</a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="songResults.length">
+          <strong>Canciones:</strong>
+          <ul>
+            <li *ngFor="let song of songResults">
+              <a (click)="goToSong(song.id)">{{ song.title }} <span style="font-size:11px; color:#888;">({{ song.artistName }})</span></a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <div class="header-right">
       <a href="#">Biblioteca</a>
