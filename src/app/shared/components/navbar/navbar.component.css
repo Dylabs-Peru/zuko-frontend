@@ -1,38 +1,45 @@
+/* Estilos solo para el navbar */
+
 .navbar {
+    font-family: 'Manrope', sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #222;
-  color: #fff;
-  padding: 0.5rem 2rem;
+  padding: 15px 30px;
+  background: white;
+  border-bottom: 1px solid #ddd;
 }
 
-.navbar-brand {
-  font-weight: bold;
-  font-size: 1.3rem;
+.logo img {
+  height: 40px;
 }
 
-.search-form {
+.nav-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #333;
+}
+
+.search-bar {
+  flex: 1;
+  margin: 0 30px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.header-right {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 20px;
 }
 
-.search-form input, .search-form select {
-  padding: 0.3rem 0.7rem;
-  border-radius: 4px;
-  border: none;
-}
-
-.search-form button {
-  background: #ff9800;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 0.3rem 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.search-form button:hover {
-  background: #e65100;
+.profile-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
 }

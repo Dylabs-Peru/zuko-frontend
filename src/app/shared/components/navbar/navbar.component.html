@@ -1,13 +1,17 @@
 <nav class="navbar">
-  <div class="navbar-brand">Zuko Music</div>
-  <form class="search-form" (submit)="onSearch()">
-    <input type="text" [(ngModel)]="searchTerm" name="search" placeholder="Buscar usuarios, canciones..." />
-    <select [(ngModel)]="searchType" name="type">
-      <option value="user">Usuario</option>
-      <option value="song">Canción</option>
-      <option value="artist" disabled>Artista (pronto)</option>
-      <option value="album" disabled>Álbum (pronto)</option>
-    </select>
-    <button type="submit">Buscar</button>
-  </form>
+  <div class="logo">
+      <img src="logo.png" alt="Logo">
+    </div>
+    <nav class="nav-links">
+      <a href="#">Home</a>
+    </nav>
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar canciones, artistas, usuarios...">
+    </div>
+    <div class="header-right">
+      <a href="#">Biblioteca</a>
+      <a [routerLink]="['/user/profile']">
+        <img src="user.png" alt="Perfil" class="profile-icon">
+      </a>
+    </div>
 </nav>
