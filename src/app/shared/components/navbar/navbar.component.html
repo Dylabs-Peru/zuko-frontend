@@ -6,7 +6,8 @@
       <a href="#">Home</a>
     </nav>
     <div class="search-bar">
-      <input type="text" placeholder="Buscar canciones, artistas, usuarios...">
+      <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Buscar canciones, artistas, usuarios...">
+      <span *ngIf="errorMsg" style="color:red; font-size:12px;">{{ errorMsg }}</span>
     </div>
     <div class="header-right">
       <a href="#">Biblioteca</a>
