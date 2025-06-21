@@ -1,0 +1,13 @@
+<nav class="navbar">
+  <div class="navbar-brand">Zuko Music</div>
+  <form class="search-form" (submit)="onSearch()">
+    <input type="text" [(ngModel)]="searchTerm" name="search" placeholder="Buscar usuarios, canciones..." />
+    <select [(ngModel)]="searchType" name="type">
+      <option value="user">Usuario</option>
+      <option value="song">Canción</option>
+      <option value="artist" disabled>Artista (pronto)</option>
+      <option value="album" disabled>Álbum (pronto)</option>
+    </select>
+    <button type="submit">Buscar</button>
+  </form>
+</nav>
