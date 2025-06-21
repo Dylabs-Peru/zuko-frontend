@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GenreService } from '../../../../services/genre.service';
 import { GenreRequest, GenreResponse } from '../../../../models/genre.model';
 import { NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 @Component({
   selector: 'app-genre',
   imports: [NgIf,NgFor, FormsModule],
@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './genre.component.css'
 })
 export class GenreComponent implements OnInit{
+  @ViewChild('genreForm') genreForm!: NgForm; 
   genres: GenreResponse[] = [];
   error: string = '';
   newGenre: GenreRequest = { name: '', description: '' };
@@ -22,6 +23,7 @@ export class GenreComponent implements OnInit{
   selectedDeleteGenreId: number | null = null;
   deleteSuccess = false;
   deleteError = '';
+ 
 
 
   constructor(private genreService: GenreService) {}
@@ -55,19 +57,26 @@ export class GenreComponent implements OnInit{
     this.genreService.create_genre(this.newGenre).subscribe({
       next: (res) => {
         this.createSuccess = true;
-        this.newGenre = { name: '', description: '' }; // Limpia el form
-        this.loadGenres(); // Recarga la lista
-      },
+        this.newGenre = { name: '', description: '' }; 
+        this.loadGenres(); 
+        setTimeout(() => {
+          this.genreForm.resetForm();
+        });
+        setTimeout(() => {
+          this.createSuccess = false; 
+        }
+        , 2000); 
+    },
       error: (err) => {
-        this.createError = err?.error?.message || 'Error al crear el género';
+        this.createError = err?.error?.detail || 'Error al crear el género';
       }
     });
   }
 
   onSelectGenre(): void {
-    // Busca el género seleccionado en la lista
+
     const genre = this.genres.find(g => g.id === this.selectedGenreId);
-    // Precarga los datos en el form de edición (haz una copia para no mutar el original)
+
     if (genre) {
       this.editingGenre = { name: genre.name, description: genre.description };
       this.editSuccess = false;
@@ -83,10 +92,16 @@ onUpdateGenre(): void {
     next: (res) => {
       this.editSuccess = true;
       this.editError = '';
-      this.loadGenres(); // refresca la lista
+      this.loadGenres(); 
+      setTimeout(() => {
+        this.editSuccess = false; 
+        this.editingGenre = null; 
+        this.selectedGenreId = null; 
+      }
+      , 2000);
     },
     error: (err) => {
-      this.editError = err?.error?.message || 'Error al actualizar el género';
+      this.editError = err?.error?.detail || 'Error al actualizar el género';
       this.editSuccess = false;
     }
   });
@@ -99,11 +114,14 @@ onDeleteGenre(): void {
     next: () => {
       this.deleteSuccess = true;
       this.deleteError = '';
-      this.selectedDeleteGenreId = null; // Limpia la selección
+      this.selectedDeleteGenreId = null; 
       this.loadGenres();
+      setTimeout(() => {
+        this.deleteSuccess = false; 
+      }, 2000);
     },
     error: (err) => {
-      this.deleteError = err?.error?.message || 'Error al eliminar el género';
+      this.deleteError = err?.error?.detail || 'Error al eliminar el género';
       this.deleteSuccess = false;
     }
   });
