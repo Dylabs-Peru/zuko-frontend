@@ -78,7 +78,21 @@ export class NavbarComponent {
   }
 
   goToUser(username: string) {
-    this.router.navigate(['/user/profile', username]);
+    const auth = localStorage.getItem('auth');
+    let loggedUser = null;
+    if (auth) {
+      try {
+        const authObj = JSON.parse(auth);
+        loggedUser = authObj.UserResponse || authObj.user;
+      } catch (e) {
+        loggedUser = null;
+      }
+    }
+    if (loggedUser && loggedUser.username === username) {
+      this.router.navigate(['/user/Myprofile']);
+    } else {
+      this.router.navigate(['/user/profile', username]);
+    }
     this.showResults = false;
   }
 
