@@ -1,0 +1,56 @@
+<div class="modal">
+    <div class="modal-content">
+      <span class="close" (click)="closeModal()">&times;</span>
+      <h2>Crear Perfil de Artista</h2>
+      <form [formGroup]="artistForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="name">Nombre Artístico</label>
+          <input 
+            type="text" 
+            id="name" 
+            formControlName="name" 
+            [ngClass]="{'is-invalid': submitted && artistForm.get('name')?.errors}"
+          />
+          <div *ngIf="submitted && artistForm.get('name')?.errors" class="error-message">
+            <small *ngIf="artistForm.get('name')?.errors?.['required']">El nombre es obligatorio</small>
+            <small *ngIf="artistForm.get('name')?.errors?.['maxlength']">Máximo 50 caracteres</small>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="country">País</label>
+          <input 
+            type="text" 
+            id="country" 
+            formControlName="country"
+            [ngClass]="{'is-invalid': submitted && artistForm.get('country')?.errors}"
+          />
+          <div *ngIf="submitted && artistForm.get('country')?.errors" class="error-message">
+            <small>El país es obligatorio</small>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="biography">Biografía</label>
+          <textarea 
+            id="biography" 
+            formControlName="biography"
+            [ngClass]="{'is-invalid': submitted && artistForm.get('biography')?.errors}"
+          ></textarea>
+          <div *ngIf="submitted && artistForm.get('biography')?.errors" class="error-message">
+            <small *ngIf="artistForm.get('biography')?.errors?.['required']">La biografía es obligatoria</small>
+            <small *ngIf="artistForm.get('biography')?.errors?.['minlength']">Mínimo 10 caracteres</small>
+          </div>
+        </div>
+  
+        <button type="submit" class="submit-btn">Crear Artista</button>
+  
+        <div *ngIf="successMessage" class="success-message">
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+      </form>
+    </div>
+  </div>

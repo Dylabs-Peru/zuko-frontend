@@ -1,0 +1,40 @@
+<div class="profile-container" *ngIf="artist; else loading">
+  <h1 class="profile-title">Mi Perfil</h1>
+
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <img *ngIf="artist.urlImage; else defaultAvatar" [src]="artist.urlImage" alt="Foto de perfil">
+      <ng-template #defaultAvatar>
+        <div class="avatar-placeholder">&#128100;</div>
+      </ng-template>
+    </div>
+
+    <div class="profile-info">
+      <span class="role">Artista</span>
+      <div class="profile-name">{{ artist.name || 'Nombre de Usuario' }}</div>
+      <div class="profile-email">{{ userEmail || 'Artista registrado' }}</div>
+      <div class="profile-country">{{ artist.country || 'País' }}</div>
+    </div>
+
+    <div class="profile-actions">
+      <button class="dots-btn">...</button>
+    </div>
+  </div>
+
+  <nav class="profile-menu">
+    <a class="menu-item active" href="#">Biografía</a>
+    <a class="menu-item" href="#">Mis Álbumes</a>
+    <a class="menu-item" href="#">Mis Canciones</a>
+  </nav>
+
+  <section class="profile-bio-section">
+    <label class="bio-label">Biografía</label>
+    <div class="profile-bio">
+      {{ artist.biography || 'Biografía del usuario' }}
+    </div>
+  </section>
+</div>
+
+<ng-template #loading>
+  <div class="no-user">Cargando perfil del artista...</div>
+</ng-template>

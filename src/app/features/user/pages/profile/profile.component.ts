@@ -4,16 +4,21 @@ import { UserResponse } from '../../../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { EditProfileModalComponent } from '../../components/edit-profile-modal/edit-profile-modal.component';
+import { CreateArtistComponent } from '../../../artist/components/create-artist/create-artist.component'; // Añade esta línea
+import { ArtistResponse } from '../../../../models/artist.model';
+
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, EditProfileModalComponent],
+  standalone: true,
+  imports: [CommonModule, EditProfileModalComponent, CreateArtistComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
   user: UserResponse | null = null;
   isEditModalOpen = false;
+  isArtistModalOpen = false;
 
   constructor(
     private UserService: UserService,
@@ -36,8 +41,12 @@ export class ProfileComponent implements OnInit {
     this.isEditModalOpen = true;
   }
 
-  closeEditModal() {
-    this.isEditModalOpen = false;
+  openArtistModal() {
+    this.isArtistModalOpen = true;
+  }
+
+  closeArtistModal() {
+    this.isArtistModalOpen = false;
   }
 
   onSaveEdit(data: { username: string; description: string; url_image: string }) {
@@ -58,4 +67,19 @@ export class ProfileComponent implements OnInit {
       this.closeEditModal();
     });
   }
+
+  closeEditModal() {
+    this.isEditModalOpen = false;
+  }
+
+  onArtistCreated(artist: ArtistResponse) {
+    if (this.user) {
+      this.user.isArtist = true;
+    }
+    this.closeArtistModal();
+    
+    // Redirigir al perfil del artista
+    this.router.navigate(['/artist', artist.id]);
+  }
 }
+

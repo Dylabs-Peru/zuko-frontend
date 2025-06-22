@@ -29,8 +29,8 @@
     </div>
     <div class="header-right">
       <a href="#">Biblioteca</a>
-      <a [routerLink]="['/user/profile']">
-        <img src="user.png" alt="Perfil" class="profile-icon">
+      <a [routerLink]="isArtist ? '/artist/profile-artist' : '/user/Myprofile'">
+        <img src="user.png" [alt]="isArtist ? 'Perfil Artista' : 'Perfil Usuario'" class="profile-icon">
       </a>
     </div>
 </nav>
