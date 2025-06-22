@@ -10,27 +10,42 @@
 
   <!-- Searchbar -->
   <div class="playlist-searchbar">
-    <input type="text" placeholder="Buscar playlist" />
-    <button class="search-btn">
+    <input type="text" 
+    [(ngModel)]="searchQuery"
+     input = "onSearch()"
+     placeholder="Buscar playlist"
+    />
+    <button class="search-btn" (click)="onSearch()" aria-label="Buscar playlist">
       <img src="assets/search-icon.svg" alt="Buscar" />
     </button>
   </div>
 
+   <div *ngIf="isLoading" class="loading-state">Cargando...</div>
+  <div *ngIf="error" class="error-state">{{ error }}</div>
+
+  <div *ngIf="!isLoading && !error && filteredPlaylists.length === 0" class="empty-state">
+    No tienes playlists aún.
+  </div>
+
   <!-- Grid de playlists -->
-  <div class="playlists-grid">
-    <div class="playlist-card">
+  <div class="playlists-grid" *ngIf="filteredPlaylists.length > 0">
+    <div 
+    class="playlist-card"
+    *ngFor="let playlist of filteredPlaylists"
+    tabindex="0"
+    [attr.aria-label]="'Abrir playlist ' + playlist.name"
+    >
       <div class="playlist-cover"></div>
       <div class="playlist-info">
-        <span class="playlist-name">PlaylistName</span>
+        <span class="playlist-name">{{ playlist.name }}</span>
         <span class="playlist-owner">Owner</span>
-        <button class="playlist-play-btn">
+        <button class="playlist-play-btn" aria-label="Reproducir playlist">
           <img src="assets/play-icon.svg" alt="Play" />
         </button>
       </div>
     </div>
-    <!-- ...repite para cada playlist... -->
   </div>
 
   <!-- Botón para añadir playlist -->
-  <button class="add-playlist-btn">+</button>
+  <button class="add-playlist-btn" aria-label="Añadir playlist">+</button>
 </div>
