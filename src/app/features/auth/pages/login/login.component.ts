@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserService } from "../../../../services/User.service";
 import { ArtistService } from "../../../../services/Artist.service";
+import { AuthService } from "../../../../services/Auth.service";
+import { TokenMonitorService } from "../../../../services/TokenMonitor.service";
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -15,12 +17,12 @@ import { RouterLink } from '@angular/router';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  loading: boolean = false;
-
-  constructor(
+  loading: boolean = false;  constructor(
     private fb: FormBuilder,
     private UserService: UserService,
     private artistService: ArtistService,
+    private authService: AuthService,
+    private tokenMonitorService: TokenMonitorService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -33,10 +35,9 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.loading = true;
       console.log('Iniciando login...');
-      this.UserService.login(this.loginForm.value).subscribe({
-        next: (response) => {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('auth', JSON.stringify(response));
+      this.UserService.login(this.loginForm.value).subscribe({        next: (response) => {
+          // Usar el servicio de autenticación para guardar los datos
+          this.authService.saveAuthData(response.token, response);
           console.log('Login exitoso:', response);
 
           this.artistService.getAllArtists().subscribe({
@@ -49,20 +50,19 @@ export class LoginComponent {
                 artistList = (artists as any).data;
               }
               const userId = (response as any)?.user?.id;
-              const artist = artistList.find((a: any) => a.userId === userId);
-              if (artist) {
-                const auth = JSON.parse(localStorage.getItem('auth') || '{}');
-                if (auth.user) {
+              const artist = artistList.find((a: any) => a.userId === userId);              if (artist) {
+                const auth = this.authService.getAuthInfo();
+                if (auth && auth.user) {
                   auth.user.artistName = artist.name;
-                  localStorage.setItem('auth', JSON.stringify(auth));
+                  this.authService.saveAuthData(response.token, auth);
                 }
                 console.log('Artista detectado tras login:', artist.name);
                 alert('¡Bienvenido, artista ' + artist.name + '! Tu perfil de artista está activo.');
               } else {
-                console.warn('No se detectó perfil de artista para este usuario tras login.');
-        
-              }
+                console.warn('No se detectó perfil de artista para este usuario tras login.');              }
               this.loading = false;
+              // Iniciar el monitor de token después del login exitoso
+              this.tokenMonitorService.startMonitoring();
               window.location.href = '/home';
             },
             error: (err) => {
