@@ -30,6 +30,8 @@ export interface UserResponse {
   url_image: string;
   roleName: string;
   isActive: boolean;
+  isArtist?: boolean;
+  artistName?: string;
 }
 
 export interface AuthResponse {

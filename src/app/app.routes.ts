@@ -23,6 +23,11 @@ export const routes: Routes = [
     loadChildren: () => import('./features/genre/genre.routes').then(m => m.GENRE_ROUTES)
     },
     {
+    path: 'artist',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/artist/artist.routes').then(m => m.ARTIST_ROUTES)
+    },
+    {
     path: '**',
     redirectTo: ''
     }
