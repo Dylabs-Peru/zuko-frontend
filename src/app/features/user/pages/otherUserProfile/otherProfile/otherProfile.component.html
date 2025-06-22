@@ -1,5 +1,5 @@
 <div class="profile-container" *ngIf="user; else noUser">
-  <h1 class="profile-title">Mi Perfil</h1>
+  <h1 class="profile-title">Usuario Común</h1>
   
   <div class="profile-header">
     <div class="profile-avatar">
@@ -12,27 +12,12 @@
     <div class="profile-info">
       <div class="profile-name">{{ user.username }}</div>
       <div class="profile-email">{{ user.email }}</div>
-      <button class="artist-btn" (click)="openArtistModal()" *ngIf="!user?.isArtist">
-        Convertirse en artista
-      </button>
-    </div>
-    
-    <!-- El modal debe ir FUERA del div profile-info, al mismo nivel -->
-    <div id="artistModal" class="modal" [ngStyle]="{display: isArtistModalOpen ? 'block' : 'none'}">
-      <div class="modal-content">
-        <span class="close" (click)="closeArtistModal()">&times;</span>
-        <h2>Crear Perfil de Artista</h2>
-        <app-create-artist 
-        [username]="user.username" 
-        (artistCreated)="onArtistCreated($event)" 
-        (close)="closeArtistModal()">
-        </app-create-artist>
-      </div>
+
     </div>
 
-    <div class="profile-actions">
+    <!-- <div class="profile-actions">
       <button class="dots-btn" (click)="openEditModal()">&#8230;</button>
-    </div>
+    </div> -->
   </div>
 
   <div class="profile-bio-section">
@@ -48,14 +33,14 @@
     </div>
   </div>
 
-  <app-edit-profile-modal 
+  <!-- <app-edit-profile-modal 
     *ngIf="isEditModalOpen" 
     [username]="user.username"
     [description]="user.description"
     [url_image]="user.url_image"
     (close)="closeEditModal()" 
     (save)="onSaveEdit($event)">
-  </app-edit-profile-modal>
+  </app-edit-profile-modal> -->
 </div>
 
 <ng-template #noUser>

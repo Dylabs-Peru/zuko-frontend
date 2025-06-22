@@ -41,5 +41,9 @@ export class UserService {
   updateUser(id: number, request: UpdateUserRequest): Observable<UserResponse> {
     return this.apiService.patch<UserResponse>(`${this.endpoint}/${id}`, request);
   }
+  
+  getUserByUsername(username: string): Observable<UserResponse> {
+    return this.apiService.get<UserResponse>(`${this.endpoint}/username/${username}`);
+  }
 
 }
