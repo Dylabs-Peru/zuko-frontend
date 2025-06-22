@@ -1,0 +1,36 @@
+<!-- biblioteca.component.html -->
+<div class="library-container">
+  <!-- Título principal -->
+  <h1 class="library-title">Biblioteca</h1>
+  
+  <!-- Tabs (solo Playlists, según tu requerimiento) -->
+  <div class="library-tabs">
+    <span class="tab-active">Playlists</span>
+  </div>
+
+  <!-- Searchbar -->
+  <div class="playlist-searchbar">
+    <input type="text" placeholder="Buscar playlist" />
+    <button class="search-btn">
+      <img src="assets/search-icon.svg" alt="Buscar" />
+    </button>
+  </div>
+
+  <!-- Grid de playlists -->
+  <div class="playlists-grid">
+    <div class="playlist-card">
+      <div class="playlist-cover"></div>
+      <div class="playlist-info">
+        <span class="playlist-name">PlaylistName</span>
+        <span class="playlist-owner">Owner</span>
+        <button class="playlist-play-btn">
+          <img src="assets/play-icon.svg" alt="Play" />
+        </button>
+      </div>
+    </div>
+    <!-- ...repite para cada playlist... -->
+  </div>
+
+  <!-- Botón para añadir playlist -->
+  <button class="add-playlist-btn">+</button>
+</div>

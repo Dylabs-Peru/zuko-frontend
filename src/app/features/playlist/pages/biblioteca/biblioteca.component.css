@@ -1,0 +1,172 @@
+/* Tipografías (asegúrate de importar Manrope y Manjari en tu styles.css) */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap');
+
+.library-container {
+  padding: 32px 56px;
+  position: relative;
+}
+
+/* Título "Biblioteca" */
+.library-title {
+  font-family: 'Manrope', Arial, sans-serif;
+  font-size: 96px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 24px;
+}
+
+/* Tabs */
+.library-tabs {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.tab-active {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 36px;
+  font-weight: bold;
+  color: #D80000;
+  border-bottom: 4px solid #D80000;
+  padding-bottom: 2px;
+  margin-right: 36px;
+}
+
+/* Searchbar */
+.playlist-searchbar {
+  display: flex;
+  align-items: center;
+  width: 394px;
+  height: 39px;
+  background: #F3F3F3;
+  border-radius: 8px;
+  margin-bottom: 36px;
+  padding-left: 12px;
+  position: relative;
+}
+
+.playlist-searchbar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 340px;
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 16px;
+  padding: 8px 0;
+}
+
+.search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 8px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Grid de playlists */
+.playlists-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 36px;
+}
+
+/* Card playlist */
+.playlist-card {
+  width: 236px;
+  height: 297px;
+  background: rgba(15, 1, 1, 0); /* 0% opacidad, pero puedes usarlo como base */
+  border-radius: 14px;
+  box-shadow: 0 0 0 2px transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+  position: relative;
+  /* Si quieres resaltar la card seleccionada, cambia box-shadow aquí */
+}
+
+/* Imagen cover */
+.playlist-cover {
+  width: 207px;
+  height: 207px;
+  background: #B8B8B8;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  /* Aquí puedes poner la imagen como background-image si tienes url */
+}
+
+/* Info: nombre, owner y botón play */
+.playlist-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding-left: 16px;
+  position: relative;
+}
+
+.playlist-name {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #000;
+  margin-bottom: 4px;
+}
+
+.playlist-owner {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #8C8C8C;
+  margin-bottom: 4px;
+}
+
+/* Botón play */
+.playlist-play-btn {
+  position: absolute;
+  right: 18px;
+  top: 8px;
+  width: 40px;
+  height: 40px;
+  background: #D80000;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.playlist-play-btn img {
+  width: 24px;
+  height: 24px;
+  filter: invert(1); /* Blanco si el ícono es negro */
+}
+
+/* Botón de añadir playlist (flotante) */
+.add-playlist-btn {
+  position: absolute;
+  right: 64px;
+  top: 260px;
+  width: 60px;
+  height: 60px;
+  background: #D80000;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 38px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(216,0,0,0.12);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.add-playlist-btn:hover {
+  background: #aa1010;
+}
