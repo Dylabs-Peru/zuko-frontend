@@ -1,0 +1,48 @@
+<div class="profile-container" *ngIf="user; else noUser">
+  <h1 class="profile-title">Usuario Común</h1>
+  
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <img *ngIf="user.url_image" [src]="user.url_image" alt="Avatar" />
+      <ng-container *ngIf="!user.url_image">
+        <span class="avatar-placeholder">&#128100;</span>
+      </ng-container>
+    </div>
+    
+    <div class="profile-info">
+      <div class="profile-name">{{ user.username }}</div>
+      <div class="profile-email">{{ user.email }}</div>
+
+    </div>
+
+    <!-- <div class="profile-actions">
+      <button class="dots-btn" (click)="openEditModal()">&#8230;</button>
+    </div> -->
+  </div>
+
+  <div class="profile-bio-section">
+    <label class="bio-label">Biografía</label>
+    <div 
+      class="profile-bio" 
+      [ngStyle]="{
+        'opacity': user.description ? '1' : '0.5',
+        'color': user.description ? '#000' : '#000'
+      }"
+    >
+      {{ user.description || 'El usuario no tiene biografía' }}
+    </div>
+  </div>
+
+  <!-- <app-edit-profile-modal 
+    *ngIf="isEditModalOpen" 
+    [username]="user.username"
+    [description]="user.description"
+    [url_image]="user.url_image"
+    (close)="closeEditModal()" 
+    (save)="onSaveEdit($event)">
+  </app-edit-profile-modal> -->
+</div>
+
+<ng-template #noUser>
+  <div class="no-user">No se encontró información de usuario.<br>¿Estás logueado correctamente?</div>
+</ng-template>
