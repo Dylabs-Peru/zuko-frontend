@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ArtistService } from '../../../../services/Artist.service';
 import { CreateArtistRequest } from '../../../../models/artist.model';
 import { ArtistResponse } from '../../../../models/artist.model';
+import { UserService } from '../../../../services/User.service';
 import { Input } from '@angular/core';
 
 @Component({
@@ -25,7 +26,8 @@ export class CreateArtistComponent {
   
     constructor(
       private fb: FormBuilder,
-      private artistService: ArtistService
+      private artistService: ArtistService,
+      private userService: UserService
     ) {
       this.artistForm = this.fb.group({
         name: ['', [Validators.required, Validators.maxLength(50)]],
@@ -54,11 +56,33 @@ export class CreateArtistComponent {
   
       this.artistService.createArtist(this.username, request).subscribe({
         next: (artist) => {
+          console.log('Respuesta del backend al crear artista:', artist); // Debug
           this.successMessage = '¡Artista creado exitosamente!';
           this.artistForm.reset();
           this.submitted = false;
           this.artistCreated.emit(artist);
-          setTimeout(() => this.closeModal(), 1500);
+
+          // --- OBTIENE EL USUARIO ACTUALIZADO Y LO GUARDA EN LOCALSTORAGE ---
+          const auth = JSON.parse(localStorage.getItem('auth') || '{}');
+          if (auth?.user && auth.user.id) {
+            this.userService.getUserById(auth.user.id).subscribe({
+              next: () => {
+                const auth = JSON.parse(localStorage.getItem('auth') || '{}');
+                if (auth.user) {
+                  auth.user.artistName = this.artistForm.value.name;
+                  localStorage.setItem('auth', JSON.stringify(auth));
+                }
+                console.log('auth actualizado tras crear artista:', auth);
+                window.location.href = '/artist/profile-artist';
+              },
+              error: (err) => {
+                console.error('Error obteniendo usuario actualizado:', err);
+                window.location.href = '/artist/profile-artist';
+              }
+            });
+          } else {
+            window.location.href = '/artist/profile-artist';
+          }
         },
         error: (err) => {
           this.successMessage = '';

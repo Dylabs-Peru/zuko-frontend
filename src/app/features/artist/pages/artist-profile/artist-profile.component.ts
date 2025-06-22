@@ -5,17 +5,21 @@ import { UserService } from '../../../../services/User.service';
 import { ArtistResponse } from '../../../../models/artist.model';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
+import { EditArtistProfileModalComponent } from '../../components/edit-artist-profile-modal/edit-artist-profile-modal.component';
 
 @Component({
   selector: 'app-profile-artist',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './profile-artist.component.html',
-  styleUrls: ['./profile-artist.component.css']
+  imports: [CommonModule, EditArtistProfileModalComponent],
+  templateUrl: './artist-profile.component.html',
+  styleUrls: ['./artist-profile.component.css']
 })
 export class ProfileArtistComponent implements OnInit {
   artist: any = null;
   userEmail: string = '';
+  isOwnArtistProfile = false;
+  showEditModal = false;
+  imagePreview: string | null = null;
 
   constructor(
     private artistService: ArtistService,
@@ -28,9 +32,51 @@ export class ProfileArtistComponent implements OnInit {
 
   ngOnInit() {
     console.log('ProfileArtistComponent - ngOnInit');
-    this.route.params.subscribe(params => {
-      console.log('Route params:', params);
-      this.loadProfile();
+    this.route.paramMap.subscribe(params => {
+      const artistName = params.get('name');
+      if (artistName) {
+        console.log('Cargando perfil del artista por parámetro de ruta:', artistName);
+        this.isOwnArtistProfile = this.checkIfOwnProfile(artistName);
+        this.loadArtistByName(artistName);
+      } else {
+        this.isOwnArtistProfile = true;
+        this.loadProfile();
+      }
+    });
+  }
+
+  private checkIfOwnProfile(artistName: string): boolean {
+    const auth = localStorage.getItem('auth');
+    if (!auth) return false;
+    try {
+      const authObj = JSON.parse(auth);
+      return authObj?.user?.artistName === artistName;
+    } catch {
+      return false;
+    }
+  }
+
+  onEditProfile() {
+    this.showEditModal = true;
+  }
+
+  onSaveArtistProfile(data: any) {
+    if (!this.artist) return;
+    const updateReq = {
+      name: data.name,
+      biography: data.biography,
+      urlImage: data.urlImage,
+      country: data.country
+    };
+    this.artistService.updateArtist(this.artist.id, updateReq).subscribe({
+      next: (updated) => {
+        this.artist = { ...this.artist, ...updated };
+        this.showEditModal = false;
+        alert('Perfil de artista actualizado correctamente');
+      },
+      error: () => {
+        alert('Error al actualizar el perfil de artista');
+      }
     });
   }
 
@@ -49,30 +95,14 @@ export class ProfileArtistComponent implements OnInit {
       const authObj = JSON.parse(auth);
       console.log('Auth object:', authObj);
       
-      if (!authObj?.user?.id) {
-        console.log('No se encontró el ID de usuario en auth');
-        this.router.navigate(['/login']);
-        return;
+      const artistName = authObj?.user?.artistName;
+      if (artistName) {
+        console.log('Cargando perfil del artista por artistName en localStorage:', artistName);
+        this.loadArtistByName(artistName);
+      } else {
+        // Redirige silenciosamente al perfil de usuario, sin mostrar mensaje
+        this.router.navigate(['/profile']);
       }
-
-      console.log('Obteniendo datos del usuario ID:', authObj.user.id);
-      this.userService.getUserById(authObj.user.id).subscribe({
-        next: (user: any) => {
-          console.log('Datos del usuario:', user);
-          
-          if (user.artistName) {
-            console.log('Cargando perfil del artista:', user.artistName);
-            this.loadArtistByName(user.artistName);
-          } else {
-            console.log('El usuario no tiene perfil de artista');
-            this.router.navigate(['/profile']);
-          }
-        },
-        error: (error) => {
-          console.error('Error al cargar el usuario:', error);
-          this.router.navigate(['/login']);
-        }
-      });
     } catch (e) {
       console.error('Error al parsear auth:', e);
       this.router.navigate(['/login']);
@@ -84,12 +114,13 @@ export class ProfileArtistComponent implements OnInit {
     this.artistService.getArtistByName(name).subscribe({
       next: (response: any) => {
         console.log('Respuesta de la API (artista):', response);
+        // Si la respuesta es un array, toma el primer elemento
+        const artistData = Array.isArray(response) ? response[0] : (response.data || response);
         this.artist = {
-          ...response.data || response,
-          albums: response.albums || [],
-          songs: response.songs || []
+          ...artistData,
+          albums: artistData.albums || response.albums || [],
+          songs: artistData.songs || response.songs || []
         };
-        
         if (this.artist?.userId) {
           this.loadUserEmail(this.artist.userId);
         }

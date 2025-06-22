@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { ProfileArtistComponent } from './page/profile/profile-artist.component';
+import { ProfileArtistComponent } from './pages/artist-profile/artist-profile.component';
 import { CreateArtistComponent } from './components/create-artist/create-artist.component';
+import { OtherArtistProfileComponent } from './pages/otherArtistProfile/otherArtistProfile.component';
 
 export const ARTIST_ROUTES: Routes = [
   { 
@@ -10,6 +11,14 @@ export const ARTIST_ROUTES: Routes = [
   { 
     path: 'profile-artist',
     component: ProfileArtistComponent 
+  },
+  { 
+    path: 'profile-artist/:name',
+    component: ProfileArtistComponent 
+  },
+  {
+    path: 'other-profile/:id',
+    component: OtherArtistProfileComponent
   },
   { 
     path: ':id',  // Ruta para /artist/45

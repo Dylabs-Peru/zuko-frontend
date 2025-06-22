@@ -7,8 +7,12 @@ import { CreateArtistRequest, UpdateArtistRequest, ArtistResponse } from '../mod
   providedIn: 'root'
 })
 export class ArtistService {
-  private endpoint = '/artists';
+   
+    getArtistByName(name: string): Observable<ArtistResponse[]> {
+        return this.apiService.get<ArtistResponse[]>(`/artists/search?name=${encodeURIComponent(name)}`);
+    }
 
+  private endpoint = '/artists';
   constructor(private apiService: ApiService) {}
 
  // Crear artista
@@ -38,9 +42,6 @@ export class ArtistService {
     return this.apiService.get<ArtistResponse>(`${this.endpoint}/${id}`);
   }
 
-  getArtistByName(name: string): Observable<ArtistResponse> {
-    return this.apiService.get<ArtistResponse>(`${this.endpoint}/${name}`);
-  }
   // Cambiar estado activo/inactivo
   toggleArtistActiveStatus(id: number): Observable<string> {
     return this.apiService.patch<string>(`${this.endpoint}/${id}/toggle-active`, {});

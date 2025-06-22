@@ -8,12 +8,20 @@
     <div class="search-bar">
       <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Buscar canciones, artistas, usuarios...">
       <span *ngIf="errorMsg" style="color:red; font-size:12px;">{{ errorMsg }}</span>
-      <div *ngIf="showResults && (userResults.length || songResults.length)" class="search-results">
+      <div *ngIf="showResults && (userResults.length || songResults.length || artistResults.length)" class="search-results">
         <div *ngIf="userResults.length">
           <strong>Usuarios:</strong>
           <ul>
             <li *ngFor="let user of userResults">
               <a (click)="goToUser(user.username)">{{ user.username }}</a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="artistResults.length">
+          <strong>Artistas:</strong>
+          <ul>
+            <li *ngFor="let artist of artistResults">
+              <a href="#" (click)="goToArtist(artist.name); $event.preventDefault()">{{ artist.name }}</a>
             </li>
           </ul>
         </div>
@@ -29,13 +37,8 @@
     </div>
     <div class="header-right">
       <a href="#">Biblioteca</a>
-<<<<<<< HEAD
       <a [routerLink]="isArtist ? '/artist/profile-artist' : '/user/Myprofile'">
         <img src="user.png" [alt]="isArtist ? 'Perfil Artista' : 'Perfil Usuario'" class="profile-icon">
-=======
-      <a [routerLink]="['/user/Myprofile']">
-        <img src="user.png" alt="Perfil" class="profile-icon">
->>>>>>> fb28414dde7c4492c36098d87d2833509616813e
       </a>
     </div>
 </nav>
