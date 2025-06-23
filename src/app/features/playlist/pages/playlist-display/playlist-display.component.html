@@ -1,0 +1,36 @@
+<div *ngIf="playlist && !loading" class="playlist-detail-root">
+  <div class="header" [ngStyle]="{'background-image': 'url(' + playlist.url_image + ')'}">
+    <h1>{{ playlist.name }}</h1>
+    <div class="details">
+       {{ playlist.createdAt | date }} &bull; {{ playlist.songs.length }} Canciones
+    </div>
+  </div>
+
+  <div class="controls">
+    <button title="Reproducir">&#9654;</button>
+    <button title="Aleatorio">🔀</button>
+    <button title="Más opciones">&#8942;</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Título</th>
+        <th class="play-col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let song of playlist.songs; let i = index">
+        <td class="number">{{ i + 1 }}</td>
+        <td>
+          <div class="song-title">{{ song.title }}</div>
+          <div class="artist">{{ song.artistName }}</div>
+        </td>
+        <td class="play-col">
+          <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

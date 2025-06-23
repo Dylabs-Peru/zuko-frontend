@@ -33,6 +33,8 @@
     class="playlist-card"
     *ngFor="let playlist of filteredPlaylists"
     tabindex="0"
+    
+    (click)="goToPlaylist(playlist.playlistId)"
     [attr.aria-label]="'Abrir playlist ' + playlist.name"
     >
       <div class="playlist-cover"
@@ -41,16 +43,28 @@
       <div class="playlist-info">
         <span class="playlist-name">{{ playlist.name }}</span>
         <span class="playlist-owner">Owner</span>
-        <button class="playlist-play-btn" aria-label="Reproducir playlist">
+        <button class="playlist-play-btn" 
+        aria-label="Reproducir playlist"
+        (click)="goToPlaylist(playlist.playlistId); $event.stopPropagation()">
         </button>
       </div>
     </div>
   </div>
 
 
-  <button class="add-playlist-btn" aria-label="Añadir playlist">
+  <button class="add-playlist-btn" 
+      aria-label="Añadir playlist"
+      (click)="onOpenCreateDialog()"
+    >
     <span class="add-playlist-label">Crear</span>
     <span class="add-playlist-icon">+</span>
   </button>
+
+  <app-create-playlist-dialog
+  *ngIf="showCreateDialog"
+  (closed)="onCloseCreateDialog()"
+  (created)="onPlaylistCreated($event)"
+  >
+  </app-create-playlist-dialog>
 
 </div>
