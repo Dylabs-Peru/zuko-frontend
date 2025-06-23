@@ -70,8 +70,12 @@ table {
 th, td {
     padding: 12px 20px;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
     color: #fff;
+    vertical-align: middle;
+    white-space: nowrap;  
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 th {
@@ -124,4 +128,11 @@ th {
     color: #fff;
     font-weight: normal;
     opacity: 1;
+}
+
+tr {
+  background: #4a0000;
+}
+tr[_ngcontent-ng-c2166951552]:nth-child(even) {
+  background: #330000; 
 }

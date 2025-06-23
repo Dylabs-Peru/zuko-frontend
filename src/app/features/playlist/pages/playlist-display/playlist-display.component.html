@@ -42,7 +42,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let song of playlist.songs; let i = index">
+      <ng-container *ngFor="let song of playlist.songs; let i = index">
+      <tr *ngIf="song &&song.title">
         <td class="number">{{ i + 1 }}</td>
         <td>
           <div class="song-title">{{ song.title }}</div>
@@ -52,6 +53,7 @@
           <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
         </td>
       </tr>
+      </ng-container>
     </tbody>
   </table>
 </div>

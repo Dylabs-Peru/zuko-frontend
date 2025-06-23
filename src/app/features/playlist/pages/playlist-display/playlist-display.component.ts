@@ -41,6 +41,12 @@ export class PlaylistDisplayComponent implements OnInit {
       this.error = '';
       this.playlistService.getPlaylistById(Number(playlistId)).subscribe({
       next: (playlist) => {
+        console.log('Playlist recibida:', playlist);
+        if (playlist && Array.isArray(playlist.songs)) {
+        console.log('Songs antes de filtrar:', playlist.songs);
+        playlist.songs = playlist.songs.filter(song => song && song.title);
+        console.log('Songs después de filtrar:', playlist.songs);
+      }
         this.playlist = playlist;
         this.loading = false;
       },
