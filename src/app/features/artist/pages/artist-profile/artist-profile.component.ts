@@ -8,11 +8,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { EditArtistProfileModalComponent } from '../../components/edit-artist-profile-modal/edit-artist-profile-modal.component';
 import { ArtistAlbumsListComponent } from '../../../album/components/artist-albums-list/artist-albums-list.component';
 import { CreateAlbumModalComponent } from '../../../album/components/create-album-modal/create-album-modal.component';
+import { ArtistSongsComponent } from '../../../song/pages/artist-songs/artist-songs.component';
 
 @Component({
   selector: 'app-profile-artist',
   standalone: true,
-  imports: [CommonModule, EditArtistProfileModalComponent, ArtistAlbumsListComponent, CreateAlbumModalComponent],
+  imports: [CommonModule, EditArtistProfileModalComponent, ArtistAlbumsListComponent, CreateAlbumModalComponent, ArtistSongsComponent],
   templateUrl: './artist-profile.component.html',
   styleUrls: ['./artist-profile.component.css']
 })
@@ -39,6 +40,7 @@ export class ProfileArtistComponent implements OnInit {
     this.openCreateAlbumModal();
   }
   showAlbumsSection: boolean = false;
+  showSongsSection: boolean = false;
   artist: any = null;
   userEmail: string = '';
   isOwnArtistProfile = false;
