@@ -16,7 +16,7 @@
      placeholder="Buscar playlist"
     />
     <button class="search-btn" (click)="onSearch()" aria-label="Buscar playlist">
-      <img src="assets/search-icon.svg" alt="Buscar" />
+      <img src="assets/lupinha.png" alt="Buscar" />
     </button>
   </div>
 
@@ -35,12 +35,13 @@
     tabindex="0"
     [attr.aria-label]="'Abrir playlist ' + playlist.name"
     >
-      <div class="playlist-cover"></div>
+      <div class="playlist-cover"
+      [ngStyle]="{ 'background-image': playlist.url_image ? 'url(' + playlist.url_image + ')' : '' }" 
+      ></div>
       <div class="playlist-info">
         <span class="playlist-name">{{ playlist.name }}</span>
         <span class="playlist-owner">Owner</span>
         <button class="playlist-play-btn" aria-label="Reproducir playlist">
-          <img src="assets/play-icon.svg" alt="Play" />
         </button>
       </div>
     </div>

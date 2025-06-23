@@ -1,13 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PlaylistService } from '../../../../services/playlist.service';
 import {PlaylistResponse} from '../../../../models/playlist.model';
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-playlist-library',
   standalone: true,
-  imports: [NgIf, NgFor, FormsModule],
+  imports: [NgIf, NgFor, FormsModule, NgStyle],
   templateUrl: './biblioteca.component.html',
   styleUrl: './biblioteca.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
