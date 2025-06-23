@@ -37,3 +37,11 @@
   (close)="closeEditModal()"
   (albumEdited)="fetchAlbums()"
 ></app-edit-album-modal>
+
+<app-delete-album-modal
+  [show]="showDeleteModal"
+  [albumTitle]="albumToDelete?.title || ''"
+  [albumId]="albumToDelete?.id"
+  (close)="closeDeleteModal()"
+  (albumDeleted)="onAlbumDeleted()"
+></app-delete-album-modal>

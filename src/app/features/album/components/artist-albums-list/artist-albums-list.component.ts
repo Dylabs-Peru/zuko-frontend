@@ -5,11 +5,12 @@ import { RouterModule } from '@angular/router';
 import { AlbumService } from '../../../../services/Album.service';
 import { Subscription } from 'rxjs';
 import { EditAlbumModalComponent } from '../edit-album-modal/edit-album-modal.component';
+import { DeleteAlbumModalComponent } from '../delete-album-modal/delete-album-modal.component';
 
 @Component({
   selector: 'app-artist-albums-list',
   standalone: true,
-  imports: [NgIf, NgFor, NgStyle, RouterModule, EditAlbumModalComponent],
+  imports: [NgIf, NgFor, NgStyle, RouterModule, EditAlbumModalComponent, DeleteAlbumModalComponent],
   templateUrl: './artist-albums-list.component.html',
   styleUrls: ['./artist-albums-list.component.css']
 })
@@ -19,6 +20,9 @@ export class ArtistAlbumsListComponent implements OnInit, OnDestroy {
   openMenuAlbumId: number | null = null;
   showEditModal: boolean = false;
   albumToEdit: any = null;
+
+  showDeleteModal: boolean = false;
+  albumToDelete: any = null;
 
   toggleAlbumMenu(album: any) {
     this.openMenuAlbumId = this.openMenuAlbumId === album.id ? null : album.id;
@@ -39,9 +43,19 @@ export class ArtistAlbumsListComponent implements OnInit, OnDestroy {
   }
 
   confirmDeleteAlbum(album: any) {
-    // Aquí puedes mostrar un modal de confirmación
-    console.log('Eliminar álbum:', album);
+    this.albumToDelete = { ...album };
+    this.showDeleteModal = true;
     this.openMenuAlbumId = null;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.albumToDelete = null;
+  }
+
+  onAlbumDeleted() {
+    this.fetchAlbums();
+    this.closeDeleteModal();
   }
 
 
