@@ -46,6 +46,21 @@ export class NavbarComponent {
     }
   }
 
+  get currentUser(): any {
+    const auth = this.authService.getAuthInfo();
+    return auth?.user || null;
+  }
+
+  get userProfileImage(): string {
+    const user = this.currentUser;
+    return user?.url_image || 'https://via.placeholder.com/35x35/b3b3b3/ffffff?text=👤';
+  }
+
+  get username(): string {
+    const user = this.currentUser;
+    return user?.username || 'Usuario';
+  }
+
   onSearch() {
     if (!this.searchTerm.trim()) return;
     this.errorMsg = '';
