@@ -10,6 +10,7 @@ import { SongResponse } from '../../../models/song.model';
 import { catchError, forkJoin, of } from 'rxjs';
 import { ArtistResponse } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/Artist.service';
+import { AuthService } from '../../../services/Auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -25,22 +26,20 @@ export class NavbarComponent {
   songResults: SongResponse[] = [];
   artistResults: ArtistResponse[] = [];
   showResults = false;
-
   constructor(
     private router: Router,
     private userService: UserService,
     private songService: SongService,
-    private artistService: ArtistService
+    private artistService: ArtistService,
+    private authService: AuthService
   ) { }
-
   get isArtist(): boolean {
-    const auth = localStorage.getItem('auth');
+    const auth = this.authService.getAuthInfo();
     if (!auth) return false;
     
     try {
-      const authObj = JSON.parse(auth);
       // Verifica si el usuario tiene artistName en su perfil
-      return !!authObj?.user?.artistName;
+      return !!auth?.user?.artistName;
     } catch (e) {
       console.error('Error al verificar perfil de artista:', e);
       return false;
@@ -104,5 +103,18 @@ export class NavbarComponent {
   goToArtist(artistName: string) {
     this.router.navigate(['/artist/profile-artist', artistName]);
     this.showResults = false;
+  }
+
+  goToUserProfile(username: string) {
+    const auth = this.authService.getAuthInfo();
+    if (auth && auth.user && auth.user.username === username) {
+      this.router.navigate(['/user/Myprofile']);
+    } else {
+      this.router.navigate(['/user/profile', username]);
+    }
+  }
+
+  logout() {
+    this.authService.logout('Usuario realizó logout manual');
   }
 }
