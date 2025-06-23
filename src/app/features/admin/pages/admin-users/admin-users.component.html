@@ -11,17 +11,397 @@
   </div>
 
   <div class="section-content">
-    <div class="placeholder-card">
-      <div class="placeholder-icon">👥</div>
-      <h3>Funcionalidades de Usuario Admin</h3>
-      <p>Aquí implementaremos las funcionalidades de administración de usuarios</p>
-      <ul class="feature-list">
-        <li>Lista de todos los usuarios</li>
-        <li>Asignar/cambiar roles de usuario</li>
-        <li>Activar/desactivar usuarios</li>
-        <li>Ver detalles de usuario</li>
-        <li>Gestionar permisos especiales</li>
-      </ul>
+    <!-- Actions Bar -->
+    <div class="actions-bar">
+      <button 
+        class="create-btn" 
+        (click)="openCreateForm()"
+        [disabled]="loading"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Crear Nuevo Usuario
+      </button>
+    </div>
+
+    <!-- Users List -->
+    <div class="users-container">
+      <div class="loading-container" *ngIf="loading && users.length === 0">
+        <div class="spinner"></div>
+        <p>Cargando usuarios...</p>
+      </div>
+
+      <div class="empty-state" *ngIf="!loading && users.length === 0">
+        <div class="empty-icon">👥</div>
+        <h3>No hay usuarios registrados</h3>
+        <p>Crea el primer usuario del sistema</p>
+        <button class="create-btn" (click)="openCreateForm()">Crear Primer Usuario</button>
+      </div>
+
+      <div class="users-grid" *ngIf="users.length > 0">
+        <div class="user-card" *ngFor="let user of users">
+          <div class="user-header">
+            <div class="user-avatar">              <img 
+                [src]="user.url_image || 'assets/default-avatar.png'" 
+                [alt]="user.username"
+                (error)="$any($event.target).src='assets/default-avatar.png'"
+              />
+            </div>
+            <div class="user-info">
+              <h3 class="user-name">{{ user.username }}</h3>
+              <p class="user-email">{{ user.email }}</p>
+              <span 
+                class="user-role" 
+                [style.background-color]="getRoleColor(user.roleName)"
+              >
+                {{ user.roleName }}
+              </span>
+            </div>
+            <div class="user-status">
+              <span 
+                class="status-badge"
+                [class.active]="user.isActive"
+                [class.inactive]="!user.isActive"
+              >
+                {{ user.isActive ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="user-description" *ngIf="user.description">
+            <p>{{ user.description }}</p>
+          </div>
+          
+          <div class="user-actions">
+            <button 
+              class="edit-btn" 
+              (click)="openEditForm(user)"
+              [disabled]="loading"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m18 2 4 4-14 14H4v-4z"></path>
+                <path d="m14.5 5.5 4 4"></path>
+              </svg>
+              Editar
+            </button>
+            
+            <button 
+              class="role-btn" 
+              (click)="openRoleModal(user)"
+              [disabled]="loading"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="m19 8 2 2-2 2"></path>
+                <path d="m17 10 2 2-2 2"></path>
+              </svg>
+              Cambiar Rol
+            </button>
+            
+            <button 
+              class="toggle-btn"
+              [class.activate]="!user.isActive"
+              [class.deactivate]="user.isActive"
+              (click)="toggleUserStatus(user)"
+              [disabled]="loading"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"></path>
+              </svg>
+              {{ user.isActive ? 'Desactivar' : 'Activar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create User Modal -->
+  <div class="modal-overlay" *ngIf="showCreateForm" (click)="closeCreateForm()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Crear Nuevo Usuario</h3>
+        <button class="close-btn" (click)="closeCreateForm()">×</button>
+      </div>
+      
+      <form [formGroup]="createUserForm" (ngSubmit)="onCreateUser()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="createUsername">Nombre de Usuario</label>
+            <input 
+              id="createUsername" 
+              formControlName="username" 
+              type="text" 
+              placeholder="Nombre de usuario único"
+            />
+            <div class="error-message" *ngIf="createUserForm.get('username')?.invalid && createUserForm.get('username')?.touched">
+              El nombre de usuario es requerido (mínimo 3 caracteres)
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="createEmail">Correo Electrónico</label>
+            <input 
+              id="createEmail" 
+              formControlName="email" 
+              type="email" 
+              placeholder="usuario@ejemplo.com"
+            />
+            <div class="error-message" *ngIf="createUserForm.get('email')?.invalid && createUserForm.get('email')?.touched">
+              Ingresa un correo electrónico válido
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="createPassword">Contraseña</label>
+          <input 
+            id="createPassword" 
+            formControlName="password" 
+            type="password" 
+            placeholder="Mínimo 6 caracteres"
+          />
+          <div class="error-message" *ngIf="createUserForm.get('password')?.invalid && createUserForm.get('password')?.touched">
+            La contraseña debe tener al menos 6 caracteres
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="createRole">Rol</label>
+            <select id="createRole" formControlName="roleName">
+              <option *ngFor="let role of roles" [value]="role.roleName">
+                {{ role.roleName }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="isActive" />
+              <span class="checkmark"></span>
+              Usuario Activo
+            </label>
+          </div>
+        </div>        <div class="form-group">
+          <label for="createDescription">Descripción (Opcional)</label>
+          <textarea 
+            id="createDescription" 
+            formControlName="description" 
+            placeholder="Descripción del usuario"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Foto de Perfil</label>
+          <div class="image-upload-section">
+            <div class="image-preview" (click)="createFileInput.click()">
+              <img 
+                *ngIf="createImagePreview" 
+                [src]="createImagePreview" 
+                alt="Preview"
+                class="preview-image"
+              />
+              <div *ngIf="!createImagePreview" class="upload-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21,15 16,10 5,21"></polyline>
+                </svg>
+                <p>Seleccionar imagen</p>
+              </div>
+              <input 
+                #createFileInput 
+                type="file" 
+                accept="image/*" 
+                style="display: none"
+                (change)="onCreateImageSelected($event)"
+              />
+              <div *ngIf="uploadingImage" class="upload-overlay">
+                <div class="spinner"></div>
+                <p>Subiendo...</p>
+              </div>
+            </div>
+            <div class="image-upload-actions">
+              <button 
+                type="button" 
+                class="upload-btn" 
+                (click)="createFileInput.click()"
+                [disabled]="uploadingImage"
+              >
+                {{ createImagePreview ? 'Cambiar imagen' : 'Seleccionar imagen' }}
+              </button>
+              <small class="upload-hint">
+                Formatos soportados: JPG, PNG, GIF (máx. 10MB)
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeCreateForm()">Cancelar</button>
+          <button 
+            type="submit" 
+            class="submit-btn"
+            [disabled]="createUserForm.invalid || loading"
+          >
+            {{ loading ? 'Creando...' : 'Crear Usuario' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal-overlay" *ngIf="showEditForm" (click)="closeEditForm()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Editar Usuario: {{ editingUser?.username }}</h3>
+        <button class="close-btn" (click)="closeEditForm()">×</button>
+      </div>
+      
+      <form [formGroup]="editUserForm" (ngSubmit)="onEditUser()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editUsername">Nombre de Usuario</label>
+            <input 
+              id="editUsername" 
+              formControlName="username" 
+              type="text" 
+            />
+            <div class="error-message" *ngIf="editUserForm.get('username')?.invalid && editUserForm.get('username')?.touched">
+              El nombre de usuario es requerido (mínimo 3 caracteres)
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editEmail">Correo Electrónico</label>
+            <input 
+              id="editEmail" 
+              formControlName="email" 
+              type="email" 
+            />
+            <div class="error-message" *ngIf="editUserForm.get('email')?.invalid && editUserForm.get('email')?.touched">
+              Ingresa un correo electrónico válido
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editPassword">Nueva Contraseña (Opcional)</label>
+          <input 
+            id="editPassword" 
+            formControlName="password" 
+            type="password" 
+            placeholder="Dejar vacío para mantener la actual"
+          />
+        </div>        <div class="form-group">
+          <label for="editDescription">Descripción</label>
+          <textarea 
+            id="editDescription" 
+            formControlName="description" 
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Foto de Perfil</label>
+          <div class="image-upload-section">
+            <div class="image-preview" (click)="editFileInput.click()">
+              <img 
+                *ngIf="editImagePreview" 
+                [src]="editImagePreview" 
+                alt="Preview"
+                class="preview-image"
+              />
+              <div *ngIf="!editImagePreview" class="upload-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21,15 16,10 5,21"></polyline>
+                </svg>
+                <p>Seleccionar imagen</p>
+              </div>
+              <input 
+                #editFileInput 
+                type="file" 
+                accept="image/*" 
+                style="display: none"
+                (change)="onEditImageSelected($event)"
+              />
+              <div *ngIf="uploadingImage" class="upload-overlay">
+                <div class="spinner"></div>
+                <p>Subiendo...</p>
+              </div>
+            </div>
+            <div class="image-upload-actions">
+              <button 
+                type="button" 
+                class="upload-btn" 
+                (click)="editFileInput.click()"
+                [disabled]="uploadingImage"
+              >
+                {{ editImagePreview ? 'Cambiar imagen' : 'Seleccionar imagen' }}
+              </button>
+              <small class="upload-hint">
+                Formatos soportados: JPG, PNG, GIF (máx. 10MB)
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeEditForm()">Cancelar</button>
+          <button 
+            type="submit" 
+            class="submit-btn"
+            [disabled]="editUserForm.invalid || loading"
+          >
+            {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Change Role Modal -->
+  <div class="modal-overlay" *ngIf="showRoleModal" (click)="closeRoleModal()">
+    <div class="modal-card small" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Cambiar Rol: {{ userForRoleChange?.username }}</h3>
+        <button class="close-btn" (click)="closeRoleModal()">×</button>
+      </div>
+      
+      <form [formGroup]="roleForm" (ngSubmit)="onChangeRole()">
+        <div class="current-role">
+          <p>Rol actual: <strong [style.color]="getRoleColor(userForRoleChange?.roleName || '')">{{ userForRoleChange?.roleName }}</strong></p>
+        </div>
+
+        <div class="form-group">
+          <label for="newRole">Nuevo Rol</label>
+          <select id="newRole" formControlName="roleName">
+            <option *ngFor="let role of roles" [value]="role.roleName">
+              {{ role.roleName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeRoleModal()">Cancelar</button>
+          <button 
+            type="submit" 
+            class="submit-btn"
+            [disabled]="roleForm.invalid || loading"
+          >
+            {{ loading ? 'Cambiando...' : 'Cambiar Rol' }}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
