@@ -1,6 +1,7 @@
+import { ConfirmDeleteDialogComponent } from './../../components/borrar-playlist/confirm-delete-dialog.component';
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ArtistSongsComponent } from "../../../song/pages/artist-songs/artist-songs.component";
+import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { PlaylistService } from "../../../../services/playlist.service";
 import { NgFor, NgIf, NgStyle } from "@angular/common";
@@ -11,7 +12,7 @@ import { PlaylistOptionsPopupComponent } from "../../components/playlist-options
   standalone: true,
   templateUrl: './playlist-display.component.html',
   styleUrls: ['./playlist-display.component.css'],
-  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent ]
+  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent, ConfirmDeleteDialogComponent  ]
 })
 
 export class PlaylistDisplayComponent implements OnInit {
@@ -19,10 +20,12 @@ export class PlaylistDisplayComponent implements OnInit {
   error = '';
   loading = true
   showMenu = false;
+  showDeleteDialog = false;
 
   constructor(
             private playlistService: PlaylistService, 
             private route: ActivatedRoute,
+            private router: Router,
   ) {}
    
    ngOnInit(): void {
@@ -47,16 +50,31 @@ export class PlaylistDisplayComponent implements OnInit {
     }
 
     onEditPlaylist() {
-     // Lógica para editar playlist
-    this.showMenu = false;
+        this.showMenu = false;
     }
 
     onDeletePlaylist() {
-    // Lógica para eliminar playlist
-    this.showMenu = false;
+        this.showDeleteDialog = true;
     }
 
-  }
+    onConfirmDelete() {
+    this.playlistService.deletePlaylist(this.playlist!.playlistId).subscribe({
+      next: () => {
+        this.showDeleteDialog = false;
+        this.router.navigate(['/playlist/library']);
+      },
+      error: (err) => {
+        alert('No se pudo borrar la playlist.');
+        this.showDeleteDialog = false;
+      }
+    });
+    }
+
+    onCancelDelete() {
+      this.showDeleteDialog = false;
+    }
+
+}
 
 
 

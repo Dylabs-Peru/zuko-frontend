@@ -18,6 +18,14 @@
     (close)="showMenu = false">
   </app-playlist-options-popup>
 
+  <app-confirm-delete-dialog
+  [visible]="showDeleteDialog"
+  message="¿Seguro que quieres borrar la playlist?"
+  (confirm)="onConfirmDelete()"
+  (cancel)="onCancelDelete()">
+</app-confirm-delete-dialog>
+
+
   <table>
     <thead>
       <tr>
