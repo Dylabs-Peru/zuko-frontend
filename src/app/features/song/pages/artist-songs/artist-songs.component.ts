@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SongService } from '../../../../services/Song.service';
 import { SongResponse, SongRequest } from '../../../../models/song.model';
+
 @Component({
   selector: 'app-artist-songs',
   standalone: true,
@@ -11,16 +12,19 @@ import { SongResponse, SongRequest } from '../../../../models/song.model';
   styleUrls: ['./artist-songs.component.css']
 })
 export class ArtistSongsComponent implements OnInit {
+  @Input() artistId!: number;
+  @Input() isOwnProfile = false;
+
   songs: SongResponse[] = [];
-  isArtist = false;
   loading = true;
-  showSongForm = false;
-  editingSong: Partial<SongResponse> = { title: '', isPublicSong: false };
-  formError: string | null = null;
 
   openMenuIndex: number | null = null;
   showDeleteConfirm = false;
   songToDelete: SongResponse | null = null;
+
+  showSongForm = false;
+  editingSong: Partial<SongResponse> = { title: '', isPublicSong: false };
+  formError: string | null = null;
 
   constructor(private songService: SongService) {}
 
@@ -32,13 +36,9 @@ export class ArtistSongsComponent implements OnInit {
     this.songService.getMySongs().subscribe({
       next: (songs) => {
         this.songs = songs;
-        this.isArtist = true;
         this.loading = false;
       },
-      error: (err) => {
-        if (err.error?.message?.includes('perfil de artista')) {
-          this.isArtist = false;
-        }
+      error: () => {
         this.loading = false;
       }
     });
@@ -51,20 +51,16 @@ export class ArtistSongsComponent implements OnInit {
     this.openMenuIndex = null;
   }
 
-  openEditForm(song: SongResponse): void {
-    this.editingSong = { ...song };
-    this.showSongForm = true;
-    this.formError = null;
-    this.openMenuIndex = null;
-  }
-
   closeForm(): void {
     this.showSongForm = false;
     this.formError = null;
   }
 
-  toggleMenu(index: number): void {
-    this.openMenuIndex = this.openMenuIndex === index ? null : index;
+  openEditForm(song: SongResponse): void {
+    this.editingSong = { ...song };
+    this.showSongForm = true;
+    this.formError = null;
+    this.openMenuIndex = null;
   }
 
   onSubmit(event: Event): void {
@@ -84,7 +80,7 @@ export class ArtistSongsComponent implements OnInit {
     }
 
     const songPayload = {
-      title: title,
+      title,
       isPublicSong: this.editingSong.isPublicSong!
     };
 
@@ -102,6 +98,10 @@ export class ArtistSongsComponent implements OnInit {
         this.formError = err.error?.message || 'Error al procesar la canción.';
       }
     });
+  }
+
+  toggleMenu(index: number): void {
+    this.openMenuIndex = this.openMenuIndex === index ? null : index;
   }
 
   confirmDelete(song: SongResponse): void {
