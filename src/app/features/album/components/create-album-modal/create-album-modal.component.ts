@@ -15,8 +15,7 @@ import { SongResponse } from '../../../../models/song.model';
 
 export class CreateAlbumModalComponent {
   isSaving = false;
-  coverUrl: string | null = null;
-  coverFile: File | null = null;
+  coverUrl: string = '';
 
 
   @Input() show = false;
@@ -68,18 +67,38 @@ export class CreateAlbumModalComponent {
   onCoverSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.coverFile = file;
+      // Preview local mientras sube
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.coverUrl = e.target.result;
       };
       reader.readAsDataURL(file);
+      // Subir a Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'zuko_pfps');
+      fetch('https://api.cloudinary.com/v1_1/dqk8inmwe/image/upload', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.secure_url) {
+            this.coverUrl = data.secure_url;
+          } else {
+            alert('Error al subir la portada');
+            this.coverUrl = '';
+          }
+        })
+        .catch(() => {
+          alert('Error al subir la portada');
+          this.coverUrl = '';
+        });
     }
   }
 
   removeCover() {
-    this.coverUrl = null;
-    this.coverFile = null;
+    this.coverUrl = '';
   }
 
   deleteSong(index: number) {
@@ -160,8 +179,7 @@ export class CreateAlbumModalComponent {
     this.title = '';
     this.genreId = null;
     this.genreName = '';
-    this.coverUrl = null;
-    this.coverFile = null;
+    this.coverUrl = '';
     this.selectedSongIds = [];
     this.tab = 'info';
   }

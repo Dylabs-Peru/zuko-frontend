@@ -7,8 +7,8 @@
     <div *ngIf="tab==='info'">
       <div class="form-content">
         <div class="cover-upload-section">
-          <div class="album-cover-preview" *ngIf="coverUrl; else noCover">
-            <img [src]="coverUrl" alt="Portada del álbum" />
+          <div class="cover-preview-container" *ngIf="coverUrl; else noCover">
+            <img [src]="coverUrl" alt="Portada" class="cover-preview" />
             <button type="button" class="remove-cover-btn" (click)="removeCover()">Quitar portada</button>
           </div>
           <ng-template #noCover>
@@ -16,10 +16,12 @@
               <span class="cover-placeholder">📷</span>
             </div>
           </ng-template>
-          <label class="upload-cover-btn">
-            <input type="file" accept="image/*" (change)="onCoverSelected($event)" hidden />
-            Subir portada
-          </label>
+          <div class="cover-upload-btn-container">
+            <label class="save-button upload-cover-label">
+              <input type="file" accept="image/*" (change)="onCoverSelected($event)" hidden />
+              <span>Subir portada</span>
+            </label>
+          </div>
         </div>
         <div class="form-fields">
           <label for="titulo">Título del álbum</label>
