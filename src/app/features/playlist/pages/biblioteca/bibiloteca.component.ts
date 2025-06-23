@@ -3,7 +3,7 @@ import { PlaylistService } from '../../../../services/playlist.service';
 import {PlaylistResponse} from '../../../../models/playlist.model';
 import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CreatePlaylistDialogComponent } from '../components/crear-playlist/crear-playlist.component';
+import { CreatePlaylistDialogComponent } from '../../components/crear-playlist/crear-playlist.component';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-playlist-library',

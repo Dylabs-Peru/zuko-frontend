@@ -1,7 +1,7 @@
+import { PlaylistService } from './../../../../services/playlist.service';
 import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PlaylistService } from '../../../../../services/playlist.service';
-import { PlaylistRequest, PlaylistResponse } from '../../../../../models/playlist.model';
+import { PlaylistRequest, PlaylistResponse } from '../../../../models/playlist.model';
 import { NgIf } from '@angular/common';
 
 @Component({
