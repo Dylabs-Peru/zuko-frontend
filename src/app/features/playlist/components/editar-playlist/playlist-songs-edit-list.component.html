@@ -1,0 +1,25 @@
+<div class="playlist-edit-overlay">
+  <div class="playlist-edit-modal">
+    <button class="close-modal-btn" (click)="close.emit()">×</button>
+    <h2>Canciones de la Playlist</h2>
+    <div class="song-list-scroll">
+      <div class="song-list">
+        <div class="song-item" *ngFor="let song of songs">
+          <div class="song-info">
+            <span class="song-name">{{ song.title }}</span>
+            <span class="song-artist">{{ song.artistName }}</span>
+          </div>
+          <div class="song-actions">
+            <span class="song-duration">{{ song.releaseDate | date:'yyyy-MM-dd' }}</span>
+            <button 
+              class="remove-song-btn"
+              [disabled]="loadingIds.includes(song.id)"
+              (click)="removeSong(song.id)">
+              Quitar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

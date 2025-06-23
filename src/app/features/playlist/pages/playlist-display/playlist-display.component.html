@@ -25,6 +25,13 @@
   (cancel)="onCancelDelete()">
 </app-confirm-delete-dialog>
 
+<app-playlist-songs-edit-list
+  *ngIf="playlist &&showEditDialog"
+  [songs]="playlist.songs"
+  [playlistId]="playlist.playlistId"
+  (songRemoved)="onSongRemoved($event)"
+  (close)="onCloseEditDialog()">
+</app-playlist-songs-edit-list>
 
   <table>
     <thead>

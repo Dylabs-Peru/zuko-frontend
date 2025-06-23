@@ -7,12 +7,13 @@ import { PlaylistService } from "../../../../services/playlist.service";
 import { NgFor, NgIf, NgStyle } from "@angular/common";
 import { PlaylistResponse } from "../../../../models/playlist.model";
 import { PlaylistOptionsPopupComponent } from "../../components/playlist-options-popup/playlist-options-popup.component";
+import { PlaylistSongsEditListComponent } from '../../components/editar-playlist/playlist-songs-edit-list.component';
 @Component({
   selector: 'app-playlist-display',
   standalone: true,
   templateUrl: './playlist-display.component.html',
   styleUrls: ['./playlist-display.component.css'],
-  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent, ConfirmDeleteDialogComponent  ]
+  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent, ConfirmDeleteDialogComponent, PlaylistSongsEditListComponent  ]
 })
 
 export class PlaylistDisplayComponent implements OnInit {
@@ -21,6 +22,7 @@ export class PlaylistDisplayComponent implements OnInit {
   loading = true
   showMenu = false;
   showDeleteDialog = false;
+  showEditDialog = false;
 
   constructor(
             private playlistService: PlaylistService, 
@@ -51,6 +53,8 @@ export class PlaylistDisplayComponent implements OnInit {
 
     onEditPlaylist() {
         this.showMenu = false;
+        this.showEditDialog = true;
+
     }
 
     onDeletePlaylist() {
@@ -73,6 +77,23 @@ export class PlaylistDisplayComponent implements OnInit {
     onCancelDelete() {
       this.showDeleteDialog = false;
     }
+
+    onSongRemoved(songId: number) {
+      if (this.playlist) {
+        this.playlist.songs = this.playlist.songs.filter(song => song.id !== songId);
+      }
+    }
+
+    onCloseEditDialog() {
+      this.showEditDialog = false;
+    }
+
+    onPlaylistEdited(editedPlaylist: PlaylistResponse) {
+      this.playlist = editedPlaylist;
+     this.showEditDialog = false;
+    }
+
+
 
 }
 

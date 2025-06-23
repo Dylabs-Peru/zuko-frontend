@@ -1,0 +1,94 @@
+.playlist-edit-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(20, 20, 20, 0.45);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playlist-edit-modal {
+  background: #fff;
+  color: #141414;
+  width: 410px;
+  max-width: 90vw;
+  border-radius: 16px;
+  box-shadow: 0 8px 36px rgba(0,0,0,0.18);
+  padding: 32px 24px 22px 24px;
+  position: relative;
+  z-index: 1210;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #d80000;
+  opacity: 0.7;
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.15s;
+}
+.close-modal-btn:hover {
+  opacity: 1;
+}
+
+.song-list-scroll {
+  max-height: 270px;
+  overflow-y: auto;
+  margin-bottom: 30px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  background: #fafafa;
+}
+.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+.song-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.song-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.song-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+.song-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.remove-song-btn {
+  background: #d80000;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 5px 16px;
+  font-size: 14px;
+  font-family: 'Manjari', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.remove-song-btn:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
