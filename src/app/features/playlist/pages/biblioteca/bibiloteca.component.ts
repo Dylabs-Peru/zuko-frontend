@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { PlaylistService } from '../../../../services/playlist.service';
 import {PlaylistResponse} from '../../../../models/playlist.model';
 import { NgIf, NgFor, NgStyle } from '@angular/common';
@@ -19,7 +19,7 @@ export class PlaylistLibraryComponent implements OnInit {
   error = '';
   searchQuery = '';
 
-  constructor(private playlistService: PlaylistService) {}
+  constructor(private playlistService: PlaylistService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadPlaylists();
@@ -33,18 +33,28 @@ export class PlaylistLibraryComponent implements OnInit {
         this.playlists = playlists;
         this.applyFilter();
         this.isLoading = false;
+        this.cdr.markForCheck(); 
       },
       error: (err) => {
         this.error = 'Error al cargar tus playlists';
         this.isLoading = false;
         console.error(err);
+        this.cdr.markForCheck();
       }
     });
   }
 
-  onSearch(): void {
-    this.applyFilter();
+onSearch(): void {
+  const q = this.searchQuery.trim().toLowerCase();
+  if (!q) {
+    this.filteredPlaylists = this.playlists;
+  } else {
+    this.filteredPlaylists = this.playlists.filter(p =>
+      p.name.toLowerCase().includes(q)
+    );
   }
+  this.cdr.markForCheck(); 
+}
 
   applyFilter(): void {
     const q = this.searchQuery.trim().toLowerCase();

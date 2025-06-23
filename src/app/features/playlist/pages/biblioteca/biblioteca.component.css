@@ -209,6 +209,7 @@
 .add-playlist-btn:hover .add-playlist-icon,
 .add-playlist-btn:focus .add-playlist-icon {
   margin-right: 18px;
+  margin-bottom: 6px;
 }
 
 .playlist-cover {

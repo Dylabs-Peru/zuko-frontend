@@ -117,4 +117,9 @@ export class NavbarComponent {
   logout() {
     this.authService.logout('Usuario realizó logout manual');
   }
+
+  goToLibrary() {
+    this.router.navigate(['/playlist/library']);
+    this.showResults = false;
+  }
 }
