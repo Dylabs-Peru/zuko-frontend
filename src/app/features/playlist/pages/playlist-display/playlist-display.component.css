@@ -11,7 +11,13 @@ body {
 
 .playlist-detail-root {
     min-height: 100vh;
+    min-width: 100vw;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
     background: linear-gradient(to bottom, #2b0000, #550000);
+    margin:0;
+    padding: 0;
 }
 
 .header {
