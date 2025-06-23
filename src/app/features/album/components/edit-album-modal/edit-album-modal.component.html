@@ -1,6 +1,6 @@
 <div class="create-album-modal-backdrop" *ngIf="show">
   <div class="create-album-modal-container">
-    <h2 style="margin-top: 0; margin-bottom: 16px; font-weight: bold; color: #b71c1c; font-size: 22px; letter-spacing: 0.5px;">Crear Álbum</h2>
+    <h2 style="margin-top: 0; margin-bottom: 16px; font-weight: bold; color: #b71c1c; font-size: 22px; letter-spacing: 0.5px;">Editar Álbum</h2>
     <div class="tabs">
       <span [class.active-tab]="tab==='info'" (click)="selectTab('info')">Información Básica</span>
       <span [class.active-tab]="tab==='songs'" [class.disabled]="tab!=='songs'" (click)="selectTab('songs')">Canciones</span>
@@ -26,15 +26,17 @@
         </div>
         <div class="form-fields">
           <label for="titulo">Título del álbum</label>
-          <input type="text" id="titulo" [(ngModel)]="title" placeholder="Título" />
-          <div *ngIf="!title" class="min-songs-warning">El título es obligatorio</div>
+          <input type="text" id="titulo" [(ngModel)]="editTitle" placeholder="Título" />
 
           <label>Género</label>
-          <app-list-genres [(selectedGenre)]="genreId"></app-list-genres>
-          <div *ngIf="!genreId" class="min-songs-warning">El género es obligatorio</div>
+          <app-list-genres [(selectedGenre)]="editGenreId"></app-list-genres>
+          <div *ngIf="!editGenreId" class="min-songs-warning">El género es obligatorio</div>
 
-          <div class="save-section" style="justify-content: flex-end;">
+          <div class="save-section" style="justify-content: flex-end; gap: 8px;">
             <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
+            <button class="save-button" type="button" (click)="onSave()" [disabled]="!editTitle || !editGenreId || isSaving">
+              {{ isSaving ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
           </div>
         </div>
       </div>
@@ -45,7 +47,8 @@
           <div class="song-item" *ngFor="let song of songs; let i = index">
             <div class="song-info">
               <div class="song-cover"></div>
-              <span class="song-name">{{ song.name }}</span>
+              <span class="song-name">{{ song.title }}</span>
+              <span class="song-artist">{{ song.artistName }}</span>
             </div>
             <div class="song-actions">
               <span class="song-duration">{{ song.releaseDate | date:'yyyy-MM-dd' }}</span>
@@ -55,12 +58,12 @@
         </div>
       </div>
       <div class="save-section">
-        <button class="save-button" (click)="saveSongs()" [disabled]="selectedSongIds.length < 2 || isSaving">
-          {{ isSaving ? 'Guardando...' : 'Guardar' }}
-        </button>
-        <span class="min-songs-warning" [style.visibility]="selectedSongIds.length < 2 ? 'visible' : 'hidden'">Selecciona al menos dos canciones para crear el álbum</span>
         <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
+        <button class="save-button" type="button" (click)="onSave()" [disabled]="selectedSongIds.length < 2 || isSaving">
+          {{ isSaving ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
       </div>
+      <div *ngIf="selectedSongIds.length < 2" class="min-songs-warning">Selecciona al menos 2 canciones</div>
     </div>
   </div>
 </div>

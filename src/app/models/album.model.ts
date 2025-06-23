@@ -7,7 +7,7 @@ export interface AlbumRequest {
   cover?: string; // Puede ser opcional
   artistId: number;
   genreId: number;
-  songs: SongRequest[];
+  songs: SongRequest[] | { title: string }[];
 }
 
 // Representa la respuesta de un álbum recibido del backend

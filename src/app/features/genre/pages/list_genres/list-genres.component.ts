@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { GenreService } from './../../../../services/genre.service';
 import { GenreResponse } from './../../../../models/genre.model';
 import { NgFor, CommonModule } from '@angular/common';
@@ -14,9 +14,10 @@ import { FormsModule } from '@angular/forms';
 export class ListGenresComponent implements OnInit {
   genres: GenreResponse[] = [];
   error: string = '';
-  selectedGenre: number | null = null;
-
+  @Input() selectedGenre: number | null = null;
+  @Output() selectedGenreChange = new EventEmitter<number>();
   @Output() genreSelected = new EventEmitter<number>();
+
   constructor(private genreService: GenreService) {}
 
   ngOnInit(): void {
@@ -38,8 +39,7 @@ export class ListGenresComponent implements OnInit {
   onGenreChange() {
     if (this.selectedGenre !== null) {
       this.genreSelected.emit(this.selectedGenre);
+      this.selectedGenreChange.emit(this.selectedGenre);
     } 
   }
-
-
 }

@@ -31,6 +31,11 @@ export const routes: Routes = [
     loadChildren: () => import('./features/artist/artist.routes').then(m => m.ARTIST_ROUTES)
     },
     {
+    path: 'album',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/album/album.routes').then(m => m.ALBUM_ROUTES)
+    },
+    {
     path: 'playlist',
     canActivate: [authGuard],
     loadChildren: () => import('./features/playlist/playlist.routes').then(m => m.PLAYLIST_ROUTES)
