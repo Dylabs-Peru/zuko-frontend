@@ -5,18 +5,20 @@ import { DatePipe } from "@angular/common";
 import { PlaylistService } from "../../../../services/playlist.service";
 import { NgFor, NgIf, NgStyle } from "@angular/common";
 import { PlaylistResponse } from "../../../../models/playlist.model";
+import { PlaylistOptionsPopupComponent } from "../../components/playlist-options-popup/playlist-options-popup.component";
 @Component({
   selector: 'app-playlist-display',
   standalone: true,
   templateUrl: './playlist-display.component.html',
   styleUrls: ['./playlist-display.component.css'],
-  imports: [NgIf, NgStyle, NgFor, DatePipe ]
+  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent ]
 })
 
 export class PlaylistDisplayComponent implements OnInit {
   playlist: PlaylistResponse | null = null;
   error = '';
   loading = true
+  showMenu = false;
 
   constructor(
             private playlistService: PlaylistService, 
@@ -43,6 +45,17 @@ export class PlaylistDisplayComponent implements OnInit {
       }
     });
     }
+
+    onEditPlaylist() {
+     // Lógica para editar playlist
+    this.showMenu = false;
+    }
+
+    onDeletePlaylist() {
+    // Lógica para eliminar playlist
+    this.showMenu = false;
+    }
+
   }
 
 

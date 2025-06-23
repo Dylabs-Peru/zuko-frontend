@@ -7,10 +7,16 @@
   </div>
 
   <div class="controls">
-    <button title="Reproducir">&#9654;</button>
-    <button title="Aleatorio">🔀</button>
-    <button title="Más opciones">&#8942;</button>
-  </div>
+  <button title="Reproducir">&#9654;</button>
+  <button title="Aleatorio">🔀</button>
+  <button title="Más opciones" (click)="showMenu = true">&#8942;</button>
+</div>
+  <app-playlist-options-popup
+    [visible]="showMenu"
+    (edit)="onEditPlaylist()"
+    (delete)="onDeletePlaylist()"
+    (close)="showMenu = false">
+  </app-playlist-options-popup>
 
   <table>
     <thead>
