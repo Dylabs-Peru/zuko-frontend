@@ -16,31 +16,28 @@
   align-items: center;
   gap: 0.5rem;
   background: white;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #B71C1C;
   border-radius: 8px;
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: #B71C1C;
   transition: all 0.3s ease;
   margin-bottom: 2rem;
 }
 
 .back-btn:hover {
-  background: #f8f9fa;
-  color: #495057;
+  background: #B71C1C;
+  color: white;
   transform: translateX(-2px);
 }
 
 .section-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #B71C1C;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  text-shadow: 0 2px 4px rgba(183, 28, 28, 0.3);
 }
 
 .section-subtitle {
@@ -59,7 +56,8 @@
   border-radius: 16px;
   padding: 3rem 2rem;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(183, 28, 28, 0.15);
+  border: 2px solid rgba(183, 28, 28, 0.1);
   animation: slideUp 0.6s ease-out;
 }
 
@@ -71,7 +69,7 @@
 .placeholder-card h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #B71C1C;
   margin-bottom: 1rem;
 }
 
@@ -99,7 +97,7 @@
   content: '✓';
   position: absolute;
   left: 0;
-  color: #28a745;
+  color: #B71C1C;
   font-weight: bold;
 }
 

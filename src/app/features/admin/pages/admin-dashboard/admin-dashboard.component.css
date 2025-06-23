@@ -13,12 +13,9 @@
 .admin-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #B71C1C;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  text-shadow: 0 2px 4px rgba(183, 28, 28, 0.3);
 }
 
 .admin-subtitle {
@@ -42,8 +39,8 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border-left: 4px solid #2196F3;
+  box-shadow: 0 4px 20px rgba(183, 28, 28, 0.15);
+  border-left: 4px solid #B71C1C;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -57,14 +54,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(183, 28, 28, 0) 0%, rgba(183, 28, 28, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .admin-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgba(183, 28, 28, 0.25);
 }
 
 .admin-card:hover::before {
@@ -92,7 +89,7 @@
 .card-title {
   font-size: 1.4rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #B71C1C;
   margin-bottom: 0.5rem;
 }
 
@@ -103,12 +100,12 @@
 }
 
 .card-arrow {
-  color: #6c757d;
+  color: #B71C1C;
   transition: all 0.3s ease;
 }
 
 .admin-card:hover .card-arrow {
-  color: #2c3e50;
+  color: #8B0000;
   transform: translateX(4px);
 }
 

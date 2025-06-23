@@ -5,7 +5,7 @@ import { AdminGenresComponent } from './pages/admin-genres/admin-genres.componen
 import { AdminUsersComponent } from './pages/admin-users/admin-users.component';
 import { AdminRolesComponent } from './pages/admin-roles/admin-roles.component';
 
-export const adminRoutes: Routes = [
+export const ADMIN_ROUTES: Routes = [
   { 
     path: '', 
     component: AdminDashboardComponent 

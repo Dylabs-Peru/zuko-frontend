@@ -18,9 +18,12 @@ export const routes: Routes = [
     loadChildren: () => import('./features/user/user.routes').then(m => m.USER_ROUTES)
     },
     {
-    path: 'admin/genres',
+    // path: 'admin/genres',
+    // canActivate: [authGuard],
+    // loadChildren: () => import('./features/genre/genre.routes').then(m => m.GENRE_ROUTES)
+    path: 'admin',
     canActivate: [authGuard],
-    loadChildren: () => import('./features/genre/genre.routes').then(m => m.GENRE_ROUTES)
+    loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
     },
     {
     path: 'artist',

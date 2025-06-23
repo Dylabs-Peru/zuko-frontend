@@ -10,15 +10,14 @@ import { CommonModule } from '@angular/common';
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent {
-  
-  adminSections = [
+    adminSections = [
     {
       id: 'users',
       title: 'Gestión de Usuarios',
       description: 'Administrar usuarios, roles y permisos',
       icon: '👥',
       route: '/admin/users',
-      color: '#2196F3'
+      color: '#B71C1C'
     },
     {
       id: 'genres',
@@ -26,7 +25,7 @@ export class AdminDashboardComponent {
       description: 'Crear, editar y eliminar géneros musicales',
       icon: '🎵',
       route: '/admin/genres',
-      color: '#4CAF50'
+      color: '#D32F2F'
     },
     {
       id: 'roles',
@@ -34,7 +33,7 @@ export class AdminDashboardComponent {
       description: 'Configurar roles y permisos del sistema',
       icon: '🔐',
       route: '/admin/roles',
-      color: '#FF9800'
+      color: '#C62828'
     }
   ];
 
