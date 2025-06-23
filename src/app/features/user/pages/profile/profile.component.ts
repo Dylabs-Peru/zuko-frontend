@@ -1,17 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../../../services/User.service";
+import { ArtistService } from '../../../../services/Artist.service';
 import { UserResponse } from '../../../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { EditProfileModalComponent } from '../../components/edit-profile-modal/edit-profile-modal.component';
 import { CreateArtistComponent } from '../../../artist/components/create-artist/create-artist.component'; // Añade esta línea
+import { ActivateStatusArtistComponent } from '../../../artist/components/activate-status-artist/activate-status-artist.component';
 import { ArtistResponse } from '../../../../models/artist.model';
+import { AuthService } from '../../../../services/Auth.service';
 
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, EditProfileModalComponent, CreateArtistComponent],
+  imports: [CommonModule, EditProfileModalComponent, CreateArtistComponent, ActivateStatusArtistComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -19,10 +22,13 @@ export class ProfileComponent implements OnInit {
   user: UserResponse | null = null;
   isEditModalOpen = false;
   isArtistModalOpen = false;
+  artistInactivo: any = null;
 
   constructor(
     private UserService: UserService,
-    private router: Router
+    private artistService: ArtistService,
+    private router: Router,
+    private authService: AuthService
     ) {}
 
   ngOnInit(): void {
@@ -33,6 +39,19 @@ export class ProfileComponent implements OnInit {
       const authObj = JSON.parse(auth);
       this.user = authObj.user;
       console.log('UserResponse:', this.user);
+      // Buscar artista inactivo si hay user
+      if (this.user && this.user.id) {
+        // Debes tener ArtistService importado e inyectado
+        // @ts-ignore
+        if (this.artistService && this.artistService.getAllArtists) {
+          this.artistService.getAllArtists().subscribe((artists: any) => {
+            console.log('Respuesta de getAllArtists:', artists);
+            // Ajusta según la estructura real:
+            const arr = Array.isArray(artists) ? artists : (artists.artists || artists.data || []);
+            this.artistInactivo = arr.find((a: any) => a.userId === this.user!.id && !a.isActive);
+          });
+        }
+      }
     }
     // Si necesitas refrescar datos del backend, puedes usar userService.getUserById(this.user.id)
   }
@@ -77,9 +96,15 @@ export class ProfileComponent implements OnInit {
       this.user.isArtist = true;
     }
     this.closeArtistModal();
-    
-    // Redirigir al perfil del artista
-    this.router.navigate(['/artist', artist.id]);
+
+    // Espera un ciclo de eventos para asegurar que el modal se cierre antes de navegar
+    setTimeout(() => {
+      this.logout();
+    }, 0);
+  }
+
+  logout() {
+    this.authService.logout('Logout tras crear artista');
   }
 }
 
