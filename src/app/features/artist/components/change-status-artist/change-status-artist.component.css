@@ -1,0 +1,62 @@
+/* Botón Desactivar */
+.btn-desactivar {
+  background-color: #b30000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-desactivar:hover {
+  background-color: #990000;
+}
+
+/* Modal: fondo oscuro semi-transparente */
+.modal-overlay {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Contenido del modal */
+.modal-content {
+  background-color: #fff;
+  padding: 40px 20px;
+  border-radius: 25px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+/* Botones del modal */
+.btn-modal {
+  background-color: #b30000;
+  color: #fff;
+  border: none;
+  padding: 10px 40px;
+  margin: 10px;
+  border-radius: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-modal:hover {
+  background-color: #990000;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}

@@ -9,11 +9,12 @@ import { EditArtistProfileModalComponent } from '../../components/edit-artist-pr
 import { ArtistAlbumsListComponent } from '../../../album/components/artist-albums-list/artist-albums-list.component';
 import { CreateAlbumModalComponent } from '../../../album/components/create-album-modal/create-album-modal.component';
 import { ArtistSongsComponent } from '../../../song/pages/artist-songs/artist-songs.component';
+import { ChangeStatusArtistComponent } from '../../components/change-status-artist/change-status-artist.component';
 
 @Component({
   selector: 'app-profile-artist',
   standalone: true,
-  imports: [CommonModule, EditArtistProfileModalComponent, ArtistAlbumsListComponent, CreateAlbumModalComponent, ArtistSongsComponent],
+  imports: [CommonModule, EditArtistProfileModalComponent, ArtistAlbumsListComponent, CreateAlbumModalComponent, ArtistSongsComponent, ChangeStatusArtistComponent],
   templateUrl: './artist-profile.component.html',
   styleUrls: ['./artist-profile.component.css']
 })
