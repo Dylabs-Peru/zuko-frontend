@@ -35,5 +35,5 @@
   [show]="showEditModal"
   [album]="albumToEdit"
   (close)="closeEditModal()"
-  (albumEdited)="onAlbumEdited($event)"
+  (albumEdited)="fetchAlbums()"
 ></app-edit-album-modal>

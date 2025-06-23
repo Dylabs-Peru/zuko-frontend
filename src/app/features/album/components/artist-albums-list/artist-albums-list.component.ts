@@ -38,11 +38,6 @@ export class ArtistAlbumsListComponent implements OnInit, OnDestroy {
     this.albumToEdit = null;
   }
 
-  onAlbumEdited(event: any) {
-    this.fetchAlbums();
-    this.closeEditModal();
-  }
-
   confirmDeleteAlbum(album: any) {
     // Aquí puedes mostrar un modal de confirmación
     console.log('Eliminar álbum:', album);

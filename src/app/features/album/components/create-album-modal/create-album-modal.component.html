@@ -30,7 +30,7 @@
           <div *ngIf="!title" class="min-songs-warning">El título es obligatorio</div>
 
           <label>Género</label>
-          <app-list-genres (genreSelected)="onGenreSelected($event)"></app-list-genres>
+          <app-list-genres [(selectedGenre)]="genreId"></app-list-genres>
           <div *ngIf="!genreId" class="min-songs-warning">El género es obligatorio</div>
 
           <div class="save-section" style="justify-content: flex-end;">
