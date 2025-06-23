@@ -87,13 +87,16 @@ export class EditAlbumModalComponent implements OnChanges {
 
   onSave() {
     if (!this.editTitle || !this.editGenreId || !this.album || this.selectedSongIds.length < 2) return;
-    this.isSaving = true;
-    // Mapear las canciones seleccionadas al formato SongRequest si es necesario
+    // Validar canciones seleccionadas
     const selectedSongs = this.songs.filter(song => this.selectedSongIds.includes(song.id));
+    if (selectedSongs.length !== this.selectedSongIds.length) {
+      alert('Una o más canciones seleccionadas no existen o no pertenecen al artista. Actualiza la lista y vuelve a intentarlo.');
+      return;
+    }
+    this.isSaving = true;
     // Si la portada es base64 y no URL, no la envíes (o envía la original)
     let coverToSend = this.coverUrl;
     if (this.coverUrl && this.coverUrl.startsWith('data:image')) {
-      // El backend NO acepta base64, así que no la enviamos (o podrías subirla a otro endpoint y poner la URL)
       coverToSend = this.album.cover || '';
     }
     this.albumService.updateAlbum(this.album.id, {
@@ -118,15 +121,36 @@ export class EditAlbumModalComponent implements OnChanges {
     });
   }
 
-  onCoverSelected(event: any) {
+  async onCoverSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.coverFile = file;
+      // Preview local mientras sube
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.coverUrl = e.target.result;
       };
       reader.readAsDataURL(file);
+      // Subir a Cloudinary
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'zuko_pfps');
+      try {
+        const response = await fetch('https://api.cloudinary.com/v1_1/dqk8inmwe/image/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+        if (data.secure_url) {
+          this.coverUrl = data.secure_url;
+        } else {
+          alert('Error al subir la portada');
+          this.coverUrl = '';
+        }
+      } catch {
+        alert('Error al subir la portada');
+        this.coverUrl = '';
+      }
     }
   }
 
