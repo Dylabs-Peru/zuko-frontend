@@ -1,7 +1,7 @@
 <div class="register-container">
   <div class="register-card">
     <div class="register-logo">
-      <img src="assets/logo.png" alt="Zuko Logo" />
+      <img src="https://res.cloudinary.com/dqk8inmwe/image/upload/v1750645280/WhatsApp_Image_2025-06-22_at_20.33.58-removebg-preview_qgzvsn.png" alt="Zuko Logo" />
     </div>
     <h1 class="register-title">REGISTRATE</h1>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
@@ -14,8 +14,10 @@
       <button class="register-btn" type="submit" [disabled]="loading">Registrate</button>
     </form>
     <div class="register-links">
-      <span>¿Ya tienes cuenta?</span>
-      <a routerLink="/auth/login">Inicia sesión</a>
+      <div class="login-link">
+        <span>¿Ya tienes cuenta?</span>
+        <a routerLink="/auth/login">Inicia sesión</a>
+      </div>
     </div>
   </div>
 </div>
