@@ -1,0 +1,56 @@
+
+<div class="library-container">
+
+  <h1 class="library-title">Biblioteca</h1>
+  
+
+  <div class="library-tabs">
+    <span class="tab-active">Playlists</span>
+  </div>
+
+
+  <div class="playlist-searchbar">
+    <input type="text" 
+    [(ngModel)]="searchQuery"
+     (input) = "onSearch()"
+     placeholder="Buscar playlist"
+    />
+    <button class="search-btn" (click)="onSearch()" aria-label="Buscar playlist">
+      <img src="https://res.cloudinary.com/dqk8inmwe/image/upload/v1750644489/WhatsApp_Image_2025-06-22_at_21.04.57-removebg-preview_uv7sbq.png" alt="Buscar" />
+    </button>
+  </div>
+
+   <div *ngIf="isLoading" class="loading-state">Cargando...</div>
+  <div *ngIf="error" class="error-state">{{ error }}</div>
+
+  <div *ngIf="!isLoading && !error && filteredPlaylists.length === 0" class="empty-state">
+    No tienes playlists aún.
+  </div>
+
+
+  <div class="playlists-grid" *ngIf="filteredPlaylists.length > 0">
+    <div 
+    class="playlist-card"
+    *ngFor="let playlist of filteredPlaylists"
+    tabindex="0"
+    [attr.aria-label]="'Abrir playlist ' + playlist.name"
+    >
+      <div class="playlist-cover"
+      [ngStyle]="{ 'background-image': playlist.url_image ? 'url(' + playlist.url_image + ')' : '' }" 
+      ></div>
+      <div class="playlist-info">
+        <span class="playlist-name">{{ playlist.name }}</span>
+        <span class="playlist-owner">Owner</span>
+        <button class="playlist-play-btn" aria-label="Reproducir playlist">
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <button class="add-playlist-btn" aria-label="Añadir playlist">
+    <span class="add-playlist-label">Crear</span>
+    <span class="add-playlist-icon">+</span>
+  </button>
+
+</div>

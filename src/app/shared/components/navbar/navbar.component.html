@@ -35,7 +35,8 @@
         </div>
       </div>
     </div>    <div class="header-right">
-      <a href="#">Biblioteca</a>      <div class="profile-menu">
+      <a href="#" (click)="goToLibrary(); $event.preventDefault()">Biblioteca</a>
+      <div class="profile-menu">
         <a [routerLink]="isArtist ? '/artist/profile-artist' : '/user/Myprofile'" class="profile-link">
           <img 
             [src]="userProfileImage" 
