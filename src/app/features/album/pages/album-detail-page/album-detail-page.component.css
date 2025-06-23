@@ -1,0 +1,121 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: linear-gradient(to bottom, #2b0000, #550000);
+}
+
+:host, .album-detail-root, table, th, td, .header, .controls, .song-title, .artist {
+    font-family: 'Manjari', sans-serif;
+}
+
+.album-detail-root {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #2b0000, #550000);
+}
+
+.header {
+    background-size: cover;
+    background-position: center;
+    padding: 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 300px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 3rem;
+    margin: 0;
+    color: #fff;
+    font-weight: bold;
+}
+
+.header .details {
+    font-size: 1rem;
+    color: #fff;
+    opacity: 1;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.controls button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+th {
+    font-weight: normal;
+    opacity: 0.7;
+}
+
+.number {
+    width: 30px;
+}
+
+.genre {
+    width: 150px;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    left: -700px;
+}
+
+.play-col {
+    width: 60px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+.song-play-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    padding: 6px 10px;
+    border-radius: 50%;
+}
+.song-play-btn:hover {
+    background: rgba(255,255,255,0.08);
+    color: #ff5252;
+}
+
+
+
+.song-title {
+    font-weight: bold;
+    color: #fff;
+}
+
+.artist {
+    font-size: 0.85rem;
+    color: #fff;
+    font-weight: normal;
+    opacity: 1;
+}

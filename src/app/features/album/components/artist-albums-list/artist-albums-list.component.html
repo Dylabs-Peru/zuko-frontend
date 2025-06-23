@@ -25,8 +25,23 @@
   <button (click)="confirmDeleteAlbum(album)">Eliminar Álbum</button>
 </div>
         </div>
-        <div class="play-button"></div>
+        <button class="play-button" [routerLink]="['/album', album.id]" title="Ver álbum"></button>
       </div>
     </div>
   </ng-container>
 </div>
+
+<app-edit-album-modal
+  [show]="showEditModal"
+  [album]="albumToEdit"
+  (close)="closeEditModal()"
+  (albumEdited)="fetchAlbums()"
+></app-edit-album-modal>
+
+<app-delete-album-modal
+  [show]="showDeleteModal"
+  [albumTitle]="albumToDelete?.title || ''"
+  [albumId]="albumToDelete?.id"
+  (close)="closeDeleteModal()"
+  (albumDeleted)="onAlbumDeleted()"
+></app-delete-album-modal>

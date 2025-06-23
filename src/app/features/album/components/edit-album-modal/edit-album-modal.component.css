@@ -1,0 +1,6 @@
+/* Reutiliza los estilos del modal de crear para consistencia visual */
+@import '../create-album-modal/create-album-modal.component.css';
+
+h2 {
+  font-family: 'Manjari', sans-serif;
+}
