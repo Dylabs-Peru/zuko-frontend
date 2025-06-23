@@ -17,17 +17,47 @@
       </div>
   
       <div class="profile-actions" *ngIf="isOwnArtistProfile">
-        <button class="dots-btn" (click)="onEditProfile()">...</button>
+        <div class="profile-dots" (click)="onEditDotsClick()" title="Editar artista">
+          <span></span><span></span><span></span>
+        </div>
       </div>
     </div>
   
-    <nav class="profile-menu">
-      <a class="menu-item active" href="#">Biografía</a>
-      <a class="menu-item" href="#">Mis Álbumes</a>
-      <a class="menu-item" href="#">Mis Canciones</a>
-    </nav>
+    <div class="profile-menu-bar">
+      <nav class="profile-menu">
+        <a class="menu-item" [class.active]="!showAlbumsSection && !showSongsSection" (click)="showAlbumsSection = false; showSongsSection = false; $event.preventDefault()" href="#">Biografía</a>
+        <a class="menu-item" [class.active]="showAlbumsSection" (click)="showAlbumsSection = true; showSongsSection = false; $event.preventDefault()" href="#">Mis Álbumes</a>
+        <a class="menu-item" [class.active]="showSongsSection" (click)="showSongsSection = true; showAlbumsSection = false; $event.preventDefault()" href="#">Mis Canciones</a>
+      </nav>
+
+       <button *ngIf="showAlbumsSection"
+            class="circle create-album-btn"
+            (click)="onCreateAlbumClick()"
+            title="Crear álbum">
+        <span class="plus"></span>
+      </button>
+
+    <app-create-album-modal
+      [show]="showCreateAlbumModal"
+      (close)="closeCreateAlbumModal()"
+      (albumCreated)="onAlbumCreated($event)">
+    </app-create-album-modal>
+    </div>
+
+    <ng-container *ngIf="showAlbumsSection && artist?.id">
+      <app-artist-albums-list [artistId]="artist.id"></app-artist-albums-list>
+    </ng-container>
+
+    <!-- Sección de canciones -->
+    <ng-container *ngIf="showSongsSection && artist?.id">
+      <app-artist-songs
+        [artistId]="artist.id"
+        [isOwnProfile]="isOwnArtistProfile"
+      ></app-artist-songs>
+    </ng-container>
+
   
-    <section class="profile-bio-section">
+    <section class="profile-bio-section" *ngIf="!showAlbumsSection && !showSongsSection">
       <label class="bio-label">Biografía</label>
       <div class="profile-bio">
         {{ artist.biography || 'Biografía del usuario' }}
