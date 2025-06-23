@@ -1,0 +1,14 @@
+<button class="btn-desactivar" (click)="openConfirmModal()" *ngIf="isActive && artistId">
+  Desactivar
+</button>
+
+<!-- Modal de confirmación -->
+<div class="modal-overlay" *ngIf="showConfirmModal">
+  <div class="modal-content">
+    <h3>¿Dejar de ser artista?</h3>
+    <div style="margin-top: 20px; display: flex; gap: 16px; justify-content: center;">
+      <button class="modal-btn" (click)="onConfirmDeactivate()" [disabled]="loading">Sí</button>
+      <button class="modal-btn" (click)="closeConfirmModal()" [disabled]="loading">No</button>
+    </div>
+  </div>
+</div>

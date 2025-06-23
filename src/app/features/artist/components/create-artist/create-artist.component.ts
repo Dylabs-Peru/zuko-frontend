@@ -61,28 +61,8 @@ export class CreateArtistComponent {
           this.artistForm.reset();
           this.submitted = false;
           this.artistCreated.emit(artist);
-
-          // --- OBTIENE EL USUARIO ACTUALIZADO Y LO GUARDA EN LOCALSTORAGE ---
-          const auth = JSON.parse(localStorage.getItem('auth') || '{}');
-          if (auth?.user && auth.user.id) {
-            this.userService.getUserById(auth.user.id).subscribe({
-              next: () => {
-                const auth = JSON.parse(localStorage.getItem('auth') || '{}');
-                if (auth.user) {
-                  auth.user.artistName = this.artistForm.value.name;
-                  localStorage.setItem('auth', JSON.stringify(auth));
-                }
-                console.log('auth actualizado tras crear artista:', auth);
-                window.location.href = '/artist/profile-artist';
-              },
-              error: (err) => {
-                console.error('Error obteniendo usuario actualizado:', err);
-                window.location.href = '/artist/profile-artist';
-              }
-            });
-          } else {
-            window.location.href = '/artist/profile-artist';
-          }
+          // Ya no redirige ni hace logout aquí. El padre (profile) controla el flujo tras crear artista.
+          this.close.emit();
         },
         error: (err) => {
           this.successMessage = '';

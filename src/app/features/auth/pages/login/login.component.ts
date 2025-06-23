@@ -50,16 +50,24 @@ export class LoginComponent {
                 artistList = (artists as any).data;
               }
               const userId = (response as any)?.user?.id;
-              const artist = artistList.find((a: any) => a.userId === userId);              if (artist) {
-                const auth = this.authService.getAuthInfo();
-                if (auth && auth.user) {
+              const artist = artistList.find((a: any) => a.userId === userId && a.isActive);
+              if (artist) {
+                const auth = JSON.parse(localStorage.getItem('auth') || '{}');
+                if (auth.user) {
                   auth.user.artistName = artist.name;
-                  this.authService.saveAuthData(response.token, auth);
+                  localStorage.setItem('auth', JSON.stringify(auth));
                 }
                 console.log('Artista detectado tras login:', artist.name);
                 alert('¡Bienvenido, artista ' + artist.name + '! Tu perfil de artista está activo.');
               } else {
-                console.warn('No se detectó perfil de artista para este usuario tras login.');              }
+                // Si no hay artista activo, borra artistName si existe
+                const auth = JSON.parse(localStorage.getItem('auth') || '{}');
+                if (auth.user && auth.user.artistName) {
+                  delete auth.user.artistName;
+                  localStorage.setItem('auth', JSON.stringify(auth));
+                }
+                console.warn('No se detectó perfil de artista activo para este usuario tras login.');
+              }
               this.loading = false;
               // Iniciar el monitor de token después del login exitoso
               this.tokenMonitorService.startMonitoring();

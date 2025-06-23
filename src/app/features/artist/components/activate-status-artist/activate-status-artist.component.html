@@ -1,0 +1,10 @@
+<button class="btn-activar" (click)="openConfirmModal()" [disabled]="loading">Activar</button>
+
+<div class="modal-overlay" *ngIf="showConfirmModal">
+    <div class="modal-content">
+        <h3>¿Volver a ser artista?</h3>
+        <p>¿Estás seguro de que deseas reactivar tu perfil de artista?</p>
+        <button class="btn-modal" (click)="onConfirmActivate()" [disabled]="loading">Sí</button>
+        <button class="btn-modal" (click)="closeConfirmModal()" [disabled]="loading">No</button>
+    </div>
+</div>

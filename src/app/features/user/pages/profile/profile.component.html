@@ -1,5 +1,12 @@
 <div class="profile-container" *ngIf="user; else noUser">
-  <h1 class="profile-title">Mi Perfil</h1>
+  <div class="profile-title-row" style="display: flex; align-items: center; gap: 16px;">
+    <h1 class="profile-title" style="margin: 0;">Mi Perfil</h1>
+    <app-activate-status-artist
+      *ngIf="artistInactivo"
+      [artistId]="artistInactivo.id">
+    </app-activate-status-artist>
+    <button class="dots-btn" (click)="openEditModal()" style="margin-left: auto;">&#8230;</button>
+  </div>
   
   <div class="profile-header">
     <div class="profile-avatar">
@@ -30,9 +37,7 @@
       </div>
     </div>
 
-    <div class="profile-actions">
-      <button class="dots-btn" (click)="openEditModal()">&#8230;</button>
-    </div>
+    <!-- Eliminado: profile-actions, ahora el botón está junto al título -->
   </div>
 
   <div class="profile-bio-section">

@@ -1,5 +1,14 @@
 <div class="profile-container" *ngIf="artist; else loading">
-    <h1 class="profile-title">{{ isOwnArtistProfile ? 'Mi Perfil' : 'Perfil de Artista' }}</h1>
+    <div class="profile-title-row" style="display: flex; align-items: center; gap: 16px;">
+      <h1 class="profile-title" style="margin: 0;">{{ isOwnArtistProfile ? 'Mi Perfil' : 'Perfil de Artista' }}</h1>
+      <ng-container *ngIf="isOwnArtistProfile">
+        <app-change-status-artist
+          *ngIf="artist.isActive"
+          [artistId]="artist.id"
+          [isActive]="artist.isActive">
+        </app-change-status-artist>
+      </ng-container>
+    </div>
   
     <div class="profile-header">
       <div class="profile-avatar">
