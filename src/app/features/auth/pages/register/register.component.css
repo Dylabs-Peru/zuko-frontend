@@ -3,99 +3,177 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .register-card {
-  background: #b71c1c;
-  border-radius: 20px;
-  padding: 2.5rem 2.5rem 1.5rem 2.5rem;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  background: #B71C1C;
+  border-radius: 24px;
+  padding: 3rem 2.5rem 2.5rem 2.5rem;
+  box-shadow: 0 20px 60px rgba(183, 28, 28, 0.3);
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 350px;
-  max-width: 400px;
+  width: 400px;
+  max-width: 90vw;
+  position: relative;
 }
 
-.register-logo img {
-  width: 70px;
+.register-logo {
   margin-bottom: 1.5rem;
 }
 
+.register-logo img {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+}
+
 .register-title {
-  color: #b71c1c;
-  font-size: 2.2rem;
-  font-weight: 400;
-  margin-bottom: 2rem;
+  color: #FFFFFF;
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 2.5rem;
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 label {
-  color: #fff;
-  font-size: 1rem;
-  margin-bottom: 0.2rem;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
 input[type="text"],
-input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="email"] {
   width: 100%;
-  padding: 0.6rem 1rem;
-  border-radius: 20px;
+  padding: 1rem 1.25rem;
+  border-radius: 25px;
   border: none;
-  background: #fff;
-  color: #b71c1c;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #666;
+  font-size: 0.95rem;
   outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+input[type="email"]::placeholder {
+  color: #999;
+  font-weight: 300;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .register-btn {
   width: 100%;
-  padding: 0.7rem 0;
-  background: #d32f2f;
-  color: #fff;
+  padding: 1rem;
+  background: #D32F2F;
+  color: #FFFFFF;
   border: none;
-  border-radius: 20px;
+  border-radius: 25px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  margin-top: 0.5rem;
-  transition: background 0.2s;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
-.register-btn:disabled {
-  background: #b71c1c;
-  opacity: 0.7;
-  cursor: not-allowed;
-}
+
 .register-btn:hover:not(:disabled) {
-  background: #c62828;
+  background: #C62828;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(211, 47, 47, 0.4);
+}
+
+.register-btn:disabled {
+  background: rgba(211, 47, 47, 0.6);
+  cursor: not-allowed;
+  transform: none;
 }
 
 .register-links {
   width: 100%;
-  margin-top: 1.2rem;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.7rem;
-  color: #fff;
-  font-size: 0.95rem;
+  gap: 1rem;
 }
-.register-links a {
-  color: #fff;
+
+.login-link {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.login-link a {
+  color: #FFFFFF;
   text-decoration: underline;
-  font-weight: 500;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
-.register-links a:hover {
-  color: #ffd6d6;
+
+.login-link a:hover {
+  color: #FFCDD2;
 }
+
+/* Animaciones de entrada */
+.register-card {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .register-card {
+    padding: 2rem 1.5rem;
+    width: 320px;
+  }
+  
+  .register-title {
+    font-size: 1.3rem;
+  }
+  
+  input[type="text"],
+  input[type="password"],
+  input[type="email"] {
+    padding: 0.9rem 1rem;
+  }
+}
+
