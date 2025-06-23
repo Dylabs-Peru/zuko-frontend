@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { AlbumService } from '../../../../services/Album.service';
 
 @Component({
   selector: 'app-album-detail-page',
@@ -14,27 +15,26 @@ export class AlbumDetailPageComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private albumService: AlbumService) {}
 
   ngOnInit() {
     const albumId = this.route.snapshot.paramMap.get('id');
-    // Mock exacto según el diseño proporcionado
-    this.album = {
-      id: albumId,
-      title: 'Hypnotize',
-      artistName: 'System of A Down',
-      releaseYear: 2005,
-      cover: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Hypnotize_album_cover.jpg/220px-Hypnotize_album_cover.jpg',
-      totalSongs: 11,
-      songs: [
-        { title: 'Attack', artistName: 'System Of A Down', genreName: 'Metal' },
-        { title: 'Dreaming', artistName: 'System Of A Down', genreName: 'Metal' },
-        { title: 'Holy Mountains', artistName: 'System Of A Down', genreName: 'Metal progresivo' },
-        { title: 'Vicinity Of Obscenity', artistName: 'System Of A Down', genreName: 'Experimental' },
-        { title: 'Lonely Day', artistName: 'System Of A Down', genreName: 'Rock alternativo' },
-        { title: 'Soldier Side', artistName: 'System Of A Down', genreName: 'Metal' }
-      ]
-    };
-    this.loading = false;
+    if (!albumId) {
+      this.error = 'ID de álbum no especificado';
+      this.loading = false;
+      return;
+    }
+    this.loading = true;
+    this.error = '';
+    this.albumService.getAlbumById(Number(albumId)).subscribe({
+      next: (res) => {
+        this.album = res.data || res; // Ajusta según estructura real
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'No se pudo cargar el álbum';
+        this.loading = false;
+      }
+    });
   }
 }

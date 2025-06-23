@@ -1,5 +1,6 @@
 <div class="create-album-modal-backdrop" *ngIf="show">
   <div class="create-album-modal-container">
+    <h2 style="margin-top: 0; margin-bottom: 16px; font-weight: bold; color: #b71c1c; font-size: 22px; letter-spacing: 0.5px;">Crear Álbum</h2>
     <div class="tabs">
       <span [class.active-tab]="tab==='info'" (click)="selectTab('info')">Información Básica</span>
       <span [class.active-tab]="tab==='songs'" [class.disabled]="tab!=='songs'" (click)="selectTab('songs')">Canciones</span>

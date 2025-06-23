@@ -1,0 +1,42 @@
+<div class="create-album-modal-backdrop" *ngIf="show">
+  <div class="create-album-modal-container">
+    <h2 style="margin-top: 0; margin-bottom: 16px; font-weight: bold; color: #b71c1c; font-size: 22px; letter-spacing: 0.5px;">Editar Álbum</h2>
+    <div class="tabs">
+      <span [class.active-tab]="tab==='info'" (click)="selectTab('info')">Información Básica</span>
+      <span [class.active-tab]="tab==='songs'" [class.disabled]="tab!=='songs'" (click)="selectTab('songs')">Canciones</span>
+    </div>
+    <div *ngIf="tab==='info'">
+      <div class="form-content">
+        <div class="cover-upload-section">
+          <div class="cover-preview-container">
+            <div class="album-cover-preview no-cover">
+              <span class="cover-placeholder">📷</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-fields">
+          <label for="titulo">Título del álbum</label>
+          <input type="text" id="titulo" [(ngModel)]="editTitle" placeholder="Título" />
+
+          <label>Género</label>
+          <app-list-genres [(selectedGenre)]="editGenreId"></app-list-genres>
+
+          <div class="save-section" style="justify-content: flex-end; gap: 8px;">
+            <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
+            <button class="save-button" type="button" [disabled]="!editTitle || !editGenreId || (!hasChanges()) || isSaving" (click)="onSave()">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="tab==='songs'">
+      <div class="song-list-scroll">
+        <div class="song-list">
+          <!-- Cascarón vacío, sin canciones -->
+        </div>
+      </div>
+      <div class="save-section">
+        <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

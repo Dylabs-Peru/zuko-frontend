@@ -5,6 +5,10 @@ body {
     background: linear-gradient(to bottom, #2b0000, #550000);
 }
 
+:host, .album-detail-root, table, th, td, .header, .controls, .song-title, .artist {
+    font-family: 'Manjari', sans-serif;
+}
+
 .album-detail-root {
     min-height: 100vh;
     background: linear-gradient(to bottom, #2b0000, #550000);
@@ -74,8 +78,32 @@ th {
 }
 
 .genre {
-    text-align: right;
     width: 150px;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    left: -700px;
+}
+
+.play-col {
+    width: 60px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+.song-play-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    padding: 6px 10px;
+    border-radius: 50%;
+}
+.song-play-btn:hover {
+    background: rgba(255,255,255,0.08);
+    color: #ff5252;
 }
 
 

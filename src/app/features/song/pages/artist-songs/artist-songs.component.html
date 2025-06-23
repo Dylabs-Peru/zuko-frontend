@@ -1,21 +1,34 @@
 <div class="container">
-  <h1 class="title">Mis canciones</h1>
 
   <div *ngIf="loading">Cargando...</div>
 
-  <div *ngIf="!loading && !isArtist" class="no-profile">
+  <!-- Usuario no es artista (otro perfil) -->
+  <div *ngIf="!loading && !isOwnProfile" class="no-profile">
     Este usuario no tiene un perfil de artista.
   </div>
 
-  <div *ngIf="!loading && isArtist && songs.length === 0" class="no-songs">
+  <!-- Artista sin canciones -->
+  <div *ngIf="!loading && isOwnProfile && songs.length === 0" class="no-songs">
     No tienes canciones disponibles.
     <button class="create-button-inline" (click)="openCreateForm()">Crear canción</button>
   </div>
 
-  <ul *ngIf="isArtist && songs.length > 0">
+  <!-- Lista de canciones -->
+  <ul *ngIf="songs.length > 0">
     <li *ngFor="let song of songs; let i = index" class="song-item">
-      <span>{{ i + 1 }}. {{ song.title }}</span>
-      <div class="actions">
+      <div class="song-info">
+        <div class="song-title">
+          <span class="song-index">{{ i + 1 }}.</span>
+          <strong class="song-name">{{ song.title }}</strong>
+        </div>
+        <small class="meta">
+          Fecha: {{ song.releaseDate | date: 'dd/MM/yyyy' }} · 
+          {{ song.isPublicSong ? 'Pública' : 'Privada' }}
+        </small>
+      </div>
+
+      <!-- Acciones solo si es su perfil -->
+      <div class="actions" *ngIf="isOwnProfile">
         <button (click)="toggleMenu(i)" class="menu-button" title="Opciones">&#8942;</button>
         <div *ngIf="openMenuIndex === i" class="dropdown-menu">
           <button (click)="openEditForm(song)">Editar canción</button>
@@ -25,7 +38,7 @@
     </li>
   </ul>
 
-  <button class="create-button" (click)="openCreateForm()">+</button>
+  <button *ngIf="isOwnProfile" class="create-song-button" (click)="openCreateForm()"> Crear canción </button>
 
   <!-- Modal Crear/Editar -->
   <div *ngIf="showSongForm" class="modal">
@@ -41,7 +54,6 @@
           required
         />
 
-        <!-- Mensaje de error -->
         <div class="form-error" *ngIf="formError">{{ formError }}</div>
 
         <label for="isPublicSong">¿Es pública?</label>
@@ -71,4 +83,5 @@
       </div>
     </div>
   </div>
+
 </div>

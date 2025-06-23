@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ListGenresComponent } from '../../../genre/pages/list_genres/list-genres.component';
@@ -13,7 +13,7 @@ import { SongResponse } from '../../../../models/song.model';
   styleUrls: ['./create-album-modal.component.css']
 })
 
-export class CreateAlbumModalComponent {
+export class CreateAlbumModalComponent implements OnInit, OnChanges {
   isSaving = false;
   coverUrl: string = '';
 
@@ -35,7 +35,12 @@ export class CreateAlbumModalComponent {
   constructor(private songService: SongService) {}
 
   ngOnInit() {
-    this.loadSongs();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['show'] && changes['show'].currentValue) {
+      this.loadSongs();
+    }
   }
 
   loadSongs() {
@@ -165,6 +170,9 @@ export class CreateAlbumModalComponent {
       }
       const data = await response.json();
       alert('Álbum creado correctamente');
+      // Despacha el evento global para actualizar la lista de álbumes
+      window.dispatchEvent(new Event('albumCreated'));
+
       this.albumCreated.emit(data.data);
       this.resetForm();
       this.close.emit();
