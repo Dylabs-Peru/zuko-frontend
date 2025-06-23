@@ -34,11 +34,20 @@
           </ul>
         </div>
       </div>
-    </div>
-    <div class="header-right">
+    </div>    <div class="header-right">
       <a href="#">Biblioteca</a>
-      <a [routerLink]="isArtist ? '/artist/profile-artist' : '/user/Myprofile'">
-        <img src="user.png" [alt]="isArtist ? 'Perfil Artista' : 'Perfil Usuario'" class="profile-icon">
-      </a>
+      <div class="profile-menu">
+        <a [routerLink]="isArtist ? '/artist/profile-artist' : '/user/Myprofile'" class="profile-link">
+          <img src="user.png" [alt]="isArtist ? 'Perfil Artista' : 'Perfil Usuario'" class="profile-icon">
+        </a>
+        <div class="dropdown-content">
+          <a [routerLink]="isArtist ? '/artist/profile-artist' : '/user/Myprofile'">
+            {{ isArtist ? 'Mi Perfil de Artista' : 'Mi Perfil' }}
+          </a>
+          <a href="#" (click)="logout(); $event.preventDefault()" class="logout-btn">
+            Cerrar Sesión
+          </a>
+        </div>
+      </div>
     </div>
 </nav>
