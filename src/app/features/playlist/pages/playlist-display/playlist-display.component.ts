@@ -1,23 +1,22 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ArtistSongsComponent } from "../../../song/pages/artist-songs/artist-songs.component";
-import { SongResponse } from "../../../../models/song.model";
+import { DatePipe } from "@angular/common";
 import { PlaylistService } from "../../../../services/playlist.service";
+import { NgFor, NgIf, NgStyle } from "@angular/common";
+import { PlaylistResponse } from "../../../../models/playlist.model";
 @Component({
   selector: 'app-playlist-display',
   standalone: true,
   templateUrl: './playlist-display.component.html',
   styleUrls: ['./playlist-display.component.css'],
-  imports: []
+  imports: [NgIf, NgStyle, NgFor, DatePipe ]
 })
 
-export class PlaylistDisplayComponent {
-  songs: SongResponse[] = [];
-  playlistName: string = '';
+export class PlaylistDisplayComponent implements OnInit {
+  playlist: PlaylistResponse | null = null;
   error = '';
-  createdAt: string = '';
-  cover_url: string = '';
-  playlistId: number = 0;
+  loading = true
 
   constructor(
             private playlistService: PlaylistService, 
@@ -25,30 +24,30 @@ export class PlaylistDisplayComponent {
   ) {}
    
    ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('playlistId');
-      if (id) {
-        this.playlistId = +id;
-        this.loadPlaylistSongs(this.playlistId);
-        
+    const playlistId = this.route.snapshot.paramMap.get('id');
+      if (!playlistId) {
+        this.error = 'ID de playlist no especificado';
+        this.loading = false;
+        return;
       }
-    });
-  }
-
-  loadPlaylistSongs(playlistId: number): void {
-    this.playlistService.listSongsInPlaylist(playlistId).subscribe({
-      next: (songs) => {
-        this.songs = songs;
+      this.loading = true;
+      this.error = '';
+      this.playlistService.getPlaylistById(Number(playlistId)).subscribe({
+      next: (playlist) => {
+        this.playlist = playlist;
+        this.loading = false;
       },
       error: (err) => {
-        this.error = 'Error al cargar las canciones de la playlist';
-        console.error(err);
+        this.error = 'No se pudo cargar la playlist';
+        this.loading = false;
       }
     });
+    }
   }
+
+
 
 
 
 
   
-}

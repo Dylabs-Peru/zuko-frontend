@@ -4,7 +4,7 @@ import {PlaylistResponse} from '../../../../models/playlist.model';
 import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CreatePlaylistDialogComponent } from '../components/crear-playlist/crear-playlist.component';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-playlist-library',
   standalone: true,
@@ -21,7 +21,10 @@ export class PlaylistLibraryComponent implements OnInit {
   searchQuery = '';
   showCreateDialog = false;
 
-  constructor(private playlistService: PlaylistService, private cdr: ChangeDetectorRef) {}
+  constructor(private playlistService: PlaylistService, 
+              private cdr: ChangeDetectorRef,
+              private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadPlaylists();
@@ -81,5 +84,9 @@ export class PlaylistLibraryComponent implements OnInit {
     this.playlists = [newPlaylist, ...this.playlists];
     this.applyFilter();  
     this.showCreateDialog = false;
+  }
+  goToPlaylist(playlistId: number | string): void  {
+    console.log('Navegando a', playlistId);
+    this.router.navigate(['/playlist', playlistId]);
   }
 }
