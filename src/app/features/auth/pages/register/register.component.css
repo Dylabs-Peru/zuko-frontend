@@ -44,7 +44,15 @@ form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.5rem;
+}
+
+/* Estilos para grupos de formulario */
+.form-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
 }
 
 label {
@@ -169,11 +177,123 @@ input[type="email"]:focus {
   .register-title {
     font-size: 1.3rem;
   }
-  
-  input[type="text"],
+    input[type="text"],
   input[type="password"],
   input[type="email"] {
     padding: 0.9rem 1rem;
   }
+}
+
+/* Estilos para mensajes de error y éxito */
+.error-messages {
+  width: 100%;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.error-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #FFCDD2;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.error-item:last-child {
+  margin-bottom: 0;
+}
+
+.error-item svg {
+  flex-shrink: 0;
+  color: #FFCDD2;
+}
+
+.success-message {
+  width: 100%;
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #C8E6C9;
+  font-size: 0.9rem;
+}
+
+.success-message svg {
+  flex-shrink: 0;
+  color: #C8E6C9;
+}
+
+/* Estilos para grupos de formulario */
+.form-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+}
+
+.field-error {
+  color: #FFCDD2;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.password-hint {
+  margin-top: 0.5rem;
+}
+
+.password-hint small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+/* Estados de error para inputs */
+input.error {
+  border: 2px solid #FFCDD2 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+input.error:focus {
+  border-color: #FFCDD2 !important;
+  box-shadow: 0 0 0 3px rgba(255, 205, 210, 0.3) !important;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Botón deshabilitado con mejor feedback */
+.register-btn:disabled {
+  background: rgba(211, 47, 47, 0.6);
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.7;
 }
 
