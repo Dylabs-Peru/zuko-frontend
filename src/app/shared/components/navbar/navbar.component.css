@@ -99,10 +99,14 @@
   border-radius: 50%;
   cursor: pointer;
   transition: opacity 0.3s;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  background-color: #f8f9fa;
 }
 
 .profile-icon:hover {
   opacity: 0.8;
+  border-color: #007bff;
 }
 
 .dropdown-content {
@@ -116,6 +120,24 @@
   z-index: 1000;
   border: 1px solid #ddd;
   padding: 8px 0;
+}
+
+.user-info {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info strong {
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.user-info small {
+  color: #666;
+  font-size: 12px;
 }
 
 .dropdown-content a {
