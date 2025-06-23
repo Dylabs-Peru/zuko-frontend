@@ -165,10 +165,50 @@
   justify-content: center;
   box-shadow: 0 4px 12px rgba(216,0,0,0.12);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: width 0.2s, border-radius 0.2s, padding 0.2s, background 0.2s;
+  overflow: hidden;
+  z-index: 5;
+  padding: 0;
 }
-.add-playlist-btn:hover {
-  background: #aa1010;
+
+.add-playlist-label {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 32px;
+  font-weight: normal;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, margin 0.2s, width 0.2s;
+  white-space: nowrap;
+  margin: 0;
+  width: 0;
+}
+
+.add-playlist-icon {
+  font-size: 38px;
+  transition: margin 0.2a
+}
+
+.add-playlist-btn:hover,
+.add-playlist-btn:focus {
+  width: 241px;
+  height: 75px;
+  border-radius: 38px;
+  background: #D80000;
+  padding: 0 20px;
+}
+
+.add-playlist-btn:hover .add-playlist-label,
+.add-playlist-btn:focus .add-playlist-label {
+  opacity: 1;
+  margin-left: 24px;
+  margin-right: 16px;
+  width: auto;
+  pointer-events: auto;
+}
+
+.add-playlist-btn:hover .add-playlist-icon,
+.add-playlist-btn:focus .add-playlist-icon {
+  margin-right: 18px;
 }
 
 .playlist-cover {
