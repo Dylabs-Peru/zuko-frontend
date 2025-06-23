@@ -48,9 +48,19 @@
   </div>
 
 
-  <button class="add-playlist-btn" aria-label="Añadir playlist">
+  <button class="add-playlist-btn" 
+      aria-label="Añadir playlist"
+      (click)="onOpenCreateDialog()"
+    >
     <span class="add-playlist-label">Crear</span>
     <span class="add-playlist-icon">+</span>
   </button>
+
+  <app-create-playlist-dialog
+  *ngIf="showCreateDialog"
+  (closed)="onCloseCreateDialog()"
+  (created)="onPlaylistCreated($event)"
+  >
+  </app-create-playlist-dialog>
 
 </div>

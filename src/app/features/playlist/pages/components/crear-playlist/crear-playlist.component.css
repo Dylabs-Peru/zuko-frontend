@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700;900&family=Manrope:wght@300;700&display=swap');
+
+.create-playlist-overlay {
+  position: fixed;
+  z-index: 9999;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(20, 20, 20, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-playlist-dialog {
+  background: linear-gradient(180deg, #c90505 0%, #660101 100%);
+  border-radius: 24px;
+  padding: 38px 34px 30px 34px;
+  min-width: 410px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8px 36px rgba(0,0,0,0.18);
+  position: relative;
+}
+
+.playlist-cover-placeholder {
+  cursor: pointer;
+  width: 153px;
+  height: 153px;
+  background: #191919;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 26px;
+  overflow: hidden;
+}
+
+.playlist-cover-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+.playlist-name-input {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #fff;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #fff;
+  outline: none;
+  width: 100%;
+  margin-bottom: 26px;
+  text-align: center;
+  padding: 5px 0 7px 0;
+}
+
+.playlist-name-input::placeholder {
+  color: #fff;
+  opacity: 0.8;
+}
+
+.playlist-description-input {
+  font-family: 'Manrope', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #fff;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+  border: none;
+  width: 335px;
+  height: 128px;
+  margin-bottom: 32px;
+  padding: 16px 20px;
+  resize: none;
+  outline: none;
+}
+
+.playlist-description-input::placeholder {
+  color: #fff;
+  font-family: 'Manrope', Arial, sans-serif;
+  font-weight: 300;
+  opacity: 0.8;
+  font-size: 12px;
+}
+
+.create-playlist-btn {
+  width: 116px;
+  height: 38px;
+  background: #fff;
+  color: #b90000;
+  border: none;
+  border-radius: 19px;
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(185,0,0,0.09);
+  transition: background 0.15s, color 0.15s;
+}
+
+.create-playlist-btn:hover {
+  background: #f1f1f1;
+  color: #910000;
+}
+
+.close-btn {
+  position: absolute;
+  top: 18px; 
+  right: 18px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 34px;
+  cursor: pointer;
+  opacity: 0.7;
+  z-index: 10;
+  transition: opacity 0.15s;
+}
+
+.close-btn:hover { 
+  opacity: 1; 
+}
+
+.privacy-select {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  margin: 18px 0 20px 0;
+}
+
+.privacy-select label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 20px;
+  color: #fff;
+  gap: 10px;
+  position: relative;
+}
+
+.privacy-select input[type="radio"] {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  margin-right: 4px;
+  outline: none;
+  transition: border 0.15s;
+  background: transparent;
+  position: relative;
+}
+
+.privacy-select input[type="radio"]:checked {
+  border: 7px solid #fff;
+  background: #d80000;
+}
+
