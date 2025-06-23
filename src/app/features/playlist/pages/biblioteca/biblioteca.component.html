@@ -1,14 +1,14 @@
-<!-- biblioteca.component.html -->
+
 <div class="library-container">
-  <!-- Título principal -->
+
   <h1 class="library-title">Biblioteca</h1>
   
-  <!-- Tabs (solo Playlists, según tu requerimiento) -->
+
   <div class="library-tabs">
     <span class="tab-active">Playlists</span>
   </div>
 
-  <!-- Searchbar -->
+
   <div class="playlist-searchbar">
     <input type="text" 
     [(ngModel)]="searchQuery"
@@ -16,7 +16,7 @@
      placeholder="Buscar playlist"
     />
     <button class="search-btn" (click)="onSearch()" aria-label="Buscar playlist">
-      <img src="assets/images/lupinha.png" alt="Buscar" />
+      <img src="https://res.cloudinary.com/dqk8inmwe/image/upload/v1750644489/WhatsApp_Image_2025-06-22_at_21.04.57-removebg-preview_uv7sbq.png" alt="Buscar" />
     </button>
   </div>
 
@@ -27,7 +27,7 @@
     No tienes playlists aún.
   </div>
 
-  <!-- Grid de playlists -->
+
   <div class="playlists-grid" *ngIf="filteredPlaylists.length > 0">
     <div 
     class="playlist-card"
@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <!-- Botón para añadir playlist -->
+
   <button class="add-playlist-btn" aria-label="Añadir playlist">
     <span class="add-playlist-label">Crear</span>
     <span class="add-playlist-icon">+</span>

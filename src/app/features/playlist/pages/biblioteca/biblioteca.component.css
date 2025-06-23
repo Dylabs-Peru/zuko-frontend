@@ -7,7 +7,6 @@
   position: relative;
 }
 
-/* Título "Biblioteca" */
 .library-title {
   font-family: 'Manrope', Arial, sans-serif;
   font-size: 96px;
@@ -16,7 +15,6 @@
   margin-bottom: 24px;
 }
 
-/* Tabs */
 .library-tabs {
   display: flex;
   align-items: center;
@@ -32,7 +30,6 @@
   margin-right: 36px;
 }
 
-/* Searchbar */
 .playlist-searchbar {
   display: flex;
   align-items: center;
@@ -67,18 +64,22 @@
   align-items: center;
 }
 
-/* Grid de playlists */
+.search-btn img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 .playlists-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 36px;
 }
 
-/* Card playlist */
 .playlist-card {
   width: 236px;
   height: 297px;
-  background: rgba(15, 1, 1, 0); /* 0% opacidad, pero puedes usarlo como base */
+  background: rgba(15, 1, 1, 0); 
   border-radius: 14px;
   box-shadow: 0 0 0 2px transparent;
   display: flex;
@@ -86,20 +87,16 @@
   align-items: center;
   padding-top: 8px;
   position: relative;
-  /* Si quieres resaltar la card seleccionada, cambia box-shadow aquí */
 }
 
-/* Imagen cover */
 .playlist-cover {
   width: 207px;
   height: 207px;
   background: #B8B8B8;
   border-radius: 12px;
   margin-bottom: 12px;
-  /* Aquí puedes poner la imagen como background-image si tienes url */
 }
 
-/* Info: nombre, owner y botón play */
 .playlist-info {
   display: flex;
   flex-direction: column;
@@ -144,10 +141,9 @@
 .playlist-play-btn img {
   width: 24px;
   height: 24px;
-  filter: invert(1); /* Blanco si el ícono es negro */
+  filter: invert(1); 
 }
 
-/* Botón de añadir playlist (flotante) */
 .add-playlist-btn {
   position: absolute;
   right: 64px;
