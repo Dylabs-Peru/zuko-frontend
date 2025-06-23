@@ -1,12 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { AlbumResponse } from '../../../../models/album.model';
+import { RouterModule } from '@angular/router';
 import { AlbumService } from '../../../../services/Album.service';
 
 @Component({
   selector: 'app-artist-albums-list',
   standalone: true,
-  imports: [NgIf, NgFor, NgStyle],
+  imports: [NgIf, NgFor, NgStyle, RouterModule],
   templateUrl: './artist-albums-list.component.html',
   styleUrls: ['./artist-albums-list.component.css']
 })

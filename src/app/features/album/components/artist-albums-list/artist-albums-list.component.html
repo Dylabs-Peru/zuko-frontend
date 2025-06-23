@@ -25,7 +25,7 @@
   <button (click)="confirmDeleteAlbum(album)">Eliminar Álbum</button>
 </div>
         </div>
-        <div class="play-button"></div>
+        <button class="play-button" [routerLink]="['/album', album.id]" title="Ver álbum"></button>
       </div>
     </div>
   </ng-container>

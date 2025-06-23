@@ -1,0 +1,36 @@
+<div *ngIf="loading" class="album-loading">Cargando álbum...</div>
+<div *ngIf="error" class="album-error">{{ error }}</div>
+<div *ngIf="album && !loading" class="album-detail-root">
+  <div class="header" [ngStyle]="{'background-image': 'url(' + album.cover + ')'}">
+    <h1>{{ album.title }}</h1>
+    <div class="details">
+      {{ album.artistName }} &bull; {{ album.releaseYear }} &bull; {{ album.totalSongs }} Canciones
+    </div>
+  </div>
+
+  <div class="controls">
+    <button title="Reproducir">&#9654;</button>
+    <button title="Aleatorio">🔀</button>
+    <button title="Más opciones">&#8942;</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Título</th>
+        <th class="genre">Género</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let song of album.songs; let i = index">
+        <td class="number">{{ i + 1 }}</td>
+        <td>
+          <div class="song-title">{{ song.title }}</div>
+          <div class="artist">{{ song.artistName }}</div>
+        </td>
+        <td class="genre">{{ song.genreName }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
