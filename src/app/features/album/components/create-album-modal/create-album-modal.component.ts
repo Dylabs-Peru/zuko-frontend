@@ -124,37 +124,31 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
     try {
       // Obtener artistId del usuario autenticado
       const auth = localStorage.getItem('auth');
-      let artistId = null;
+      let artistId: number | undefined = undefined;
       if (auth) {
         const authObj = JSON.parse(auth);
-        // Usa el id del artista, no el del usuario
         artistId = authObj?.user?.artistId;
-        // Si no existe en el objeto auth, asigna manualmente el id del artista encontrado en la base de datos
-        if (!artistId) {
-          artistId = 4; // <-- Ajusta este valor si el id de artista cambia
-        }
       }
-      if (!artistId) throw new Error('No se pudo obtener el id del artista autenticado (artistId).');
-      // Preparar canciones
+      // Preparar canciones (solo { title })
       const selectedSongs = this.songs.filter(song => this.selectedSongIds.includes(song.id));
       const songs = selectedSongs.map(song => ({
-        title: song.name,
-        isPublicSong: true, // O usa el valor real si lo tienes
-        artistId: artistId
+        title: song.name
       }));
       // Portada (base64 o vacío)
       const cover = this.coverUrl || '';
       // Año actual
       const releaseYear = new Date().getFullYear();
       // Construir AlbumRequest
-      const albumRequest = {
+      const albumRequest: any = {
         title: this.title,
         releaseYear,
         cover,
         genreId: this.genreId,
-        artistId,
         songs
       };
+      if (artistId) {
+        albumRequest.artistId = artistId;
+      }
       // Enviar al backend
       const response = await fetch('http://localhost:8080/api/v1/albums', {
         method: 'POST',
