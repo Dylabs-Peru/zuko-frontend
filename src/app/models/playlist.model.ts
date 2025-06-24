@@ -15,3 +15,10 @@ export interface PlaylistRequest {
     isPublic?: boolean;
     url_image?: string;
 }
+
+export interface UpdatePlaylistRequest {
+    name ?: string;
+    description ?: string;
+    isPublic ?: boolean;
+    url_image ?: string;
+}
