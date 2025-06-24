@@ -102,8 +102,8 @@ body {
   width: 40px;
   height: 40px;
   display: block;
-  background: url("https://res.cloudinary.com/dqk8inmwe/image/upload/v1750644489/WhatsApp_Image_2025-06-22_at_21.04.57-removebg-preview_uv7sbq.png") center/contain no-repeat;
-  filter: brightness(100) invert(1); /* Blanco, si tu fondo es oscuro */
+  background: url("https://res.cloudinary.com/dqk8inmwe/image/upload/v1750791783/CITYPNG.COM_HD_Random_White_Icon_Transparent_Background_-_600x600_eypzjk.png") center/contain no-repeat;
+  filter: brightness(100) invert(0); 
 }
 
 .options-btn {
