@@ -7,9 +7,15 @@
   </div>
 
   <div class="controls">
-  <button title="Reproducir">&#9654;</button>
-  <button title="Aleatorio">🔀</button>
-  <button title="Más opciones" (click)="showMenu = true">&#8942;</button>
+  <button class="play-btn" title="Reproducir">
+    <span class="icon-play"></span>
+  </button>
+  <button class="shuffle-btn" title="Aleatorio">
+    <span class="icon-shuffle"></span>
+  </button>
+  <button class="options-btn" title="Más opciones" (click)="showMenu = true">
+    <span class="icon-options"><span></span></span>
+  </button>
 </div>
   <app-playlist-options-popup
     [visible]="showMenu"

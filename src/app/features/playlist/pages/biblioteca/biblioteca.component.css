@@ -234,6 +234,9 @@
   cursor: pointer;
 }
 
+.playlist-play-btn:hover{
+  background-color: #D80000;
+}
 .playlist-play-btn::before {
   content: '';
   width: 0;

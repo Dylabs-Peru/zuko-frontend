@@ -49,17 +49,97 @@ body {
 .controls {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 50px;
     padding: 20px;
 }
 
 .controls button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 32px;
 }
+
+.play-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.play-btn:hover {
+  background: #D80000;
+  .icon-play {
+    background: #fff;
+  }
+}
+.icon-play {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 4px; 
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="black"/></svg>') no-repeat center/contain;
+  background: #000;
+}
+
+.shuffle-btn {
+  background: none;
+  border: none;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-shuffle {
+  width: 40px;
+  height: 40px;
+  display: block;
+  background: url("https://res.cloudinary.com/dqk8inmwe/image/upload/v1750644489/WhatsApp_Image_2025-06-22_at_21.04.57-removebg-preview_uv7sbq.png") center/contain no-repeat;
+  filter: brightness(100) invert(1); /* Blanco, si tu fondo es oscuro */
+}
+
+.options-btn {
+  background: none;
+  border: none;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.icon-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 10px;
+}
+.icon-options::before,
+.icon-options::after,
+.icon-options span {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 2.5px;
+  background: #fff;
+  border-radius: 50%;
+}
+.icon-options span {
+  /* Punto central */
+  margin: 0 2.5px;
+}
+
+
 
 table {
     width: 100%;    
@@ -70,7 +150,6 @@ table {
 th, td {
     padding: 12px 20px;
     text-align: left;
-    /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
     color: #fff;
     vertical-align: middle;
     white-space: nowrap;  
