@@ -38,6 +38,7 @@
       <tr>
         <th>#</th>
         <th>Título</th>
+        <th>Fecha de lanzamiento</th>
         <th class="play-col"></th>
       </tr>
     </thead>
@@ -48,6 +49,9 @@
         <td>
           <div class="song-title">{{ song.title }}</div>
           <div class="artist">{{ song.artistName }}</div>
+        </td>
+        <td class="release-date">
+          {{ song.releaseDate | date:'MMM dd, yyyy' }}
         </td>
         <td class="play-col">
           <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
