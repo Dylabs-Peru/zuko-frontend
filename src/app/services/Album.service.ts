@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable,map } from 'rxjs';
 import { AlbumRequest, AlbumResponse } from '../models/album.model';
 import { ApiService } from './Api.service';
 
@@ -42,5 +42,10 @@ export class AlbumService {
   // Eliminar álbum
   deleteAlbum(id: number): Observable<any> {
     return this.apiService.delete(`${this.endpoint}/${id}`);
+  }
+
+  getAlbumBySongId(songId: number): Observable<AlbumResponse> {
+    return this.apiService.get<{data: AlbumResponse}>(`${this.endpoint}/from-song/${songId}`)
+      .pipe(map(response => response.data));
   }
 }

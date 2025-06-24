@@ -8,6 +8,8 @@ import { NgFor, NgIf, NgStyle } from "@angular/common";
 import { PlaylistResponse } from "../../../../models/playlist.model";
 import { PlaylistOptionsPopupComponent } from "../../components/playlist-options-popup/playlist-options-popup.component";
 import { PlaylistSongsEditListComponent } from '../../components/editar-playlist/playlist-songs-edit-list.component';
+import { AlbumService } from '../../../../services/Album.service';
+import { AlbumResponse } from '../../../../models/album.model';
 @Component({
   selector: 'app-playlist-display',
   standalone: true,
@@ -23,11 +25,14 @@ export class PlaylistDisplayComponent implements OnInit {
   showMenu = false;
   showDeleteDialog = false;
   showEditDialog = false;
+  albumMap: { [songId: number]: AlbumResponse|null } = {};
+
 
   constructor(
             private playlistService: PlaylistService, 
             private route: ActivatedRoute,
             private router: Router,
+            private albumService: AlbumService
   ) {}
    
    ngOnInit(): void {
@@ -46,7 +51,18 @@ export class PlaylistDisplayComponent implements OnInit {
         console.log('Songs antes de filtrar:', playlist.songs);
         playlist.songs = playlist.songs.filter(song => song && song.title);
         console.log('Songs después de filtrar:', playlist.songs);
+        playlist.songs.forEach(song => {
+          this.albumService.getAlbumBySongId(song.id).subscribe({
+            next: (album) => {
+              this.albumMap[song.id] = album;
+            },
+            error: (err) => {
+              this.albumMap[song.id] = null;
+            }
+          });
+        });
       }
+
         this.playlist = playlist;
         this.loading = false;
       },

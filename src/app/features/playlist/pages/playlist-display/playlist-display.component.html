@@ -44,6 +44,7 @@
       <tr>
         <th>#</th>
         <th>Título</th>
+        <th>Album</th>
         <th>Fecha de lanzamiento</th>
         <th class="play-col"></th>
       </tr>
@@ -55,6 +56,9 @@
         <td>
           <div class="song-title">{{ song.title }}</div>
           <div class="artist">{{ song.artistName }}</div>
+        </td>
+        <td>
+          <div class="album-name">{{ albumMap[song.id]?.title|| 'Single'}}</div>
         </td>
         <td class="release-date">
           {{ song.releaseDate | date:'MMM dd, yyyy' }}
