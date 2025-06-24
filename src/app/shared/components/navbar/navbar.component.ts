@@ -53,7 +53,7 @@ export class NavbarComponent {
 
   get userProfileImage(): string {
     const user = this.currentUser;
-    return user?.url_image || 'https://via.placeholder.com/35x35/b3b3b3/ffffff?text=👤';
+    return user?.url_image || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg';
   }
 
   get username(): string {
