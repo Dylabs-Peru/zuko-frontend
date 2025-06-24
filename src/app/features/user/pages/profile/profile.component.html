@@ -8,12 +8,12 @@
     <button class="dots-btn" (click)="openEditModal()" style="margin-left: auto;">&#8230;</button>
   </div>
   
-  <div class="profile-header">
-    <div class="profile-avatar">
-      <img *ngIf="user.url_image" [src]="user.url_image" alt="Avatar" />
-      <ng-container *ngIf="!user.url_image">
-        <span class="avatar-placeholder">&#128100;</span>
-      </ng-container>
+  <div class="profile-header">    <div class="profile-avatar">
+      <img 
+        [src]="user.url_image || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'" 
+        alt="Avatar" 
+        (error)="$any($event.target).src='https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'"
+      />
     </div>
     
     <div class="profile-info">
