@@ -2,10 +2,33 @@
 <div class="modal-overlay">
   <div class="modal-content">
     <div class="modal-avatar" (click)="fileInput.click()" style="cursor:pointer;position:relative;">
-      <img *ngIf="imagePreview" [src]="imagePreview" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
-      <span *ngIf="!imagePreview" class="avatar-icon">&#128100;</span>
-      <input #fileInput type="file" accept="image/*" style="display:none" (change)="onFileSelected($event)" />
-      <span style="position:absolute;bottom:8px;right:8px;background:#fff;color:#a10000;border-radius:50%;padding:2px 6px;font-size:14px;">✎</span>
+      <img 
+        *ngIf="hasImagePreview()" 
+        [src]="imagePreview()" 
+        alt="Avatar" 
+        style="width:100%;height:100%;object-fit:cover;border-radius:50%;" 
+      />
+      <span *ngIf="!hasImagePreview()" class="avatar-icon">&#128100;</span>
+      <input 
+        #fileInput 
+        type="file" 
+        accept="image/*" 
+        style="display:none" 
+        (change)="onFileSelected($event)"
+        [disabled]="uploadingImage()"
+      />
+      <span 
+        *ngIf="!uploadingImage()" 
+        style="position:absolute;bottom:8px;right:8px;background:#fff;color:#a10000;border-radius:50%;padding:2px 6px;font-size:14px;"
+      >
+        ✎
+      </span>
+      <div 
+        *ngIf="uploadingImage()" 
+        style="position:absolute;bottom:8px;right:8px;background:#fff;color:#a10000;border-radius:50%;padding:4px;font-size:12px;"
+      >
+        ⟳
+      </div>
     </div>
 
     <!-- Campo editable como texto -->
@@ -14,14 +37,22 @@
       type="text"
       [(ngModel)]="username"
       placeholder="Nombre de usuario"
+      [disabled]="uploadingImage()"
     />
 
     <textarea
       class="modal-textarea"
       placeholder="Biografía del usuario"
       [(ngModel)]="description"
+      [disabled]="uploadingImage()"
     ></textarea>
 
-    <button class="modal-btn" (click)="onSave()">Listo</button>
+    <button 
+      class="modal-btn" 
+      (click)="onSave()"
+      [disabled]="!canSave()"
+    >
+      {{ uploadingImage() ? 'Subiendo...' : 'Listo' }}
+    </button>
   </div>
 </div>
