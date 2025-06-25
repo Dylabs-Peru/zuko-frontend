@@ -26,6 +26,15 @@
         </small>
       </div>
 
+<!-- Botón de Reproducir/Pausar si tiene URL -->
+        <div *ngIf="song.youtubeUrl" class="player-control">
+          <button (click)="togglePlay(i, song.youtubeUrl)" class="play-button" [title]="isPlaying[i] ? 'Pausar' : 'Reproducir'">
+            {{ isPlaying[i] ? '⏸️' : '▶️' }}
+          </button>
+          <!-- iframe oculto -->
+          <div id="yt-player-{{i}}" style="width: 0; height: 0; overflow: hidden;"></div>
+        </div>
+
       <!-- Acciones solo si es su perfil -->
       <div class="actions" *ngIf="isOwnProfile">
         <button (click)="toggleMenu(i)" class="menu-button" title="Opciones">&#8942;</button>
@@ -63,6 +72,15 @@
           [(ngModel)]="editingSong.isPublicSong"
           name="isPublicSong"
         />
+
+        <label for="youtubeUrl">Enlace de YouTube:</label>
+        <input
+          id="youtubeUrl"
+          type="text"
+          [(ngModel)]="editingSong.youtubeUrl"
+          name="youtubeUrl"
+        />
+
 
         <div class="form-buttons">
           <button type="submit" class="save-button">Guardar</button>
