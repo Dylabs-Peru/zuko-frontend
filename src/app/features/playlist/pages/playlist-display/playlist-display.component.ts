@@ -10,12 +10,15 @@ import { PlaylistOptionsPopupComponent } from "../../components/playlist-options
 import { PlaylistSongsEditListComponent } from '../../components/editar-playlist/playlist-songs-edit-list.component';
 import { AlbumService } from '../../../../services/Album.service';
 import { AlbumResponse } from '../../../../models/album.model';
+import { AddSongToPlaylistModalComponent } from '../../components/agregar-cancion-playlist/add-song-to-playlist.component';
+import { SongResponse } from '../../../../models/song.model';
+
 @Component({
   selector: 'app-playlist-display',
   standalone: true,
   templateUrl: './playlist-display.component.html',
   styleUrls: ['./playlist-display.component.css'],
-  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent, ConfirmDeleteDialogComponent, PlaylistSongsEditListComponent  ]
+  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent, ConfirmDeleteDialogComponent, PlaylistSongsEditListComponent, AddSongToPlaylistModalComponent  ]
 })
 
 export class PlaylistDisplayComponent implements OnInit {
@@ -26,7 +29,10 @@ export class PlaylistDisplayComponent implements OnInit {
   showDeleteDialog = false;
   showEditDialog = false;
   albumMap: { [songId: number]: AlbumResponse|null } = {};
-
+  userID: number | null = null;
+  songs: SongResponse[] = [];
+  selectedSongForPlaylist: SongResponse | null = null;
+  showAddToPlaylistModal = false;
 
   constructor(
             private playlistService: PlaylistService, 
@@ -36,41 +42,21 @@ export class PlaylistDisplayComponent implements OnInit {
   ) {}
    
    ngOnInit(): void {
-    const playlistId = this.route.snapshot.paramMap.get('id');
-      if (!playlistId) {
-        this.error = 'ID de playlist no especificado';
-        this.loading = false;
-        return;
-      }
-      this.loading = true;
-      this.error = '';
-      this.playlistService.getPlaylistById(Number(playlistId)).subscribe({
-      next: (playlist) => {
-        console.log('Playlist recibida:', playlist);
-        if (playlist && Array.isArray(playlist.songs)) {
-        console.log('Songs antes de filtrar:', playlist.songs);
-        playlist.songs = playlist.songs.filter(song => song && song.title);
-        console.log('Songs después de filtrar:', playlist.songs);
-        playlist.songs.forEach(song => {
-          this.albumService.getAlbumBySongId(song.id).subscribe({
-            next: (album) => {
-              this.albumMap[song.id] = album;
-            },
-            error: (err) => {
-              this.albumMap[song.id] = null;
-            }
-          });
-        });
-      }
-
-        this.playlist = playlist;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'No se pudo cargar la playlist';
-        this.loading = false;
-      }
+    this.route.snapshot.params['id'];this.route.paramMap.subscribe(params => {
+    const playlistId = params.get('id');
+    if (!playlistId) {
+      this.error = 'ID de playlist no especificado';
+      this.loading = false;
+      return;
+    }
+    this.loadPlaylist(Number(playlistId));
     });
+
+    const auth = localStorage.getItem('auth');
+    if (auth) {
+      const authObj = JSON.parse(auth);
+      this.userID = authObj.user?.id || null;
+    }
     }
 
     onEditPlaylist() {
@@ -113,6 +99,54 @@ export class PlaylistDisplayComponent implements OnInit {
     onPlaylistEdited(editedPlaylist: PlaylistResponse) {
       this.playlist = editedPlaylist;
      this.showEditDialog = false;
+    }
+
+    canEdit(): boolean {
+      return this.playlist?.userID === this.userID;
+  }
+
+    loadPlaylist(playlistId: number) {
+    this.loading = true;
+    this.error = '';
+    this.albumMap = {}; 
+    this.playlistService.getPlaylistById(playlistId).subscribe({
+      next: (playlist) => {
+
+        if (playlist && Array.isArray(playlist.songs)) {
+          playlist.songs = playlist.songs.filter(song => song && song.title);
+          playlist.songs.forEach(song => {
+            this.albumService.getAlbumBySongId(song.id).subscribe({
+              next: (album) => {
+                this.albumMap[song.id] = album;
+              },
+              error: (err) => {
+                this.albumMap[song.id] = null;
+              }
+            });
+          });
+        }
+        this.playlist = playlist; 
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'No se pudo cargar la playlist';
+        this.loading = false;
+      }
+    });
+  }
+    openAddToPlaylist(song: SongResponse) {
+    this.selectedSongForPlaylist = song;
+    this.showAddToPlaylistModal = true;
+    }
+  
+    onCloseAddToPlaylist() {
+      this.showAddToPlaylistModal = false;
+      this.selectedSongForPlaylist = null;
+    }
+  
+    onSongAddedToPlaylist() {
+      this.showAddToPlaylistModal = false;
+      this.selectedSongForPlaylist = null;
     }
 
 

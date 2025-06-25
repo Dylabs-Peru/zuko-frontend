@@ -13,7 +13,7 @@
   <button class="shuffle-btn" title="Aleatorio">
     <span class="icon-shuffle"></span>
   </button>
-  <button class="options-btn" title="Más opciones" (click)="showMenu = true">
+  <button class="options-btn" title="Más opciones" (click)="showMenu = true" *ngIf="canEdit()">
     <span class="icon-options"><span></span></span>
   </button>
 </div>
@@ -65,6 +65,14 @@
         <td class="release-date">
           {{ song.releaseDate | date:'MMM dd, yyyy' }}
         </td>
+        <td>
+          <button 
+            *ngIf="!canEdit()" 
+            class="add-to-playlist-btn" 
+            (click)="openAddToPlaylist(song)">
+             Añadir a playlist
+          </button>
+        </td>
         <td class="play-col">
           <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
         </td>
@@ -72,4 +80,10 @@
       </ng-container>
     </tbody>
   </table>
+  <app-add-song-to-playlist-modal
+    *ngIf="!canEdit() && showAddToPlaylistModal && selectedSongForPlaylist"
+    [songId]="selectedSongForPlaylist.id"
+    (close)="onCloseAddToPlaylist()"
+    (songAdded)="onSongAddedToPlaylist()">
+    </app-add-song-to-playlist-modal>
 </div>

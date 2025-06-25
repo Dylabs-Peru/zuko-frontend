@@ -46,10 +46,10 @@ export class PlaylistService {
   }
 
   // 7. Obtener playlist pública por nombre
-  getPublicPlaylistByName(playlistName: string): Observable<PlaylistResponse> {
-    return this.api.get<{ data: PlaylistResponse }>(`${this.endpoint}/public/by-name/${playlistName}`)
-      .pipe(map(response => response.data));
-  }
+ getPublicPlaylistsByName(name: string): Observable<PlaylistResponse[]> {
+  return this.api.get<{ data: PlaylistResponse[] }>(`${this.endpoint}/public/search?name=${encodeURIComponent(name)}`)
+    .pipe(map(response => response.data));
+}
 
   // 8. Obtener playlist propia por nombre (autenticado)
   getMyPlaylistByName(playlistName: string): Observable<PlaylistResponse> {
