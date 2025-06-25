@@ -5,7 +5,7 @@
       <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden/>
       <img *ngIf="coverUrl; else defaultCover" [src]="coverUrl" alt="Cover" />
       <ng-template #defaultCover>
-        <img src="https://res.cloudinary.com/dqk8inmwe/image/upload/v1750654271/SAVE_20250622_235018_fbbguo.jpg" alt="Placeholder" />
+        <span class="camera-placeholder" aria-label="Subir Portada">📷</span>
       </ng-template>
         <!-- <span class="upload-hint">Subir Imagen</span> -->
     </label>

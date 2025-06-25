@@ -1,0 +1,82 @@
+<div class="playlist-edit-overlay">
+  <div class="playlist-edit-modal">
+    <button class="close-modal-btn" (click)="close.emit()">×</button>
+    <h2 style="margin-top:0;margin-bottom:12px;font-weight:bold;color:#b71c1c;font-size:22px;letter-spacing:0.5px;">
+      Editar Playlist</h2>
+    <div class="tabs">
+      <span [class.active-tab]="tab==='info'" (click)="tab='info'">Información Básica</span>
+      <span [class.active-tab]="tab==='songs'" (click)="tab='songs'">Canciones</span>
+    </div>
+       <div *ngIf="tab==='info'" class="form-content">
+      <div class="cover-upload-section">
+        <div class="cover-preview-container" *ngIf="coverUrl; else noCover">
+          <img [src]="coverUrl" alt="Cover" class="cover-preview" />
+          <button type="button" class="remove-cover-btn" (click)="coverUrl='';coverFile=null">Quitar portada</button>
+        </div>
+        <ng-template #noCover>
+          <div class="album-cover-preview no-cover">
+            <span class="cover-placeholder">📷</span>
+          </div>
+        </ng-template>
+        <div class="cover-upload-btn-container">
+          <label class="save-button upload-cover-label">
+            <input type="file" accept="image/*" (change)="onCoverSelected($event)" hidden />
+            <span>Subir portada</span>
+          </label>
+        </div>
+      </div>
+       
+     <div class="form-fields">
+        <label for="editName">Nombre</label>
+        <input id="editName" type="text" [(ngModel)]="editName" placeholder="Nombre de la playlist" maxlength="40" />
+
+        <label for="editDescription">Descripción</label>
+        <textarea id="editDescription" [(ngModel)]="editDescription" placeholder="Descripción" maxlength="255"></textarea>
+
+        <div class="privacy-select">
+          <label>
+            <input type="radio" name="isPublic" [(ngModel)]="editIsPublic" [value]="true" />
+            <span class="circle"></span>
+            <span>Pública</span>
+          </label>
+          <label>
+            <input type="radio" name="isPublic" [(ngModel)]="editIsPublic" [value]="false" />
+            <span class="circle"></span>
+            <span>Privada</span>
+          </label>
+        </div>
+        <div *ngIf="error" style="color:#d80000;font-weight:bold;">{{ error }}</div>
+        <div class="save-section" style="justify-content: flex-end; gap: 8px;">
+          <button class="cancel-button" type="button" (click)="close.emit()">Cancelar</button>
+          <button class="save-button" type="button" (click)="onSave()" [disabled]="saving">
+            {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+   <div *ngIf="tab==='songs'">
+      <div class="song-list-scroll">
+        <div class="song-list">
+          <div class="song-item" *ngFor="let song of songs">
+            <div class="song-info">
+              <span class="song-name">{{ song.title }}</span>
+              <span class="song-artist">{{ song.artistName }}</span>
+            </div>
+            <div class="song-actions">
+              <span class="song-duration">{{ song.releaseDate | date:'yyyy-MM-dd' }}</span>
+              <button class="remove-song-btn"
+                [disabled]="loadingIds.includes(song.id)"
+                (click)="removeSong(song.id)">
+                Quitar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="save-section">
+        <button class="cancel-button" type="button" (click)="close.emit()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

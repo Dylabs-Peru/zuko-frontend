@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { PlaylistResponse, PlaylistRequest } from '../models/playlist.model';
+import { PlaylistResponse, PlaylistRequest, UpdatePlaylistRequest } from '../models/playlist.model';
 import { SongResponse } from '../models/song.model';
 import { ApiService } from './Api.service';
 
@@ -62,4 +62,11 @@ export class PlaylistService {
     return this.api.get<{ data: PlaylistResponse[] }>(`${this.endpoint}/mine`)
       .pipe(map(response => response.data));
   }
+
+  updatePlaylist(playlistId: number, request: UpdatePlaylistRequest): Observable<PlaylistResponse> {
+    return this.api.patch<{ data: PlaylistResponse }>(`${this.endpoint}/${playlistId}`, request)
+      .pipe(map(response => response.data));
+  }
 }
+  
+
