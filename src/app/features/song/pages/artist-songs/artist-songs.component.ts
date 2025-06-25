@@ -23,8 +23,10 @@ export class ArtistSongsComponent implements OnInit {
   showDeleteConfirm = false;
   songToDelete: SongResponse | null = null;
 
+  playerRefs: { [key: number]: any } = {};
+  isPlaying: { [key: number]: boolean } = {};
   showSongForm = false;
-  editingSong: Partial<SongResponse> = { title: '', isPublicSong: false };
+  editingSong: Partial<SongResponse> = { title: '', isPublicSong: false, youtubeUrl: '' };
   formError: string | null = null;
 
   selectedSongForPlaylist: SongResponse | null = null;
@@ -85,7 +87,7 @@ export class ArtistSongsComponent implements OnInit {
 
     const songPayload = {
       title,
-      isPublicSong: this.editingSong.isPublicSong!
+      isPublicSong: this.editingSong.isPublicSong!, youtubeUrl: this.editingSong.youtubeUrl || ''
     };
 
     const request$ = this.editingSong.id
@@ -147,4 +149,54 @@ export class ArtistSongsComponent implements OnInit {
     this.showAddToPlaylistModal = false;
     this.selectedSongForPlaylist = null;
   }
+
+  extractVideoId(url: string): string {
+  const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : '';
+  }
+
+  initYouTubePlayer(index: number, videoId: string): void {
+  if (this.playerRefs[index]) return; // Ya existe
+
+  const player = new (window as any).YT.Player(`yt-player-${index}`, {
+    height: '0', // oculto
+    width: '0',
+    videoId: videoId,
+    events: {
+      onReady: () => {
+        this.playerRefs[index] = player;
+      }
+    }
+  });
+}
+
+togglePlay(index: number, youtubeUrl: string): void {
+  const videoId = this.extractVideoId(youtubeUrl);
+  if (!videoId) return;
+
+  const player = this.playerRefs[index];
+
+  // Si no hay reproductor, inicialízalo y luego reproduce
+  if (!player) {
+    this.initYouTubePlayer(index, videoId);
+    setTimeout(() => this.play(index), 500);
+    return;
+  }
+
+  if (this.isPlaying[index]) {
+    player.pauseVideo();
+    this.isPlaying[index] = false;
+  } else {
+    player.seekTo(0); // ✅ Esto reinicia el video desde el inicio
+    this.play(index);
+  }
+}
+
+play(index: number): void {
+  const player = this.playerRefs[index];
+  player.playVideo();
+  this.isPlaying[index] = true;
+}
+
 }
