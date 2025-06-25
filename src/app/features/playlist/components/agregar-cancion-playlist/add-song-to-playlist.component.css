@@ -1,0 +1,19 @@
+.modal-backdrop {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #fff; padding: 24px; border-radius: 14px; min-width: 300px;
+}
+.close-btn {
+  position: absolute; right: 12px; top: 12px;
+  background: none; border: none; font-size: 22px; cursor: pointer;
+}
+.playlist-option {
+  margin-bottom: 10px;
+}
+.error {
+  color: #b71c1c;
+}
