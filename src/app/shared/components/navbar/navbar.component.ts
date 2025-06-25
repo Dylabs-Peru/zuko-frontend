@@ -1,4 +1,3 @@
-import { PlaylistDisplayComponent } from './../../../features/playlist/pages/playlist-display/playlist-display.component';
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -9,13 +8,14 @@ import { UserResponse } from '../../../models/user.model';
 import { SongService } from '../../../services/Song.service';
 import { SongResponse } from '../../../models/song.model';
 import { catchError, forkJoin, of } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { ArtistResponse } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/Artist.service';
 import { AuthService } from '../../../services/Auth.service';
-import { AlbumService } from '../../../services/Album.service';
-import { filter } from 'rxjs/operators';
-import { PlaylistResponse } from '../../../models/playlist.model';
+import { signal, computed } from '@angular/core';
 import { PlaylistService } from '../../../services/playlist.service';
+import { PlaylistResponse } from '../../../models/playlist.model';
+import { AlbumService } from '../../../services/Album.service';
 
 @Component({
   selector: 'app-navbar',
@@ -34,6 +34,10 @@ export class NavbarComponent {
   playlistResults: PlaylistResponse[] = [];
   showResults = false;
   public isLandingPage = false;
+  
+  // Signals para estado del usuario
+  currentUser = signal<any>(null);
+  
   constructor(
     private router: Router,
     private userService: UserService,
@@ -43,6 +47,9 @@ export class NavbarComponent {
     private playlistService: PlaylistService,
     private authService: AuthService
   ) {
+    // Inicializar el signal del usuario
+    this.currentUser.set(this.authService.getAuthInfo()?.user || null);
+    
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -50,47 +57,41 @@ export class NavbarComponent {
       });
 
    }
-  get isArtist(): boolean {
-    const auth = this.authService.getAuthInfo();
-    if (!auth) return false;
+  
+  // Computed signals que se actualizan automáticamente
+  isArtist = computed(() => {
+    const user = this.currentUser();
+    if (!user) return false;
     
     try {
-      // Verifica si el usuario tiene artistName en su perfil
-      return !!auth?.user?.artistName;
+      return !!user?.artistName;
     } catch (e) {
       console.error('Error al verificar perfil de artista:', e);
       return false;
     }
-  }
+  });
 
-  
-  get isAdmin(): boolean {
-    const auth = this.authService.getAuthInfo();
-    if (!auth) return false;
+  isAdmin = computed(() => {
+    const user = this.currentUser();
+    if (!user) return false;
     
     try {
-      // Verifica si el usuario tiene rol de admin
-      return auth?.user?.roleName?.toLowerCase() === 'admin';
+      return user?.roleName?.toLowerCase() === 'admin';
     } catch (e) {
       console.error('Error al verificar rol de admin:', e);
       return false;
     }
-  }
+  });
 
-  get currentUser(): any {
-    const auth = this.authService.getAuthInfo();
-    return auth?.user || null;
-  }
-
-  get userProfileImage(): string {
-    const user = this.currentUser;
+  userProfileImage = computed(() => {
+    const user = this.currentUser();
     return user?.url_image || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg';
-  }
+  });
 
-  get username(): string {
-    const user = this.currentUser;
+  username = computed(() => {
+    const user = this.currentUser();
     return user?.username || 'Usuario';
-  }
+  });
 
   onSearch() {
     if (!this.searchTerm.trim()) return;
@@ -182,6 +183,14 @@ export class NavbarComponent {
 
   logout() {
     this.authService.logout('Usuario realizó logout manual');
+    // Actualizar signal después del logout
+    this.currentUser.set(null);
+  }
+
+  // Método para actualizar el usuario desde otros componentes
+  updateCurrentUser() {
+    const authInfo = this.authService.getAuthInfo();
+    this.currentUser.set(authInfo?.user || null);
   }
 
   goToLibrary() {

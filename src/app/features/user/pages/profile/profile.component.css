@@ -96,7 +96,9 @@
   background: none;
   border: none;
   cursor: pointer;
+  position: relative;
   margin-right: 80px;
+
 }
 
 .profile-bio-section {
