@@ -1,9 +1,9 @@
-<nav class="navbar">
+<nav class="navbar" *ngIf="!isLandingPage">
   <div class="logo">
       <img src="https://res.cloudinary.com/dqk8inmwe/image/upload/v1750643396/a721a41b-f518-4a2b-a654-b563fb5fc824-removebg-preview_kfp2pc.png" alt="Logo">
     </div>
     <nav class="nav-links">
-      <a href="#">Home</a>
+      <a routerLink="/home">Home</a>
     </nav>
     <div class="search-bar">
       <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Buscar canciones, artistas, usuarios...">
