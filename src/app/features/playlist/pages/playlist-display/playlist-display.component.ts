@@ -10,12 +10,15 @@ import { PlaylistOptionsPopupComponent } from "../../components/playlist-options
 import { PlaylistSongsEditListComponent } from '../../components/editar-playlist/playlist-songs-edit-list.component';
 import { AlbumService } from '../../../../services/Album.service';
 import { AlbumResponse } from '../../../../models/album.model';
+import { AddSongToPlaylistModalComponent } from '../../components/agregar-cancion-playlist/add-song-to-playlist.component';
+import { SongResponse } from '../../../../models/song.model';
+
 @Component({
   selector: 'app-playlist-display',
   standalone: true,
   templateUrl: './playlist-display.component.html',
   styleUrls: ['./playlist-display.component.css'],
-  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent, ConfirmDeleteDialogComponent, PlaylistSongsEditListComponent  ]
+  imports: [NgIf, NgStyle, NgFor, DatePipe, PlaylistOptionsPopupComponent, ConfirmDeleteDialogComponent, PlaylistSongsEditListComponent, AddSongToPlaylistModalComponent  ]
 })
 
 export class PlaylistDisplayComponent implements OnInit {
@@ -27,6 +30,9 @@ export class PlaylistDisplayComponent implements OnInit {
   showEditDialog = false;
   albumMap: { [songId: number]: AlbumResponse|null } = {};
   userID: number | null = null;
+  songs: SongResponse[] = [];
+  selectedSongForPlaylist: SongResponse | null = null;
+  showAddToPlaylistModal = false;
 
   constructor(
             private playlistService: PlaylistService, 
@@ -128,6 +134,22 @@ export class PlaylistDisplayComponent implements OnInit {
       }
     });
   }
+    openAddToPlaylist(song: SongResponse) {
+    this.selectedSongForPlaylist = song;
+    this.showAddToPlaylistModal = true;
+    }
+  
+    onCloseAddToPlaylist() {
+      this.showAddToPlaylistModal = false;
+      this.selectedSongForPlaylist = null;
+    }
+  
+    onSongAddedToPlaylist() {
+      this.showAddToPlaylistModal = false;
+      this.selectedSongForPlaylist = null;
+    }
+
+
 
 }
 
