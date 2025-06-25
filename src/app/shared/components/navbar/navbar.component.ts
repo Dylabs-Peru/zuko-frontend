@@ -1,3 +1,4 @@
+import { PlaylistDisplayComponent } from './../../../features/playlist/pages/playlist-display/playlist-display.component';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -11,6 +12,8 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { ArtistResponse } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/Artist.service';
 import { AuthService } from '../../../services/Auth.service';
+import { PlaylistResponse } from '../../../models/playlist.model';
+import { PlaylistService } from '../../../services/playlist.service';
 
 @Component({
   selector: 'app-navbar',
@@ -25,13 +28,15 @@ export class NavbarComponent {
   userResults: UserResponse[] = [];
   songResults: SongResponse[] = [];
   artistResults: ArtistResponse[] = [];
+  playlistResults: PlaylistResponse[] = [];
   showResults = false;
   constructor(
     private router: Router,
     private userService: UserService,
     private songService: SongService,
     private artistService: ArtistService,
-    private authService: AuthService
+    private authService: AuthService,
+    private playlistService: PlaylistService
   ) { }
   get isArtist(): boolean {
     const auth = this.authService.getAuthInfo();
@@ -68,13 +73,15 @@ export class NavbarComponent {
     this.userResults = [];
     this.songResults = [];
     this.artistResults = [];
+    this.playlistResults = [];
 
     forkJoin({
       user: this.userService.getUserByUsername(this.searchTerm.trim()).pipe(catchError(() => of(null))),
       songs: this.songService.getMySongs().pipe(catchError(() => of([]))),
-      artist: this.artistService.getArtistByName(this.searchTerm.trim()).pipe(catchError(() => of([])))
-    
-    }).subscribe(({ user, songs, artist }) => {
+      artist: this.artistService.getArtistByName(this.searchTerm.trim()).pipe(catchError(() => of([]))),
+      playlists: this.playlistService.getPublicPlaylistsByName(this.searchTerm.trim()).pipe(catchError(() => of([])))
+    }).subscribe(({ user, songs, artist, playlists }) => {
+      console.log("Playlists:", playlists);
       if (user) this.userResults = [user];
       if (artist && Array.isArray(artist) && artist.length > 0) {
         this.artistResults = artist;
@@ -84,9 +91,15 @@ export class NavbarComponent {
       if (songs && Array.isArray(songs)) {
         this.songResults = songs.filter(song => song.title.toLowerCase().includes(this.searchTerm.trim().toLowerCase()));
       }
-      if (!user && (!this.songResults || this.songResults.length === 0) && (!this.artistResults || this.artistResults.length === 0)) {
+
+      if (playlists && Array.isArray(playlists)) {
+        this.playlistResults = playlists
+      }
+      if (!user && (!this.songResults || this.songResults.length === 0) && (!this.artistResults || this.artistResults.length === 0)   && (!this.playlistResults || this.playlistResults.length === 0)) {
         this.errorMsg = 'No se encontraron resultados';
       }
+
+      
       this.showResults = true;
     });
   }
@@ -135,6 +148,11 @@ export class NavbarComponent {
 
   goToLibrary() {
     this.router.navigate(['/playlist/library']);
+    this.showResults = false;
+  }
+
+  goToPlaylist(playlistId: number) {
+    this.router.navigate(['/playlist', playlistId]);
     this.showResults = false;
   }
 }

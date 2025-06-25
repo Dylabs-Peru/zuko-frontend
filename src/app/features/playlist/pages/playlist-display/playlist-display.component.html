@@ -13,7 +13,7 @@
   <button class="shuffle-btn" title="Aleatorio">
     <span class="icon-shuffle"></span>
   </button>
-  <button class="options-btn" title="Más opciones" (click)="showMenu = true">
+  <button class="options-btn" title="Más opciones" *ngIf="canEdit()" (click)="showMenu = true">
     <span class="icon-options"><span></span></span>
   </button>
 </div>

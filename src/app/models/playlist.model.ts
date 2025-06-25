@@ -7,6 +7,7 @@ export interface PlaylistResponse {
     createdAt: string;
     songs: SongResponse[];
     url_image?: string;
+    ownerId: number;
 }
 
 export interface PlaylistRequest {

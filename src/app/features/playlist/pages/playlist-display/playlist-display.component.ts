@@ -26,7 +26,7 @@ export class PlaylistDisplayComponent implements OnInit {
   showDeleteDialog = false;
   showEditDialog = false;
   albumMap: { [songId: number]: AlbumResponse|null } = {};
-
+  userId: number | null = null;
 
   constructor(
             private playlistService: PlaylistService, 
@@ -71,6 +71,12 @@ export class PlaylistDisplayComponent implements OnInit {
         this.loading = false;
       }
     });
+
+      const auth = localStorage.getItem('auth');
+      if (auth) {
+        const authObj = JSON.parse(auth);
+        this.userId = authObj.user?.id || null;
+      }
     }
 
     onEditPlaylist() {
@@ -114,6 +120,10 @@ export class PlaylistDisplayComponent implements OnInit {
       this.playlist = editedPlaylist;
      this.showEditDialog = false;
     }
+
+    canEdit(): boolean {
+      return this.playlist?.ownerId === this.userId;
+}
 
 
 
