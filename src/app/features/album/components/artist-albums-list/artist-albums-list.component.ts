@@ -16,6 +16,7 @@ import { DeleteAlbumModalComponent } from '../delete-album-modal/delete-album-mo
 })
 
 export class ArtistAlbumsListComponent implements OnInit, OnDestroy {
+  @Input() isOwnProfile: boolean = false;
 
   openMenuAlbumId: number | null = null;
   showEditModal: boolean = false;

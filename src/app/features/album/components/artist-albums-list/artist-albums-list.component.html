@@ -13,15 +13,17 @@
         <div class="album-info">
           <p class="album-name">{{ album.title }}</p>
           <p class="album-owner">{{ album.artistName }}</p>
-<div class="dots" (click)="toggleAlbumMenu(album)">
-  <span></span>
-  <span></span>
-  <span></span>
-</div>
-<div *ngIf="openMenuAlbumId === album.id" class="dropdown-menu">
-  <button (click)="editAlbum(album)">Editar Álbum</button>
-  <button (click)="confirmDeleteAlbum(album)">Eliminar Álbum</button>
-</div>
+<ng-container *ngIf="isOwnProfile">
+  <div class="dots" (click)="toggleAlbumMenu(album)">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div *ngIf="openMenuAlbumId === album.id" class="dropdown-menu">
+    <button (click)="editAlbum(album)">Editar Álbum</button>
+    <button (click)="confirmDeleteAlbum(album)">Eliminar Álbum</button>
+  </div>
+</ng-container>
         </div>
         <button class="play-button" [routerLink]="['/album', album.id]" title="Ver álbum"></button>
       </div>
@@ -29,17 +31,19 @@
   </ng-container>
 </div>
 
-<app-edit-album-modal
-  [show]="showEditModal"
-  [album]="albumToEdit"
-  (close)="closeEditModal()"
-  (albumEdited)="fetchAlbums()"
-></app-edit-album-modal>
+<ng-container *ngIf="isOwnProfile">
+  <app-edit-album-modal
+    [show]="showEditModal"
+    [album]="albumToEdit"
+    (close)="closeEditModal()"
+    (albumEdited)="fetchAlbums()"
+  ></app-edit-album-modal>
 
-<app-delete-album-modal
-  [show]="showDeleteModal"
-  [albumTitle]="albumToDelete?.title || ''"
-  [albumId]="albumToDelete?.id"
-  (close)="closeDeleteModal()"
-  (albumDeleted)="onAlbumDeleted()"
-></app-delete-album-modal>
+  <app-delete-album-modal
+    [show]="showDeleteModal"
+    [albumTitle]="albumToDelete?.title || ''"
+    [albumId]="albumToDelete?.id"
+    (close)="closeDeleteModal()"
+    (albumDeleted)="onAlbumDeleted()"
+  ></app-delete-album-modal>
+</ng-container>
