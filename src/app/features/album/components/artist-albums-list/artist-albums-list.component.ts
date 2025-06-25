@@ -107,7 +107,7 @@ export class ArtistAlbumsListComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = 'No tienes álbumes disponibles';
+        this.albums = [];
         this.isLoading = false;
       }
     });

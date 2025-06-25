@@ -159,6 +159,10 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
         body: JSON.stringify(albumRequest)
       });
       if (!response.ok) {
+        if (response.status === 409) {
+          // Error por título duplicado
+          throw new Error('El título del álbum ya existe para este artista.');
+        }
         const errorData = await response.json();
         throw new Error(errorData.message || 'Error al crear álbum');
       }

@@ -2,13 +2,11 @@
   <ng-container *ngIf="isLoading">
     <p>Cargando álbumes...</p>
   </ng-container>
-  <ng-container *ngIf="error">
-    <p>{{ error }}</p>
+
+  <ng-container *ngIf="!isLoading && albums.length === 0">
+    <p class="no-albums">No tienes álbumes disponibles.</p>
   </ng-container>
-  <ng-container *ngIf="!isLoading && !error && albums.length === 0">
-    <p>No hay álbumes para mostrar.</p>
-  </ng-container>
-  <ng-container *ngIf="!isLoading && !error && albums.length > 0">
+  <ng-container *ngIf="!isLoading && albums.length > 0">
     <div class="albums-list">
       <div class="album-card" *ngFor="let album of albums">
         <div class="album-image" [ngStyle]="{ 'background-image': album.cover ? 'url(' + album.cover + ')' : '' }"></div>
