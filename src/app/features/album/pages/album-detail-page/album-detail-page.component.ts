@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlbumService } from '../../../../services/Album.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class AlbumDetailPageComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private route: ActivatedRoute, private albumService: AlbumService) {}
+  constructor(private route: ActivatedRoute, private albumService: AlbumService, private router: Router) {}
 
   ngOnInit() {
     const albumId = this.route.snapshot.paramMap.get('id');
@@ -36,5 +36,9 @@ export class AlbumDetailPageComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  public goToArtistProfile() {
+    this.router.navigate(['/artist/profile-artist']);
   }
 }

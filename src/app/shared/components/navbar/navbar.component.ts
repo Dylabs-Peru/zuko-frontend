@@ -90,8 +90,6 @@ export class NavbarComponent {
       }
       if (albums && Array.isArray(albums.data)) {
         this.albumResults = albums.data;
-      } else if (Array.isArray(albums)) {
-        this.albumResults = albums;
       } else {
         this.albumResults = [];
       }
