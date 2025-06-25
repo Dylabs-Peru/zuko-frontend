@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { PlaylistService } from '../../../../services/playlist.service'; 
 import { PlaylistResponse } from '../../../../models/playlist.model';
 import { NgIf,NgFor } from '@angular/common';
+
 @Component({
   selector: 'app-add-song-to-playlist-modal',
   templateUrl: './add-song-to-playlist.component.html',
@@ -47,7 +48,7 @@ export class AddSongToPlaylistModalComponent implements OnInit {
     const requests = Array.from(this.selectedPlaylistIds).map(pid =>
       this.playlistService.addSongToPlaylist(pid, this.songId)
     );
-    // Lanza todos los requests (podrías usar forkJoin si quieres esperar a todos)
+    
     Promise.all(requests.map(req => req.toPromise()))
       .then(() => {
         this.loading = false;
