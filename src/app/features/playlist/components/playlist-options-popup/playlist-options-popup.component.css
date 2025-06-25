@@ -47,3 +47,11 @@
   transition: background 0.15s, color 0.15s;
 }
 .close-btn:hover { background: #e2e2e2; color: #d80000; }
+
+.menu-item:hover {
+  color: #d80000;
+}
+
+.menu-item delete:hover {
+  color: #d80000;
+}

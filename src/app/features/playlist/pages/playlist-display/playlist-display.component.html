@@ -33,10 +33,12 @@
 
 <app-playlist-songs-edit-list
   *ngIf="playlist &&showEditDialog"
+  [playlist]="playlist"
   [songs]="playlist.songs"
   [playlistId]="playlist.playlistId"
-  (songRemoved)="onSongRemoved($event)"
-  (close)="onCloseEditDialog()">
+  (close)="onCloseEditDialog()"
+  (playlistEdited)="onPlaylistEdited($event)"
+  (songRemoved)="onSongRemoved($event)">
 </app-playlist-songs-edit-list>
 
   <table>

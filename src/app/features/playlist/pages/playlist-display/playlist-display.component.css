@@ -116,6 +116,14 @@ body {
   justify-content: center;
   cursor: pointer;
 }
+
+.options-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.shuffle-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
 .icon-options {
   display: flex;
   align-items: center;
