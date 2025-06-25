@@ -1,0 +1,98 @@
+.modal-backdrop {
+  position: fixed; 
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(20,20,20,0.5);
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  z-index: 1200;
+}
+
+.modal-content {
+  background: #fff;
+  color: #141414;
+  padding: 32px 24px 22px 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 36px rgba(0,0,0,0.18);
+  min-width: 320px;
+  max-width: 90vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.close-btn {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #d80000;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.18s;
+}
+.close-btn:hover { opacity: 1; }
+
+h2 {
+  font-family: 'Manjari', Arial, sans-serif;
+  color: #b71c1c;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 18px;
+}
+
+.playlist-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+input[type="checkbox"] {
+  accent-color: #b71c1c; /* Checkbox en rojo */
+  width: 18px; height: 18px;
+  border-radius: 6px;
+  border: 2px solid #b71c1c;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+input[type="checkbox"]:hover {
+  box-shadow: 0 0 0 2px #ffeaea;
+}
+
+.playlist-label {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 16px;
+  color: #141414;
+}
+
+.add-btn {
+  width: 50%;
+  display: block;
+  padding: 12px;
+  background: #d80000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 18px auto 0 auto;
+  cursor: pointer;
+  transition: background 0.18s;
+  box-shadow: 0 2px 8px rgba(185,0,0,0.09);
+}
+
+.add-btn:hover {
+  background: #b71c1c;
+}
+
+.error {
+  color: #b71c1c;
+  margin-top: 10px;
+  font-size: 15px;
+  font-family: 'Manjari', Arial, sans-serif;
+}

@@ -32,6 +32,7 @@
         <div *ngIf="openMenuIndex === i" class="dropdown-menu">
           <button (click)="openEditForm(song)">Editar canción</button>
           <button (click)="confirmDelete(song)">Eliminar canción</button>
+          <button (click)="openAddToPlaylist(song)">Agregar a Playlist</button>
         </div>
       </div>
     </li>
@@ -82,5 +83,13 @@
       </div>
     </div>
   </div>
+
+<app-add-song-to-playlist-modal
+  *ngIf="showAddToPlaylistModal && selectedSongForPlaylist"
+  [songId]="selectedSongForPlaylist.id"
+  (close)="onCloseAddToPlaylist()"
+  (songAdded)="onSongAddedToPlaylist()">
+</app-add-song-to-playlist-modal>
+
 
 </div>

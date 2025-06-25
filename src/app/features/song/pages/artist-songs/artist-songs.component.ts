@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SongService } from '../../../../services/Song.service';
 import { SongResponse, SongRequest } from '../../../../models/song.model';
+import { AddSongToPlaylistModalComponent } from '../../../playlist/components/agregar-cancion-playlist/add-song-to-playlist.component';
 
 @Component({
   selector: 'app-artist-songs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AddSongToPlaylistModalComponent],
   templateUrl: './artist-songs.component.html',
   styleUrls: ['./artist-songs.component.css']
 })
@@ -25,6 +26,9 @@ export class ArtistSongsComponent implements OnInit {
   showSongForm = false;
   editingSong: Partial<SongResponse> = { title: '', isPublicSong: false };
   formError: string | null = null;
+
+  selectedSongForPlaylist: SongResponse | null = null;
+  showAddToPlaylistModal = false;
 
   constructor(private songService: SongService) {}
 
@@ -127,5 +131,20 @@ export class ArtistSongsComponent implements OnInit {
         alert('Error al eliminar la canción.');
       }
     });
+  }
+
+  openAddToPlaylist(song: SongResponse) {
+  this.selectedSongForPlaylist = song;
+  this.showAddToPlaylistModal = true;
+  }
+
+  onCloseAddToPlaylist() {
+    this.showAddToPlaylistModal = false;
+    this.selectedSongForPlaylist = null;
+  }
+
+  onSongAddedToPlaylist() {
+    this.showAddToPlaylistModal = false;
+    this.selectedSongForPlaylist = null;
   }
 }
