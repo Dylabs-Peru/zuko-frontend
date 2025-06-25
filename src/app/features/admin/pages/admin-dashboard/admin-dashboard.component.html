@@ -1,0 +1,39 @@
+<div class="admin-dashboard-container">
+  <div class="admin-header">
+    <h1 class="admin-title">Panel de Administración</h1>
+    <p class="admin-subtitle">Gestiona los recursos del sistema</p>
+  </div>
+
+  <div class="admin-sections">
+    <div 
+      *ngFor="let section of adminSections" 
+      class="admin-card"
+      [style.border-left-color]="section.color"
+      (click)="navigateToSection(section.route)"
+    >
+      <div class="card-icon" [style.background-color]="section.color + '20'">
+        <span class="icon">{{ section.icon }}</span>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">{{ section.title }}</h3>
+        <p class="card-description">{{ section.description }}</p>
+      </div>
+      <div class="card-arrow">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9,18 15,12 9,6"></polyline>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats">
+    <div class="stat-card">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Módulos Disponibles</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">Admin</div>
+      <div class="stat-label">Nivel de Acceso</div>
+    </div>
+  </div>
+</div>

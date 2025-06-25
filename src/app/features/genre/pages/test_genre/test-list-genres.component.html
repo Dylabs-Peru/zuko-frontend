@@ -1,0 +1,6 @@
+<h2>Test Select Género</h2>
+<app-list-genres (genreSelected)="onGenreSelected($event)"></app-list-genres>
+
+<div *ngIf="selectedGenreId !== null" style="margin-top: 16px;">
+  <strong>ID seleccionado:</strong> {{ selectedGenreId }}
+</div>

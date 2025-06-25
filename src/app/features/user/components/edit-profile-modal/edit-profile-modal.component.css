@@ -1,0 +1,88 @@
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  background: linear-gradient(180deg, #a10000, #5c0000);
+  border-radius: 12px;
+  padding: 32px 24px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  color: white;
+}
+
+.modal-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.avatar-icon {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.modal-username-input {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  background: transparent;
+  border: none;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 16px;
+  outline: none;
+  border-bottom: 1px solid white;
+}
+
+.modal-username-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modal-textarea {
+  width: 100%;
+  min-height: 80px;
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 20px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+.modal-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modal-btn {
+  background: white;
+  color: #a10000;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.modal-btn:hover {
+  background: #f0f0f0;
+}

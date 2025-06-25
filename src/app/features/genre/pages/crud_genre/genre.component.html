@@ -1,0 +1,95 @@
+<div class="admin-center-container">
+<h2>Lista de Géneros Musicales</h2>
+
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul class="genre-list">
+  <li *ngFor="let genre of genres">
+    {{ genre.name }} - {{ genre.description }}
+  </li>
+</ul>
+
+
+<h2>Crear Género Musical</h2>
+<form class="form-card" (ngSubmit)="onCreateGenre()" #genreForm="ngForm">
+  <label for="name">Nombre del género:</label>
+  <input type="text" id="name" name="name" [(ngModel)]="newGenre.name" #name="ngModel" required minlength="3">
+  <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error">
+  <span *ngIf="name.errors?.['required']">El nombre es obligatorio.</span>
+  <span *ngIf="name.errors?.['minlength']">El nombre debe tener al menos 3 caracteres.</span>
+</div>
+  <label for="description">Descripción (opcional):</label>
+  <input type="text" id="description" name="description" [(ngModel)]="newGenre.description" #desc="ngModel" maxlength="200">
+  <div *ngIf="desc.errors?.['maxlength'] && desc.touched" class="error">
+    La descripción no puede exceder los 200 caracteres.
+  </div>
+  <button type="submit">Crear género</button>
+</form>
+
+
+<div *ngIf="createSuccess" class="createSuccess">
+  Género creado exitosamente.
+</div>
+<div *ngIf="createError" class="createError">
+  ⚠️ {{ createError }}
+</div>
+
+
+<h2>Editar Género Musical</h2>
+<label class = "label-red" for="genreSelect">Selecciona un género para editar:</label>
+<select id="genreSelect" [(ngModel)]="selectedGenreId" (change)="onSelectGenre()" name="genreSelect">
+  <option [ngValue]="null">-- Selecciona un género --</option>
+  <option *ngFor="let genre of genres" [ngValue]="genre.id">
+    {{ genre.name }}
+  </option>
+</select>
+
+
+<form class = "form-card" *ngIf="editingGenre" (ngSubmit)="onUpdateGenre()" #editForm="ngForm">
+  <label for="editName">Nombre del género:</label>
+  <input type="text" id="editName" name="editName" [(ngModel)]="editingGenre.name" #editName="ngModel" required minlength="3">
+  <div *ngIf="editName.invalid && (editName.dirty || editName.touched)" class="error">
+    <span *ngIf="editName.errors?.['required']">El nombre es obligatorio.</span>
+    <span *ngIf="editName.errors?.['minlength']">El nombre debe tener al menos 3 caracteres.</span>
+  </div>
+  <label for="editDescription">Descripción (opcional):</label>
+  <input type="text" id="editDescription" name="editDescription" [(ngModel)]="editingGenre.description" #editDesc="ngModel" maxlength="200">
+  <div *ngIf="editDesc.errors?.['maxlength'] && (editDesc.dirty || editDesc.touched)" class="error">
+    La descripción no puede exceder 200 caracteres.
+  </div>
+  <button type="submit">Actualizar género</button>
+</form>
+
+
+<div *ngIf="editSuccess" class="editSuccess">
+  Género actualizado exitosamente.
+</div>
+<div *ngIf="editError" class="editError">
+  ⚠️ {{ editError }}
+</div>
+
+
+<h2>Eliminar Género Musical</h2>
+<label class = "label-red" for="genreDeleteSelect">Selecciona un género para eliminar:</label>
+<select id="genreDeleteSelect" [(ngModel)]="selectedDeleteGenreId" name="genreDeleteSelect">
+  <option [ngValue]="null">-- Selecciona un género --</option>
+  <option *ngFor="let genre of genres" [ngValue]="genre.id">
+    {{ genre.name }}
+  </option>
+</select>
+
+
+<button  *ngIf="selectedDeleteGenreId" type="button" class="delete-btn" (click)="onDeleteGenre()" >
+  Eliminar género
+</button>
+
+
+<div *ngIf="deleteSuccess" class="deleteSuccess">
+  Género eliminado exitosamente.
+</div>
+<div *ngIf="deleteError" class="deleteError">
+  ⚠️ {{ deleteError }}
+</div>
+</div>
+
+

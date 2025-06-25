@@ -1,0 +1,90 @@
+<div class="profile-container" *ngIf="artist; else loading">
+    <div class="profile-title-row" style="display: flex; align-items: center; gap: 16px;">
+      <h1 class="profile-title" style="margin: 0;">{{ isOwnArtistProfile ? 'Mi Perfil' : 'Perfil de Artista' }}</h1>
+      <ng-container *ngIf="isOwnArtistProfile">
+        <app-change-status-artist
+          *ngIf="artist.isActive"
+          [artistId]="artist.id"
+          [isActive]="artist.isActive">
+        </app-change-status-artist>
+      </ng-container>
+    </div>
+  
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img *ngIf="artist.urlImage; else defaultAvatar" [src]="artist.urlImage" alt="Foto de perfil">
+        <ng-template #defaultAvatar>
+          <div class="avatar-placeholder">&#128100;</div>
+        </ng-template>
+      </div>
+  
+      <div class="profile-info">
+        <span class="role">Artista</span>
+        <div class="profile-name">{{ artist.name || 'Nombre de Usuario' }}</div>
+        <div class="profile-email">{{ userEmail || 'Artista registrado' }}</div>
+        <div class="profile-country">{{ artist.country || 'País' }}</div>
+      </div>
+  
+      <div class="profile-actions" *ngIf="isOwnArtistProfile">
+        <div class="profile-dots" (click)="onEditDotsClick()" title="Editar artista">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="profile-menu-bar">
+      <nav class="profile-menu">
+        <a class="menu-item" [class.active]="!showAlbumsSection && !showSongsSection" (click)="showAlbumsSection = false; showSongsSection = false; $event.preventDefault()" href="#">Biografía</a>
+        <a class="menu-item" [class.active]="showAlbumsSection" (click)="showAlbumsSection = true; showSongsSection = false; $event.preventDefault()" href="#">Mis Álbumes</a>
+        <a class="menu-item" [class.active]="showSongsSection" (click)="showSongsSection = true; showAlbumsSection = false; $event.preventDefault()" href="#">Mis Canciones</a>
+      </nav>
+
+       <button *ngIf="showAlbumsSection && isOwnArtistProfile"
+            class="circle create-album-btn"
+            (click)="onCreateAlbumClick()"
+            title="Crear álbum">
+        <span class="plus"></span>
+      </button>
+
+    <app-create-album-modal
+      [show]="showCreateAlbumModal"
+      (close)="closeCreateAlbumModal()"
+      (albumCreated)="onAlbumCreated($event)">
+    </app-create-album-modal>
+    </div>
+
+    <ng-container *ngIf="showAlbumsSection && artist?.id">
+      <app-artist-albums-list [artistId]="artist.id" [isOwnProfile]="isOwnArtistProfile"></app-artist-albums-list>
+    </ng-container>
+
+    <!-- Sección de canciones -->
+    <ng-container *ngIf="showSongsSection && artist?.id">
+      <app-artist-songs
+        [artistId]="artist.id"
+        [isOwnProfile]="isOwnArtistProfile"
+      ></app-artist-songs>
+    </ng-container>
+
+  
+    <section class="profile-bio-section" *ngIf="!showAlbumsSection && !showSongsSection">
+      <label class="bio-label">Biografía</label>
+      <div class="profile-bio">
+        {{ artist.biography || 'Biografía del usuario' }}
+      </div>
+    </section>
+  </div>
+
+  <app-edit-artist-profile-modal
+    *ngIf="showEditModal"
+    [name]="artist?.name"
+    [biography]="artist?.biography"
+    [country]="artist?.country"
+    [urlImage]="artist?.urlImage"
+    (save)="onSaveArtistProfile($event)"
+    (close)="showEditModal = false"
+  ></app-edit-artist-profile-modal>
+  
+  <ng-template #loading>
+    <div class="no-user">Cargando perfil del artista...</div>
+  </ng-template>
+  

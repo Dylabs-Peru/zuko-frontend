@@ -1,0 +1,7 @@
+<div class="popup-backdrop" *ngIf="visible" (click)="close.emit()"></div>
+<div class="popup-menu" *ngIf="visible">
+  <button class="menu-item" (click)="edit.emit()">Editar Playlist</button>
+  <button class="menu-item delete" (click)="delete.emit()">Eliminar Playlist</button>
+  <button class="menu-item acceso-directo" (click)="addShortcut.emit()">Añadir a acceso directo</button>
+  <button class="close-btn" (click)="close.emit()" aria-label="Cerrar">&times;</button>
+</div>

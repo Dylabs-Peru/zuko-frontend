@@ -1,0 +1,253 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: linear-gradient(to bottom, #2b0000, #550000);
+}
+
+:host, .playlist-detail-root, table, th, td, .header, .controls, .song-title, .artist  {
+    font-family: 'Manjari', sans-serif;
+}
+
+.playlist-detail-root {
+    min-height: 100vh;
+    min-width: 100vw;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom, #2b0000, #550000);
+    margin:0;
+    padding: 0;
+}
+
+.header {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 300px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 3rem;
+    margin: 0;
+    color: #fff;
+    font-weight: bold;
+}
+
+.header .details {
+    font-size: 1rem;
+    color: #fff;
+    opacity: 1;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    padding: 20px;
+}
+
+.controls button {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.play-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.play-btn:hover {
+  background: #D80000;
+  .icon-play {
+    background: #fff;
+  }
+}
+.icon-play {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 4px; 
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="black"/></svg>') no-repeat center/contain;
+  background: #000;
+}
+
+.shuffle-btn {
+  background: none;
+  border: none;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-shuffle {
+  width: 40px;
+  height: 40px;
+  display: block;
+  background: url("https://res.cloudinary.com/dqk8inmwe/image/upload/v1750791783/CITYPNG.COM_HD_Random_White_Icon_Transparent_Background_-_600x600_eypzjk.png") center/contain no-repeat;
+  filter: brightness(100) invert(0); 
+}
+
+.options-btn {
+  background: none;
+  border: none;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.options-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.shuffle-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+.icon-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 10px;
+}
+.icon-options::before,
+.icon-options::after,
+.icon-options span {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 2.5px;
+  background: #fff;
+  border-radius: 50%;
+}
+.icon-options span {
+  /* Punto central */
+  margin: 0 2.5px;
+}
+
+
+
+table {
+    width: 100%;    
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px 20px;
+    text-align: left;
+    color: #fff;
+    vertical-align: middle;
+    white-space: nowrap;  
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+th {
+    font-weight: normal;
+    opacity: 0.7;
+}
+
+td.release-date {
+    padding-left: 50px;
+}
+
+.number {
+    width: 30px;
+}
+
+.play-col {
+    width: 60px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.song-play-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    padding: 6px 10px;
+    border-radius: 50%;
+}
+.song-play-btn:hover {
+    background: rgba(255,255,255,0.08);
+    color: #ff5252;
+}
+
+
+
+.song-title {
+    font-weight: bold;
+    color: #fff;
+}
+
+.artist {
+    font-size: 0.85rem;
+    color: #fff;
+    font-weight: normal;
+    opacity: 1;
+}
+
+tr:hover {
+  background: #660000 !important;
+}
+
+.add-to-playlist-btn {
+  background: #550000;            
+  color: #fff;
+  border: none;
+  border-radius: 18px;            
+  font-family: 'Manjari', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 7px 18px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.16s;
+  box-shadow: 0 2px 8px rgba(185,0,0,0.07);
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.add-to-playlist-btn:hover,
+.add-to-playlist-btn:focus {
+  background: #b90000;
+  box-shadow: 0 3px 12px rgba(183,28,28,0.15);
+}
+
+.add-to-playlist-btn:active {
+  background: #550000;
+}
+
+.add-to-playlist-btn svg, .add-to-playlist-btn .icon {
+  font-size: 18px;
+  margin-right: 4px;
+  vertical-align: middle;
+}

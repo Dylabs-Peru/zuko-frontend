@@ -1,0 +1,138 @@
+<div class="admin-section-container">
+  <div class="section-header">
+    <button class="back-btn" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+      Volver
+    </button>
+    <h1 class="section-title">Gestión de Roles</h1>
+    <p class="section-subtitle">Configura roles y permisos del sistema</p>
+  </div>
+
+  <div class="section-content">
+    <!-- Actions Bar -->
+    <div class="actions-bar">
+      <button 
+        class="create-btn" 
+        (click)="openCreateForm()"
+        [disabled]="loading"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Crear Nuevo Rol
+      </button>
+    </div>
+
+    <!-- Create/Edit Form -->
+    <div class="form-container" *ngIf="showCreateForm || showEditForm">
+      <div class="form-card">
+        <div class="form-header">
+          <h3>{{ showCreateForm ? 'Crear Nuevo Rol' : 'Editar Rol' }}</h3>
+          <button class="close-btn" (click)="closeForm()">×</button>
+        </div>
+        
+        <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="roleName">Nombre del Rol</label>
+            <input 
+              id="roleName" 
+              formControlName="roleName" 
+              type="text" 
+              placeholder="Ej: Moderador, Editor"
+              class="form-input"
+            />
+            <div class="error-message" *ngIf="roleForm.get('roleName')?.invalid && roleForm.get('roleName')?.touched">
+              El nombre del rol es requerido (mínimo 2 caracteres)
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Descripción</label>
+            <textarea 
+              id="description" 
+              formControlName="description" 
+              placeholder="Describe las responsabilidades y permisos de este rol"
+              class="form-textarea"
+              rows="3"
+            ></textarea>
+            <div class="error-message" *ngIf="roleForm.get('description')?.invalid && roleForm.get('description')?.touched">
+              La descripción es requerida (mínimo 5 caracteres)
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="closeForm()">Cancelar</button>
+            <button 
+              type="submit" 
+              class="submit-btn"
+              [disabled]="roleForm.invalid || loading"
+            >
+              {{ loading ? 'Guardando...' : (showCreateForm ? 'Crear Rol' : 'Actualizar Rol') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Roles List -->
+    <div class="roles-container">
+      <div class="loading-container" *ngIf="loading && roles.length === 0">
+        <div class="spinner"></div>
+        <p>Cargando roles...</p>
+      </div>
+
+      <div class="empty-state" *ngIf="!loading && roles.length === 0">
+        <div class="empty-icon">🔐</div>
+        <h3>No hay roles creados</h3>
+        <p>Crea el primer rol del sistema</p>
+        <button class="create-btn" (click)="openCreateForm()">Crear Primer Rol</button>
+      </div>
+
+      <div class="roles-grid" *ngIf="roles.length > 0">
+        <div class="role-card" *ngFor="let role of roles">
+          <div class="role-header">
+            <div class="role-icon">🔐</div>
+            <div class="role-info">
+              <h3 class="role-name">{{ role.roleName }}</h3>
+              <p class="role-id">ID: {{ role.id }}</p>
+            </div>
+          </div>
+          
+          <div class="role-description">
+            <p>{{ role.description }}</p>
+          </div>
+          
+          <div class="role-actions">
+            <button 
+              class="edit-btn" 
+              (click)="openEditForm(role)"
+              [disabled]="loading"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m18 2 4 4-14 14H4v-4z"></path>
+                <path d="m14.5 5.5 4 4"></path>
+              </svg>
+              Editar
+            </button>
+            <button 
+              class="delete-btn" 
+              (click)="deleteRole(role)"
+              [disabled]="loading"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3,6 5,6 21,6"></polyline>
+                <path d="m19,6-1,14a2,2 0 0,1-2,2H8a2,2 0 0,1-2-2L5,6"></path>
+                <path d="m10,11 0,6"></path>
+                <path d="m14,11 0,6"></path>
+              </svg>
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

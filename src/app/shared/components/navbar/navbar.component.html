@@ -1,0 +1,88 @@
+<nav class="navbar" *ngIf="!isLandingPage">
+  <div class="logo">
+      <img src="https://res.cloudinary.com/dqk8inmwe/image/upload/v1750643396/a721a41b-f518-4a2b-a654-b563fb5fc824-removebg-preview_kfp2pc.png" alt="Logo">
+    </div>
+    <nav class="nav-links">
+      <a routerLink="/home">Home</a>
+    </nav>
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Buscar canciones, artistas, usuarios...">
+      <span *ngIf="errorMsg" style="color:red; font-size:12px;">{{ errorMsg }}</span>
+      
+      <div *ngIf="showResults && (userResults.length || songResults.length || artistResults.length || albumResults.length || playlistResults.length)" class="search-results">
+        <div *ngIf="userResults.length">
+          <strong>Usuarios:</strong>
+          <ul>
+            <li *ngFor="let user of userResults">
+              <a (click)="goToUser(user.username)">{{ user.username }}</a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="artistResults.length">
+          <strong>Artistas:</strong>
+          <ul>
+            <li *ngFor="let artist of artistResults">
+              <a href="#" (click)="goToArtist(artist.name); $event.preventDefault()">{{ artist.name }}</a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="albumResults.length">
+          <strong>Álbumes:</strong>
+          <ul>
+            <li *ngFor="let album of albumResults">
+              <a href="#" (click)="goToAlbum(album.id); $event.preventDefault()">{{ album.title }}</a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="songResults.length">
+          <strong>Canciones:</strong>
+          <ul>
+            <li *ngFor="let song of songResults">
+              <a (click)="goToSong(song.id)">{{ song.title }} <span style="font-size:11px; color:#888;">({{ song.artistName }})</span></a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="playlistResults.length">
+          <strong>Playlists públicas:</strong>
+          <ul>
+            <li *ngFor="let playlist of playlistResults">
+              <a (click)="goToPlaylist(playlist.playlistId)">
+                {{ playlist.name }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>    <div class="header-right">
+      <a href="#" (click)="goToLibrary(); $event.preventDefault()">Biblioteca</a>
+      <a href="#" (click)="goToAdminDashboard(); $event.preventDefault()" *ngIf="isAdmin" class="admin-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+        Admin
+      </a>
+      <div class="profile-menu">
+        <a [routerLink]="isArtist ? '/artist/profile-artist' : '/user/Myprofile'" class="profile-link">
+          <img 
+            [src]="userProfileImage" 
+            [alt]="isArtist ? 'Perfil Artista' : 'Perfil Usuario'" 
+            [title]="username"
+            class="profile-icon">
+        </a>
+        <div class="dropdown-content">
+          <div class="user-info">
+            <strong>{{ username }}</strong>
+            <small>{{ isArtist ? 'Artista' : 'Usuario' }}</small>
+          </div>
+          <a [routerLink]="isArtist ? '/artist/profile-artist' : '/user/Myprofile'">
+            {{ isArtist ? 'Mi Perfil de Artista' : 'Mi Perfil' }}
+          </a>
+          <a href="#" (click)="logout(); $event.preventDefault()" class="logout-btn">
+            Cerrar Sesión
+          </a>
+        </div>
+      </div>
+    </div>
+</nav>

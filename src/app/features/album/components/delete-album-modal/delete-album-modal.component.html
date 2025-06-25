@@ -1,0 +1,14 @@
+<div class="delete-album-modal-backdrop" *ngIf="show">
+  <div class="delete-album-modal-container">
+    <h2 class="delete-title">Eliminar Álbum</h2>
+    <div class="delete-message">
+      ¿Estás seguro que quieres eliminar el álbum <b>{{ albumTitle }}</b>? Esta acción no se puede deshacer.
+    </div>
+    <div class="delete-actions">
+      <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
+      <button class="delete-button" type="button" [disabled]="isDeleting" (click)="onDelete()">
+        {{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+      </button>
+    </div>
+  </div>
+</div>

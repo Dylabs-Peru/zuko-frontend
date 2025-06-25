@@ -1,0 +1,95 @@
+<div class="container">
+
+  <div *ngIf="loading">Cargando...</div>
+
+  <!-- Usuario no es artista (otro perfil) -->
+  <div *ngIf="!loading && !isOwnProfile" class="no-profile">
+    Este usuario no tiene un perfil de artista.
+  </div>
+
+  <!-- Artista sin canciones -->
+  <div *ngIf="!loading && isOwnProfile && songs.length === 0" class="no-songs">
+    No tienes canciones disponibles.
+  </div>
+
+  <!-- Lista de canciones -->
+  <ul *ngIf="songs.length > 0">
+    <li *ngFor="let song of songs; let i = index" class="song-item">
+      <div class="song-info">
+        <div class="song-title">
+          <span class="song-index">{{ i + 1 }}.</span>
+          <strong class="song-name">{{ song.title }}</strong>
+        </div>
+        <small class="meta">
+          Fecha: {{ song.releaseDate | date: 'dd/MM/yyyy' }} · 
+          {{ song.isPublicSong ? 'Pública' : 'Privada' }}
+        </small>
+      </div>
+
+      <!-- Acciones solo si es su perfil -->
+      <div class="actions" *ngIf="isOwnProfile">
+        <button (click)="toggleMenu(i)" class="menu-button" title="Opciones">&#8942;</button>
+        <div *ngIf="openMenuIndex === i" class="dropdown-menu">
+          <button (click)="openEditForm(song)">Editar canción</button>
+          <button (click)="confirmDelete(song)">Eliminar canción</button>
+          <button (click)="openAddToPlaylist(song)">Agregar a Playlist</button>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <button *ngIf="isOwnProfile" class="create-song-button" (click)="openCreateForm()"> Crear canción </button>
+
+  <!-- Modal Crear/Editar -->
+  <div *ngIf="showSongForm" class="modal">
+    <div class="modal-content">
+      <h2>{{ editingSong.id ? 'Editar canción' : 'Crear canción' }}</h2>
+      <form (submit)="onSubmit($event)">
+        <label for="title">Título:</label>
+        <input
+          id="title"
+          type="text"
+          [(ngModel)]="editingSong.title"
+          name="title"
+          required
+        />
+
+        <div class="form-error" *ngIf="formError">{{ formError }}</div>
+
+        <label for="isPublicSong">¿Es pública?</label>
+        <input
+          id="isPublicSong"
+          type="checkbox"
+          [(ngModel)]="editingSong.isPublicSong"
+          name="isPublicSong"
+        />
+
+        <div class="form-buttons">
+          <button type="submit" class="save-button">Guardar</button>
+          <button type="button" (click)="closeForm()" class="cancel-button">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar Eliminar -->
+  <div *ngIf="showDeleteConfirm" class="modal">
+    <div class="modal-content">
+      <h3>¿Eliminar canción?</h3>
+      <p>¿Estás segura de que deseas eliminar la canción "<strong>{{ songToDelete?.title }}</strong>"?</p>
+      <div class="form-buttons">
+        <button (click)="deleteConfirmed()" class="save-button">Sí</button>
+        <button (click)="cancelDelete()" class="cancel-button">No</button>
+      </div>
+    </div>
+  </div>
+
+<app-add-song-to-playlist-modal
+  *ngIf="showAddToPlaylistModal && selectedSongForPlaylist"
+  [songId]="selectedSongForPlaylist.id"
+  (close)="onCloseAddToPlaylist()"
+  (songAdded)="onSongAddedToPlaylist()">
+</app-add-song-to-playlist-modal>
+
+
+</div>

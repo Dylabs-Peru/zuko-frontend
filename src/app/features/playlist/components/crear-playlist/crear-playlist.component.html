@@ -1,0 +1,42 @@
+<div class="create-playlist-overlay">
+  <div class="create-playlist-dialog">
+    <button class="close-btn" (click)="onClose()" aria-label="Cerrar">&times;</button>
+    <label class="playlist-cover-placeholder" >
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden/>
+      <img *ngIf="coverUrl; else defaultCover" [src]="coverUrl" alt="Cover" />
+      <ng-template #defaultCover>
+        <span class="camera-placeholder" aria-label="Subir Portada">📷</span>
+      </ng-template>
+        <!-- <span class="upload-hint">Subir Imagen</span> -->
+    </label>
+    <div class="privacy-select">
+    <label>
+        <input type="radio" name="isPublic" [(ngModel)]="isPublic" [value]="true" />
+        <span class="circle"></span>
+        <span>Pública</span>
+    </label>
+    <label>
+         <input type="radio" name="isPublic" [(ngModel)]="isPublic" [value]="false" />
+         <span class="circle"></span>
+         <span>Privada</span>
+        </label>
+    </div>
+
+    <input
+      class="playlist-name-input"
+      type="text"
+      [(ngModel)]="playlistName"
+      maxlength="40"
+      placeholder="Nombre de playlist"
+    />
+    <textarea
+      class="playlist-description-input"
+      [(ngModel)]="playlistDescription"
+      maxlength="200"
+      placeholder="Descripción de playlist"
+    ></textarea>
+    <button class="create-playlist-btn" (click)="onCreatePlaylist()">
+      Listo
+    </button>
+  </div>
+</div>

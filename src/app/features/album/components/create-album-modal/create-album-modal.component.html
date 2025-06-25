@@ -1,0 +1,66 @@
+<div class="create-album-modal-backdrop" *ngIf="show">
+  <div class="create-album-modal-container">
+    <h2 style="margin-top: 0; margin-bottom: 16px; font-weight: bold; color: #b71c1c; font-size: 22px; letter-spacing: 0.5px;">Crear Álbum</h2>
+    <div class="tabs">
+      <span [class.active-tab]="tab==='info'" (click)="selectTab('info')">Información Básica</span>
+      <span [class.active-tab]="tab==='songs'" [class.disabled]="tab!=='songs'" (click)="selectTab('songs')">Canciones</span>
+    </div>
+    <div *ngIf="tab==='info'">
+      <div class="form-content">
+        <div class="cover-upload-section">
+          <div class="cover-preview-container" *ngIf="coverUrl; else noCover">
+            <img [src]="coverUrl" alt="Portada" class="cover-preview" />
+            <button type="button" class="remove-cover-btn" (click)="removeCover()">Quitar portada</button>
+          </div>
+          <ng-template #noCover>
+            <div class="album-cover-preview no-cover">
+              <span class="cover-placeholder">📷</span>
+            </div>
+          </ng-template>
+          <div class="cover-upload-btn-container">
+            <label class="save-button upload-cover-label">
+              <input type="file" accept="image/*" (change)="onCoverSelected($event)" hidden />
+              <span>Subir portada</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-fields">
+          <label for="titulo">Título del álbum</label>
+          <input type="text" id="titulo" [(ngModel)]="title" placeholder="Título" />
+          <div *ngIf="!title" class="min-songs-warning">El título es obligatorio</div>
+
+          <label>Género</label>
+          <app-list-genres [(selectedGenre)]="genreId"></app-list-genres>
+          <div *ngIf="!genreId" class="min-songs-warning">El género es obligatorio</div>
+
+          <div class="save-section" style="justify-content: flex-end;">
+            <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="tab==='songs'">
+      <div class="song-list-scroll">
+        <div class="song-list">
+          <div class="song-item" *ngFor="let song of songs; let i = index">
+            <div class="song-info">
+              <div class="song-cover"></div>
+              <span class="song-name">{{ song.name }}</span>
+            </div>
+            <div class="song-actions">
+              <span class="song-duration">{{ song.releaseDate | date:'yyyy-MM-dd' }}</span>
+              <input type="checkbox" [checked]="selectedSongIds.includes(song.id)" (change)="toggleSongSelection(song.id)" class="select-song-checkbox" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="save-section">
+        <button class="save-button" (click)="saveSongs()" [disabled]="selectedSongIds.length < 2 || isSaving">
+          {{ isSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <span class="min-songs-warning" [style.visibility]="selectedSongIds.length < 2 ? 'visible' : 'hidden'">Selecciona al menos dos canciones para crear el álbum</span>
+        <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

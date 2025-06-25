@@ -1,0 +1,90 @@
+<div *ngIf="playlist && !loading" class="playlist-detail-root">
+  <div class="header" [ngStyle]="{'background-image': 'url(' + playlist.url_image + ')'}">
+    <h1>{{ playlist.name }}</h1>
+    <div class="details">
+       {{ playlist.createdAt | date }} &bull; {{ playlist.songs.length }} Canciones
+    </div>
+  </div>
+
+  <div class="controls">
+  <button class="play-btn" title="Reproducir">
+    <span class="icon-play"></span>
+  </button>
+  <button class="shuffle-btn" title="Aleatorio">
+    <span class="icon-shuffle"></span>
+  </button>
+  <button class="options-btn" title="Más opciones" (click)="showMenu = true" *ngIf="canEdit()">
+    <span class="icon-options"><span></span></span>
+  </button>
+</div>
+  <app-playlist-options-popup
+    [visible]="showMenu"
+    (edit)="onEditPlaylist()"
+    (delete)="onDeletePlaylist()"
+    (addShortcut)="onAddToShortcut()"
+    (close)="showMenu = false">
+  </app-playlist-options-popup>
+
+  <app-confirm-delete-dialog
+  [visible]="showDeleteDialog"
+  message="¿Seguro que quieres borrar la playlist?"
+  (confirm)="onConfirmDelete()"
+  (cancel)="onCancelDelete()">
+</app-confirm-delete-dialog>
+
+<app-playlist-songs-edit-list
+  *ngIf="playlist &&showEditDialog"
+  [playlist]="playlist"
+  [songs]="playlist.songs"
+  [playlistId]="playlist.playlistId"
+  (close)="onCloseEditDialog()"
+  (playlistEdited)="onPlaylistEdited($event)"
+  (songRemoved)="onSongRemoved($event)">
+</app-playlist-songs-edit-list>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Título</th>
+        <th>Album</th>
+        <th>Fecha de lanzamiento</th>
+        <th class="play-col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let song of playlist.songs; let i = index">
+      <tr *ngIf="song &&song.title">
+        <td class="number">{{ i + 1 }}</td>
+        <td>
+          <div class="song-title">{{ song.title }}</div>
+          <div class="artist">{{ song.artistName }}</div>
+        </td>
+        <td>
+          <div class="album-name">{{ albumMap[song.id]?.title|| 'Single'}}</div>
+        </td>
+        <td class="release-date">
+          {{ song.releaseDate | date:'MMM dd, yyyy' }}
+        </td>
+        <td>
+          <button 
+            *ngIf="!canEdit()" 
+            class="add-to-playlist-btn" 
+            (click)="openAddToPlaylist(song)">
+             Añadir a playlist
+          </button>
+        </td>
+        <td class="play-col">
+          <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
+        </td>
+      </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <app-add-song-to-playlist-modal
+    *ngIf="!canEdit() && showAddToPlaylistModal && selectedSongForPlaylist"
+    [songId]="selectedSongForPlaylist.id"
+    (close)="onCloseAddToPlaylist()"
+    (songAdded)="onSongAddedToPlaylist()">
+    </app-add-song-to-playlist-modal>
+</div>

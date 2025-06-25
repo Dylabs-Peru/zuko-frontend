@@ -1,0 +1,44 @@
+.btn-activar {
+    background-color: #b30000;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 16px;
+    transition: background 0.2s;
+  }
+  .btn-activar:disabled {
+    background-color: #b5e7b8;
+    cursor: not-allowed;
+  }
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-content {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px 24px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+  .btn-modal {
+    margin: 12px 16px 0 16px;
+    padding: 8px 20px;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    background: #b30000;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-modal:disabled {
+    background: #b5e7b8;
+    cursor: not-allowed;
+  }
