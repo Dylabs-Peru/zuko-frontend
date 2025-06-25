@@ -192,3 +192,17 @@
 .admin-link svg {
   flex-shrink: 0;
 }
+
+.header-right a {
+  color: #111;              
+  text-decoration: none;    
+  padding: 8px 14px;
+  border-radius: 7px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.header-right a:hover {
+  background: #ececec;     
+  color: #b90000;           
+  text-decoration: none;
+}

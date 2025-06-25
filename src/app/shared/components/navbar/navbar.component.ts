@@ -187,5 +187,7 @@ export class NavbarComponent {
 
   goToPlaylist(playlistId: number) {
     this.router.navigate(['/playlist', playlistId]);
+    this.showResults = false;
+    this.searchTerm = ''
   }
 }
