@@ -6,6 +6,7 @@ import { UserService } from '../../../../services/User.service';
 import { RoleService } from '../../../../services/Role.service';
 import { UserResponse, CreateUserRequest, UpdateUserRequest } from '../../../../models/user.model';
 import { RoleResponse } from '../../../../models/role.model';
+import { signal, computed } from '@angular/core';
 
 @Component({
   selector: 'app-admin-users',
@@ -16,23 +17,39 @@ import { RoleResponse } from '../../../../models/role.model';
 })
 export class AdminUsersComponent implements OnInit {
   
-  users: UserResponse[] = [];
-  roles: RoleResponse[] = [];
-  loading = false;
+  // Signals para estado principal
+  users = signal<UserResponse[]>([]);
+  roles = signal<RoleResponse[]>([]);
+  loading = signal(false);
   
-  // Modal states
-  showCreateForm = false;
-  showEditForm = false;
-  showRoleModal = false;
+  // Signals para estados de modales
+  showCreateForm = signal(false);
+  showEditForm = signal(false);
+  showRoleModal = signal(false);
   
-  // Current user being edited
-  editingUser: UserResponse | null = null;
-  userForRoleChange: UserResponse | null = null;
+  // Signals para usuarios en edición
+  editingUser = signal<UserResponse | null>(null);
+  userForRoleChange = signal<UserResponse | null>(null);
   
-  // Image upload states
-  createImagePreview: string = '';
-  editImagePreview: string = '';
-  uploadingImage = false;
+  // Signals para estados de imagen
+  createImagePreview = signal('');
+  editImagePreview = signal('');
+  uploadingImage = signal(false);
+  
+  // Computed signals para estadísticas
+  activeUsers = computed(() => 
+    this.users().filter(user => user.isActive)
+  );
+  
+  inactiveUsers = computed(() => 
+    this.users().filter(user => !user.isActive)
+  );
+  
+  adminUsers = computed(() => 
+    this.users().filter(user => user.roleName?.toLowerCase() === 'admin')
+  );
+  
+  totalUsers = computed(() => this.users().length);
   
   // Forms
   createUserForm: FormGroup;
@@ -74,15 +91,16 @@ export class AdminUsersComponent implements OnInit {
   }
 
   loadUsers() {
-    this.loading = true;
+    this.loading.set(true);
     this.userService.getAllUsers().subscribe({
       next: (users) => {
-        this.users = users;
-        this.loading = false;
+        this.users.set(users);
+        this.loading.set(false);
+        console.log('👥 Usuarios cargados:', users.length);
       },
       error: (error) => {
         console.error('Error loading users:', error);
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }
@@ -90,7 +108,7 @@ export class AdminUsersComponent implements OnInit {
   loadRoles() {
     this.roleService.getAllRoles().subscribe({
       next: (roles) => {
-        this.roles = roles;
+        this.roles.set(roles);
       },
       error: (error) => {
         console.error('Error loading roles:', error);
@@ -99,76 +117,84 @@ export class AdminUsersComponent implements OnInit {
   }
   // Create User
   openCreateForm() {
-    this.showCreateForm = true;
+    this.showCreateForm.set(true);
     this.createUserForm.reset();
     this.createUserForm.patchValue({ 
       roleName: 'User', 
       isActive: true 
     });
-    this.createImagePreview = '';
+    this.createImagePreview.set('');
+    console.log(' Abriendo formulario de crear usuario');
   }
 
   closeCreateForm() {
-    this.showCreateForm = false;
+    this.showCreateForm.set(false);
     this.createUserForm.reset();
-    this.createImagePreview = '';
+    this.createImagePreview.set('');
+    console.log(' Cerrando formulario de crear usuario');
   }
 
   onCreateUser() {
     if (this.createUserForm.valid) {
-      this.loading = true;
+      this.loading.set(true);
       const userData: CreateUserRequest = this.createUserForm.value;
       
       this.userService.createUser(userData).subscribe({
-        next: () => {
+        next: (response: any) => {
+          // Recargar la lista completa para asegurar consistencia
           this.loadUsers();
           this.closeCreateForm();
-          this.loading = false;
+          console.log(' Usuario creado exitosamente');
         },
         error: (error) => {
           console.error('Error creating user:', error);
-          this.loading = false;
+          this.loading.set(false);
         }
       });
     }
   }
   // Edit User
   openEditForm(user: UserResponse) {
-    this.editingUser = user;
-    this.showEditForm = true;
+    this.editingUser.set(user);
+    this.showEditForm.set(true);
     this.editUserForm.patchValue({
       username: user.username,
       email: user.email,
       description: user.description,
       url_image: user.url_image
     });
-    this.editImagePreview = user.url_image || '';
+    this.editImagePreview.set(user.url_image || '');
+    console.log(' Abriendo formulario de editar usuario:', user.username);
   }
 
   closeEditForm() {
-    this.showEditForm = false;
-    this.editingUser = null;
+    this.showEditForm.set(false);
+    this.editingUser.set(null);
     this.editUserForm.reset();
-    this.editImagePreview = '';
+    this.editImagePreview.set('');
+    console.log(' Cerrando formulario de editar usuario');
   }
 
   onEditUser() {
-    if (this.editUserForm.valid && this.editingUser) {
-      this.loading = true;
+    if (this.editUserForm.valid && this.editingUser()) {
+      this.loading.set(true);
       const userData: UpdateUserRequest = this.editUserForm.value;
       
       // Remove password if empty
       if (!userData.password) {
         delete userData.password;
-      }      this.userService.updateUser(this.editingUser.id, userData).subscribe({
-        next: () => {
+      }
+      
+      this.userService.updateUser(this.editingUser()!.id, userData).subscribe({
+        next: (response: any) => {
+          // Recargar la lista completa para asegurar consistencia
           this.loadUsers();
           this.closeEditForm();
-          this.loading = false;
+          console.log(' Usuario editado exitosamente');
         },
         error: (error) => {
           console.error('Error updating user:', error);
-          this.loading = false;
+          this.loading.set(false);
         }
       });
     }
@@ -178,8 +204,8 @@ export class AdminUsersComponent implements OnInit {
   onCreateImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.uploadingImage = true;
-      this.createImagePreview = '';
+      this.uploadingImage.set(true);
+      this.createImagePreview.set('');
       
       const formData = new FormData();
       formData.append('file', file);
@@ -188,7 +214,7 @@ export class AdminUsersComponent implements OnInit {
       // Mostrar preview local mientras sube
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.createImagePreview = e.target.result;
+        this.createImagePreview.set(e.target.result);
       };
       reader.readAsDataURL(file);
       
@@ -199,16 +225,17 @@ export class AdminUsersComponent implements OnInit {
       })
         .then(response => response.json())
         .then(data => {
-          this.uploadingImage = false;
+          this.uploadingImage.set(false);
           if (data.secure_url) {
             this.createUserForm.patchValue({ url_image: data.secure_url });
+            console.log(' Imagen subida para crear usuario:', data.secure_url);
           } else {
             console.error('Error al subir la imagen');
             alert('Error al subir la imagen');
           }
         })
         .catch((error) => {
-          this.uploadingImage = false;
+          this.uploadingImage.set(false);
           console.error('Error uploading image:', error);
           alert('Error al subir la imagen');
         });
@@ -218,8 +245,8 @@ export class AdminUsersComponent implements OnInit {
   onEditImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.uploadingImage = true;
-      this.editImagePreview = '';
+      this.uploadingImage.set(true);
+      this.editImagePreview.set('');
       
       const formData = new FormData();
       formData.append('file', file);
@@ -228,7 +255,7 @@ export class AdminUsersComponent implements OnInit {
       // Mostrar preview local mientras sube
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.editImagePreview = e.target.result;
+        this.editImagePreview.set(e.target.result);
       };
       reader.readAsDataURL(file);
       
@@ -239,16 +266,17 @@ export class AdminUsersComponent implements OnInit {
       })
         .then(response => response.json())
         .then(data => {
-          this.uploadingImage = false;
+          this.uploadingImage.set(false);
           if (data.secure_url) {
             this.editUserForm.patchValue({ url_image: data.secure_url });
+            console.log(' Imagen subida para editar usuario:', data.secure_url);
           } else {
             console.error('Error al subir la imagen');
             alert('Error al subir la imagen');
           }
         })
         .catch((error) => {
-          this.uploadingImage = false;
+          this.uploadingImage.set(false);
           console.error('Error uploading image:', error);
           alert('Error al subir la imagen');
         });
@@ -259,15 +287,16 @@ export class AdminUsersComponent implements OnInit {
   toggleUserStatus(user: UserResponse) {
     const action = user.isActive ? 'desactivar' : 'activar';
     if (confirm(`¿Estás seguro de que quieres ${action} a ${user.username}?`)) {
-      this.loading = true;
+      this.loading.set(true);
       this.userService.toggleUserActiveStatus(user.id).subscribe({
         next: () => {
+          // Recargar la lista completa para asegurar consistencia
           this.loadUsers();
-          this.loading = false;
+          console.log(` Estado de usuario ${user.username} cambiado a: ${!user.isActive ? 'activo' : 'inactivo'}`);
         },
         error: (error) => {
           console.error('Error toggling user status:', error);
-          this.loading = false;
+          this.loading.set(false);
         }
       });
     }
@@ -275,33 +304,38 @@ export class AdminUsersComponent implements OnInit {
 
   // Change Role
   openRoleModal(user: UserResponse) {
-    this.userForRoleChange = user;
-    this.showRoleModal = true;
+    this.userForRoleChange.set(user);
+    this.showRoleModal.set(true);
     this.roleForm.patchValue({ roleName: user.roleName });
+    console.log(' Abriendo modal de cambio de rol para:', user.username);
   }
 
   closeRoleModal() {
-    this.showRoleModal = false;
-    this.userForRoleChange = null;
+    this.showRoleModal.set(false);
+    this.userForRoleChange.set(null);
     this.roleForm.reset();
+    console.log(' Cerrando modal de cambio de rol');
   }
 
   onChangeRole() {
-    if (this.roleForm.valid && this.userForRoleChange) {
-      this.loading = true;
+    if (this.roleForm.valid && this.userForRoleChange()) {
+      this.loading.set(true);
       const updateData: UpdateUserRequest = {
         roleName: this.roleForm.value.roleName
       };
+      const userId = this.userForRoleChange()!.id;
+      const newRoleName = this.roleForm.value.roleName;
 
-      this.userService.updateUser(this.userForRoleChange.id, updateData).subscribe({
+      this.userService.updateUser(userId, updateData).subscribe({
         next: () => {
+          // Recargar la lista completa para asegurar consistencia
           this.loadUsers();
           this.closeRoleModal();
-          this.loading = false;
+          console.log(' Rol cambiado exitosamente a:', newRoleName);
         },
         error: (error) => {
           console.error('Error changing role:', error);
-          this.loading = false;
+          this.loading.set(false);
         }
       });
     }
