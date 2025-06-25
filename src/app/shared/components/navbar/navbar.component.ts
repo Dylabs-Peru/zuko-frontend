@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -12,6 +12,8 @@ import { ArtistResponse } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/Artist.service';
 import { AuthService } from '../../../services/Auth.service';
 import { AlbumService } from '../../../services/Album.service';
+import { filter } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-navbar',
@@ -28,6 +30,7 @@ export class NavbarComponent {
   artistResults: ArtistResponse[] = [];
   albumResults: any[] = [];
   showResults = false;
+  public isLandingPage = false;
   constructor(
     private router: Router,
     private userService: UserService,
@@ -35,7 +38,14 @@ export class NavbarComponent {
     private artistService: ArtistService,
     private albumService: AlbumService,
     private authService: AuthService
-  ) { }
+  ) {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.isLandingPage = event.urlAfterRedirects === '/';
+      });
+
+   }
   get isArtist(): boolean {
     const auth = this.authService.getAuthInfo();
     if (!auth) return false;

@@ -3,9 +3,19 @@ import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
     {
+    path: '',
+    loadComponent: () => import('./features/landing/landing-page/landing-page.component').then((m) => m.LandingPageComponent)
+    },
+    {
     path: 'auth',
     canActivate: [authGuard],
     loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
+    },
+    {
+    path: 'home',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/home/home-page.component').then((m) => m.HomePageComponent)
     },
     {
     path: 'songs',
