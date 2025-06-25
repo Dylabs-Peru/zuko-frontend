@@ -46,6 +46,20 @@ export class NavbarComponent {
     }
   }
 
+  
+  get isAdmin(): boolean {
+    const auth = this.authService.getAuthInfo();
+    if (!auth) return false;
+    
+    try {
+      // Verifica si el usuario tiene rol de admin
+      return auth?.user?.roleName?.toLowerCase() === 'admin';
+    } catch (e) {
+      console.error('Error al verificar rol de admin:', e);
+      return false;
+    }
+  }
+
   get currentUser(): any {
     const auth = this.authService.getAuthInfo();
     return auth?.user || null;
@@ -135,6 +149,11 @@ export class NavbarComponent {
 
   goToLibrary() {
     this.router.navigate(['/playlist/library']);
+    this.showResults = false;
+  }
+
+  goToAdminDashboard() {
+    this.router.navigate(['/admin']);
     this.showResults = false;
   }
 }
