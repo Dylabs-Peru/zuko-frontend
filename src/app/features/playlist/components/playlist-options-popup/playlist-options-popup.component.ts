@@ -11,6 +11,7 @@ export class PlaylistOptionsPopupComponent {
   @Input() visible = false;
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
+  @Output() addShortcut = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
 }
 
