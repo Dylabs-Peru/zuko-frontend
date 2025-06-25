@@ -12,6 +12,7 @@ import { AlbumService } from '../../../../services/Album.service';
 import { AlbumResponse } from '../../../../models/album.model';
 import { AddSongToPlaylistModalComponent } from '../../components/agregar-cancion-playlist/add-song-to-playlist.component';
 import { SongResponse } from '../../../../models/song.model';
+import { ShortcutService } from '../../../../services/shortcuts.service';
 
 @Component({
   selector: 'app-playlist-display',
@@ -38,7 +39,8 @@ export class PlaylistDisplayComponent implements OnInit {
             private playlistService: PlaylistService, 
             private route: ActivatedRoute,
             private router: Router,
-            private albumService: AlbumService
+            private albumService: AlbumService,
+            private shortcutService: ShortcutService
   ) {}
    
    ngOnInit(): void {
@@ -72,6 +74,7 @@ export class PlaylistDisplayComponent implements OnInit {
     onConfirmDelete() {
     this.playlistService.deletePlaylist(this.playlist!.playlistId).subscribe({
       next: () => {
+        this.shortcutService.removeShortcut(this.playlist!.playlistId);
         this.showDeleteDialog = false;
         this.router.navigate(['/playlist/library']);
       },
@@ -149,8 +152,20 @@ export class PlaylistDisplayComponent implements OnInit {
       this.selectedSongForPlaylist = null;
     }
 
-
-
+    onAddToShortcut() {
+      if (!this.playlist) return;
+      const userId = this.userID;
+      if (!userId) return;
+      const key = `shortcuts_${userId}`;
+      const current = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!current.find((p: any) => p.playlistId === this.playlist!.playlistId)) {
+        current.push(this.playlist);
+        localStorage.setItem(key, JSON.stringify(current));
+      }
+      this.showMenu = false;
+      alert('Playlist agregada a accesos directos');
+    
+    }
 }
 
 

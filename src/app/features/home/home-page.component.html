@@ -1,0 +1,27 @@
+<div class="library-container">
+<h1 class="shortcut-title">Accesos directos</h1>
+
+<div class="library-tabs">
+    <span class="tab-active">Playlists</span>
+ </div>
+
+ <div class="playlists-grid">
+    <div 
+        class="playlist-card"
+        *ngFor="let playlist of shortcuts"
+        tabindex="0"
+    >
+        <div class="playlist-cover"
+        [ngStyle]="{ 'background-image': playlist.url_image ? 'url(' + playlist.url_image + ')' : '' }" 
+        ></div>
+            <div class="playlist-info">
+            <span class="playlist-name">{{ playlist.name }}</span>
+            <span class="playlist-owner"></span>
+            <button class="playlist-play-btn" 
+            aria-label="Reproducir playlist"
+            (click)="goToPlaylist(playlist.playlistId); $event.stopPropagation()">
+            </button>
+            </div>
+        </div>
+    </div>
+</div>
