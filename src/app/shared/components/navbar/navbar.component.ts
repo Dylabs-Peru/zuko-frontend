@@ -12,6 +12,7 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { ArtistResponse } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/Artist.service';
 import { AuthService } from '../../../services/Auth.service';
+import { AlbumService } from '../../../services/Album.service';
 import { PlaylistResponse } from '../../../models/playlist.model';
 import { PlaylistService } from '../../../services/playlist.service';
 
@@ -28,6 +29,7 @@ export class NavbarComponent {
   userResults: UserResponse[] = [];
   songResults: SongResponse[] = [];
   artistResults: ArtistResponse[] = [];
+  albumResults: any[] = [];
   playlistResults: PlaylistResponse[] = [];
   showResults = false;
   constructor(
@@ -35,6 +37,7 @@ export class NavbarComponent {
     private userService: UserService,
     private songService: SongService,
     private artistService: ArtistService,
+    private albumService: AlbumService,
     private authService: AuthService,
     private playlistService: PlaylistService
   ) { }
@@ -47,6 +50,20 @@ export class NavbarComponent {
       return !!auth?.user?.artistName;
     } catch (e) {
       console.error('Error al verificar perfil de artista:', e);
+      return false;
+    }
+  }
+
+  
+  get isAdmin(): boolean {
+    const auth = this.authService.getAuthInfo();
+    if (!auth) return false;
+    
+    try {
+      // Verifica si el usuario tiene rol de admin
+      return auth?.user?.roleName?.toLowerCase() === 'admin';
+    } catch (e) {
+      console.error('Error al verificar rol de admin:', e);
       return false;
     }
   }
@@ -73,15 +90,18 @@ export class NavbarComponent {
     this.userResults = [];
     this.songResults = [];
     this.artistResults = [];
+    this.albumResults = [];
     this.playlistResults = [];
 
     forkJoin({
       user: this.userService.getUserByUsername(this.searchTerm.trim()).pipe(catchError(() => of(null))),
       songs: this.songService.getMySongs().pipe(catchError(() => of([]))),
       artist: this.artistService.getArtistByName(this.searchTerm.trim()).pipe(catchError(() => of([]))),
+      albums: this.albumService.getAlbumsByTitle(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       playlists: this.playlistService.getPublicPlaylistsByName(this.searchTerm.trim()).pipe(catchError(() => of([])))
-    }).subscribe(({ user, songs, artist, playlists }) => {
+    }).subscribe(({ user, songs, artist, albums, playlists }) => {
       console.log("Playlists:", playlists);
+
       if (user) this.userResults = [user];
       if (artist && Array.isArray(artist) && artist.length > 0) {
         this.artistResults = artist;
@@ -91,11 +111,15 @@ export class NavbarComponent {
       if (songs && Array.isArray(songs)) {
         this.songResults = songs.filter(song => song.title.toLowerCase().includes(this.searchTerm.trim().toLowerCase()));
       }
-
-      if (playlists && Array.isArray(playlists)) {
+      if (albums && Array.isArray(albums.data)) {
+        this.albumResults = albums.data;
+      } else {
+        this.albumResults = [];
+      }
+       if (playlists && Array.isArray(playlists)) {
         this.playlistResults = playlists
       }
-      if (!user && (!this.songResults || this.songResults.length === 0) && (!this.artistResults || this.artistResults.length === 0)   && (!this.playlistResults || this.playlistResults.length === 0)) {
+      if (!user && (!this.songResults || this.songResults.length === 0) && (!this.artistResults || this.artistResults.length === 0) && (!this.albumResults || this.albumResults.length === 0) && (!this.playlistResults || this.playlistResults.length === 0)) {
         this.errorMsg = 'No se encontraron resultados';
       }
 
@@ -133,6 +157,11 @@ export class NavbarComponent {
     this.showResults = false;
   }
 
+  goToAlbum(albumId: number) {
+    this.router.navigate(['/album', albumId]);
+    this.showResults = false;
+  }
+
   goToUserProfile(username: string) {
     const auth = this.authService.getAuthInfo();
     if (auth && auth.user && auth.user.username === username) {
@@ -151,8 +180,12 @@ export class NavbarComponent {
     this.showResults = false;
   }
 
+  goToAdminDashboard() {
+    this.router.navigate(['/admin']);
+    this.showResults = false;
+  }
+
   goToPlaylist(playlistId: number) {
     this.router.navigate(['/playlist', playlistId]);
-    this.showResults = false;
   }
 }

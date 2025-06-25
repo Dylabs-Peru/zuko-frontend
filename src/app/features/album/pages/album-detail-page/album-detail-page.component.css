@@ -12,6 +12,33 @@ body {
 .album-detail-root {
     min-height: 100vh;
     background: linear-gradient(to bottom, #2b0000, #550000);
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #444;
+    color: #fff;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    transition: background 0.2s, color 0.2s;
+    opacity: 0.92;
+}
+.close-btn:hover {
+    background: #222;
+    color: #ff5252;
+    opacity: 1;
 }
 
 .header {

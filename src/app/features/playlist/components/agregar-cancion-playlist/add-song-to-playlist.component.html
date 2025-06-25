@@ -1,0 +1,22 @@
+<div class="modal-backdrop">
+  <div class="modal-content">
+    <button class="close-btn" (click)="close.emit()">×</button>
+    <h2>Agregar a Playlist</h2>
+    <div *ngIf="loading">Cargando...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <form *ngIf="!loading && playlists.length > 0">
+      <div *ngFor="let playlist of playlists" class="playlist-option">
+        <label class="playlist-label">
+          <input type="checkbox"
+                 [checked]="selectedPlaylistIds.has(playlist.playlistId)"
+                 (change)="togglePlaylist(playlist.playlistId)">
+          {{ playlist.name }}
+        </label>
+      </div>
+      <button class="add-btn" (click)="confirmAdd()" [disabled]="selectedPlaylistIds.size === 0 || loading">
+        Añadir 
+      </button>
+    </form>
+    <div *ngIf="!loading && playlists.length === 0">No tienes playlists aún.</div>
+  </div>
+</div>

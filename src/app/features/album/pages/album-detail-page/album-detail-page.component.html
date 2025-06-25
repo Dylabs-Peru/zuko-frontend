@@ -1,6 +1,7 @@
 <div *ngIf="loading" class="album-loading">Cargando álbum...</div>
 <div *ngIf="error" class="album-error">{{ error }}</div>
 <div *ngIf="album && !loading" class="album-detail-root">
+  <button class="close-btn" (click)="goToArtistProfile()" title="Cerrar">&#10005;</button>
   <div class="header" [ngStyle]="{'background-image': 'url(' + album.cover + ')'}">
     <h1>{{ album.title }}</h1>
     <div class="details">

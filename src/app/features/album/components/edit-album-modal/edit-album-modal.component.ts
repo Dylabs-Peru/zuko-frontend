@@ -114,9 +114,15 @@ export class EditAlbumModalComponent implements OnChanges {
         this.albumEdited.emit();
         this.close.emit();
       },
-      error: () => {
+      error: (err: any) => {
         this.isSaving = false;
-        // Manejo de error opcional
+        let msg = 'Error al editar álbum';
+        if (err && err.status === 409) {
+          msg = 'El título del álbum ya existe para este artista.';
+        } else if (err && err.error && err.error.message) {
+          msg = err.error.message;
+        }
+        alert(msg);
       }
     });
   }
