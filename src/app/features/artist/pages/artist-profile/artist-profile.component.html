@@ -39,7 +39,7 @@
         <a class="menu-item" [class.active]="showSongsSection" (click)="showSongsSection = true; showAlbumsSection = false; $event.preventDefault()" href="#">Mis Canciones</a>
       </nav>
 
-       <button *ngIf="showAlbumsSection"
+       <button *ngIf="showAlbumsSection && isOwnArtistProfile"
             class="circle create-album-btn"
             (click)="onCreateAlbumClick()"
             title="Crear álbum">
@@ -54,7 +54,7 @@
     </div>
 
     <ng-container *ngIf="showAlbumsSection && artist?.id">
-      <app-artist-albums-list [artistId]="artist.id"></app-artist-albums-list>
+      <app-artist-albums-list [artistId]="artist.id" [isOwnProfile]="isOwnArtistProfile"></app-artist-albums-list>
     </ng-container>
 
     <!-- Sección de canciones -->

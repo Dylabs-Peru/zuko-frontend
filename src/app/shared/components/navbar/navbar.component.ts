@@ -11,6 +11,7 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { ArtistResponse } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/Artist.service';
 import { AuthService } from '../../../services/Auth.service';
+import { AlbumService } from '../../../services/Album.service';
 
 @Component({
   selector: 'app-navbar',
@@ -25,12 +26,14 @@ export class NavbarComponent {
   userResults: UserResponse[] = [];
   songResults: SongResponse[] = [];
   artistResults: ArtistResponse[] = [];
+  albumResults: any[] = [];
   showResults = false;
   constructor(
     private router: Router,
     private userService: UserService,
     private songService: SongService,
     private artistService: ArtistService,
+    private albumService: AlbumService,
     private authService: AuthService
   ) { }
   get isArtist(): boolean {
@@ -68,13 +71,14 @@ export class NavbarComponent {
     this.userResults = [];
     this.songResults = [];
     this.artistResults = [];
+    this.albumResults = [];
 
     forkJoin({
       user: this.userService.getUserByUsername(this.searchTerm.trim()).pipe(catchError(() => of(null))),
       songs: this.songService.getMySongs().pipe(catchError(() => of([]))),
-      artist: this.artistService.getArtistByName(this.searchTerm.trim()).pipe(catchError(() => of([])))
-    
-    }).subscribe(({ user, songs, artist }) => {
+      artist: this.artistService.getArtistByName(this.searchTerm.trim()).pipe(catchError(() => of([]))),
+      albums: this.albumService.getAlbumsByTitle(this.searchTerm.trim()).pipe(catchError(() => of([])))
+    }).subscribe(({ user, songs, artist, albums }) => {
       if (user) this.userResults = [user];
       if (artist && Array.isArray(artist) && artist.length > 0) {
         this.artistResults = artist;
@@ -84,7 +88,12 @@ export class NavbarComponent {
       if (songs && Array.isArray(songs)) {
         this.songResults = songs.filter(song => song.title.toLowerCase().includes(this.searchTerm.trim().toLowerCase()));
       }
-      if (!user && (!this.songResults || this.songResults.length === 0) && (!this.artistResults || this.artistResults.length === 0)) {
+      if (albums && Array.isArray(albums.data)) {
+        this.albumResults = albums.data;
+      } else {
+        this.albumResults = [];
+      }
+      if (!user && (!this.songResults || this.songResults.length === 0) && (!this.artistResults || this.artistResults.length === 0) && (!this.albumResults || this.albumResults.length === 0)) {
         this.errorMsg = 'No se encontraron resultados';
       }
       this.showResults = true;
@@ -117,6 +126,11 @@ export class NavbarComponent {
 
   goToArtist(artistName: string) {
     this.router.navigate(['/artist/profile-artist', artistName]);
+    this.showResults = false;
+  }
+
+  goToAlbum(albumId: number) {
+    this.router.navigate(['/album', albumId]);
     this.showResults = false;
   }
 
