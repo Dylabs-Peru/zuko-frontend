@@ -7,30 +7,69 @@
   </div>
 
   <div class="controls">
-    <button title="Reproducir">&#9654;</button>
-    <button title="Aleatorio">🔀</button>
-    <button title="Más opciones">&#8942;</button>
-  </div>
+  <button class="play-btn" title="Reproducir">
+    <span class="icon-play"></span>
+  </button>
+  <button class="shuffle-btn" title="Aleatorio">
+    <span class="icon-shuffle"></span>
+  </button>
+  <button class="options-btn" title="Más opciones" (click)="showMenu = true">
+    <span class="icon-options"><span></span></span>
+  </button>
+</div>
+  <app-playlist-options-popup
+    [visible]="showMenu"
+    (edit)="onEditPlaylist()"
+    (delete)="onDeletePlaylist()"
+    (close)="showMenu = false">
+  </app-playlist-options-popup>
+
+  <app-confirm-delete-dialog
+  [visible]="showDeleteDialog"
+  message="¿Seguro que quieres borrar la playlist?"
+  (confirm)="onConfirmDelete()"
+  (cancel)="onCancelDelete()">
+</app-confirm-delete-dialog>
+
+<app-playlist-songs-edit-list
+  *ngIf="playlist &&showEditDialog"
+  [playlist]="playlist"
+  [songs]="playlist.songs"
+  [playlistId]="playlist.playlistId"
+  (close)="onCloseEditDialog()"
+  (playlistEdited)="onPlaylistEdited($event)"
+  (songRemoved)="onSongRemoved($event)">
+</app-playlist-songs-edit-list>
 
   <table>
     <thead>
       <tr>
         <th>#</th>
         <th>Título</th>
+        <th>Album</th>
+        <th>Fecha de lanzamiento</th>
         <th class="play-col"></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let song of playlist.songs; let i = index">
+      <ng-container *ngFor="let song of playlist.songs; let i = index">
+      <tr *ngIf="song &&song.title">
         <td class="number">{{ i + 1 }}</td>
         <td>
           <div class="song-title">{{ song.title }}</div>
           <div class="artist">{{ song.artistName }}</div>
         </td>
+        <td>
+          <div class="album-name">{{ albumMap[song.id]?.title|| 'Single'}}</div>
+        </td>
+        <td class="release-date">
+          {{ song.releaseDate | date:'MMM dd, yyyy' }}
+        </td>
         <td class="play-col">
           <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
         </td>
       </tr>
+      </ng-container>
     </tbody>
   </table>
 </div>

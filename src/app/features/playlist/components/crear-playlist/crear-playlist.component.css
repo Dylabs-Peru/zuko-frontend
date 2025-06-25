@@ -45,6 +45,18 @@
   display: block;
 }
 
+.camera-placeholder {
+  font-size: 64px;           /* Tamaño del emoji, ajústalo si quieres */
+  color: #bbbbbb;            /* Color gris claro, cambia si deseas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+
 .playlist-name-input {
   font-family: 'Manjari', Arial, sans-serif;
   font-size: 24px;
