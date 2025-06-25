@@ -166,3 +166,29 @@
 .profile-menu:hover .dropdown-content {
   display: block;
 }
+
+/* Estilos para el enlace de admin */
+.admin-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #B71C1C 0%, #8B0000 100%);
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(183, 28, 28, 0.2);
+}
+
+.admin-link:hover {
+  background: linear-gradient(135deg, #8B0000 0%, #B71C1C 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(183, 28, 28, 0.3);
+}
+
+.admin-link svg {
+  flex-shrink: 0;
+}
