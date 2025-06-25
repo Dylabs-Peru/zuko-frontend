@@ -26,7 +26,7 @@ export class PlaylistDisplayComponent implements OnInit {
   showDeleteDialog = false;
   showEditDialog = false;
   albumMap: { [songId: number]: AlbumResponse|null } = {};
-  userId: number | null = null;
+  userID: number | null = null;
 
   constructor(
             private playlistService: PlaylistService, 
@@ -36,47 +36,21 @@ export class PlaylistDisplayComponent implements OnInit {
   ) {}
    
    ngOnInit(): void {
-    const playlistId = this.route.snapshot.paramMap.get('id');
-      if (!playlistId) {
-        this.error = 'ID de playlist no especificado';
-        this.loading = false;
-        return;
-      }
-      this.loading = true;
-      this.error = '';
-      this.playlistService.getPlaylistById(Number(playlistId)).subscribe({
-      next: (playlist) => {
-        console.log('Playlist recibida:', playlist);
-        if (playlist && Array.isArray(playlist.songs)) {
-        console.log('Songs antes de filtrar:', playlist.songs);
-        playlist.songs = playlist.songs.filter(song => song && song.title);
-        console.log('Songs después de filtrar:', playlist.songs);
-        playlist.songs.forEach(song => {
-          this.albumService.getAlbumBySongId(song.id).subscribe({
-            next: (album) => {
-              this.albumMap[song.id] = album;
-            },
-            error: (err) => {
-              this.albumMap[song.id] = null;
-            }
-          });
-        });
-      }
-
-        this.playlist = playlist;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'No se pudo cargar la playlist';
-        this.loading = false;
-      }
+    this.route.snapshot.params['id'];this.route.paramMap.subscribe(params => {
+    const playlistId = params.get('id');
+    if (!playlistId) {
+      this.error = 'ID de playlist no especificado';
+      this.loading = false;
+      return;
+    }
+    this.loadPlaylist(Number(playlistId));
     });
 
-      const auth = localStorage.getItem('auth');
-      if (auth) {
-        const authObj = JSON.parse(auth);
-        this.userId = authObj.user?.id || null;
-      }
+    const auth = localStorage.getItem('auth');
+    if (auth) {
+      const authObj = JSON.parse(auth);
+      this.userID = authObj.user?.id || null;
+    }
     }
 
     onEditPlaylist() {
@@ -122,10 +96,38 @@ export class PlaylistDisplayComponent implements OnInit {
     }
 
     canEdit(): boolean {
-      return this.playlist?.ownerId === this.userId;
-}
+      return this.playlist?.userID === this.userID;
+  }
 
+    loadPlaylist(playlistId: number) {
+    this.loading = true;
+    this.error = '';
+    this.albumMap = {}; 
+    this.playlistService.getPlaylistById(playlistId).subscribe({
+      next: (playlist) => {
 
+        if (playlist && Array.isArray(playlist.songs)) {
+          playlist.songs = playlist.songs.filter(song => song && song.title);
+          playlist.songs.forEach(song => {
+            this.albumService.getAlbumBySongId(song.id).subscribe({
+              next: (album) => {
+                this.albumMap[song.id] = album;
+              },
+              error: (err) => {
+                this.albumMap[song.id] = null;
+              }
+            });
+          });
+        }
+        this.playlist = playlist; 
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'No se pudo cargar la playlist';
+        this.loading = false;
+      }
+    });
+  }
 
 }
 
