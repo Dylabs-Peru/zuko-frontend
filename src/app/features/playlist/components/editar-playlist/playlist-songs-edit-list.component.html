@@ -29,7 +29,12 @@
      <div class="form-fields">
         <label for="editName">Nombre</label>
         <input id="editName" type="text" [(ngModel)]="editName" placeholder="Nombre de la playlist" maxlength="40" />
-
+          <div
+        *ngIf="editName && editName.trim().length > 0 && editName.trim().length < 3"
+        class="playlist-name-error"
+          >
+        El nombre de la playlist debe tener al menos 3 caracteres.
+        </div>
         <label for="editDescription">Descripción</label>
         <textarea id="editDescription" [(ngModel)]="editDescription" placeholder="Descripción" maxlength="255"></textarea>
 
@@ -48,7 +53,7 @@
         <div *ngIf="error" style="color:#d80000;font-weight:bold;">{{ error }}</div>
         <div class="save-section" style="justify-content: flex-end; gap: 8px;">
           <button class="cancel-button" type="button" (click)="close.emit()">Cancelar</button>
-          <button class="save-button" type="button" (click)="onSave()" [disabled]="saving">
+          <button *ngIf="editName && editName.trim().length >= 3"  class="save-button" type="button" (click)="onSave()" [disabled]="saving">
             {{ saving ? 'Guardando...' : 'Guardar cambios' }}
           </button>
         </div>

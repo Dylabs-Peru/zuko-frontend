@@ -316,3 +316,16 @@ input[type="text"], select {
   gap: 6px;
 }
 
+.playlist-name-error {
+  color: #d80000;
+  font-size: 15px;
+  font-family: 'Manjari', Arial, sans-serif;
+  border-radius: 7px;
+  padding: 7px 16px;
+  margin-bottom: 16px;
+  margin-top: -16px;
+  text-align: center;
+  /* box-shadow: 0 1px 7px rgba(0,0,0,0.08); */
+}
+
+
