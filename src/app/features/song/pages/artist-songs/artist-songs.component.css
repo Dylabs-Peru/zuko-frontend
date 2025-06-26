@@ -9,6 +9,23 @@
   align-items: flex-start;
 }
 
+.play-button {
+  background-color: #d80000;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.play-button:hover {
+  background-color: #a50000;
+}
+
 .title {
   font-size: 2rem;
   color: #000000;
