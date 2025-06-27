@@ -87,6 +87,7 @@ export class PlaylistDisplayComponent implements OnInit {
 
     onCancelDelete() {
       this.showDeleteDialog = false;
+      this.showMenu = false;
     }
 
     onSongRemoved(songId: number) {

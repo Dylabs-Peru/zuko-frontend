@@ -10,6 +10,8 @@
         class="playlist-card"
         *ngFor="let playlist of shortcuts"
         tabindex="0"
+        (click)="goToPlaylist(playlist.playlistId)"
+        [attr.aria-label]="'Abrir playlist ' + playlist.name"
     >
         <div class="playlist-cover"
         [ngStyle]="{ 'background-image': playlist.url_image ? 'url(' + playlist.url_image + ')' : '' }" 
