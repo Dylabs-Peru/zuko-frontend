@@ -23,4 +23,19 @@
   </section>
   <div *ngIf="artist.isActive"><span style="color:green;">Artista activo</span></div>
   <div *ngIf="!artist.isActive"><span style="color:red;">Artista inactivo</span></div>
+
+<!-- Canciones del artista -->
+<!-- Canciones del artista -->
+  <div class="artist-songs-section">
+    <div *ngIf="songsLoading">Cargando canciones...</div>
+    <div *ngIf="songsError && !songsLoading" style="color:red;">{{ songsError }}</div>
+    <div *ngIf="!songsLoading && songs.length === 0">Este artista no tiene canciones aún.</div>
+
+    <app-artist-songs
+      *ngIf="!songsLoading && songs.length > 0"
+      [songs]="songs"
+      [isOwnProfile]="false"
+    ></app-artist-songs>
+  </div>
+
 </div>

@@ -3,6 +3,7 @@ export interface SongRequest {
   isPublicSong: boolean;
   artistId?: number; // Solo para admin
   youtubeUrl: string;
+  imageUrl?: string;
 }
 
 export interface SongResponse {
@@ -14,4 +15,5 @@ export interface SongResponse {
   artistId: number;
   artistName: string;
   youtubeUrl: string;
+  imageUrl?: string;
 }
