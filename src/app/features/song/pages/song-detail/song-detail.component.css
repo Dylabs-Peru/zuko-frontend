@@ -1,0 +1,53 @@
+.song-detail-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.song-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.song-detail-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.song-cover {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.song-info {
+  text-align: center;
+}
+
+.play-button,
+.add-to-playlist-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #d80000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.play-button:hover,
+.add-to-playlist-btn:hover {
+  background-color: #a30000;
+}
+
+.loading-text,
+.error-text {
+  text-align: center;
+  margin-top: 2rem;
+  font-weight: bold;
+  color: gray;
+}

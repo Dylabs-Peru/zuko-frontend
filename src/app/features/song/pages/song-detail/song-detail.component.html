@@ -1,0 +1,33 @@
+<div class="song-detail-container" *ngIf="!loading && song">
+  <h2 class="song-title">🎵 {{ song.title }}</h2>
+
+  <div class="song-detail-card">
+    <img [src]="safeImageUrl" alt="Portada" class="song-cover" />
+
+    <div class="song-info">
+      <p><strong>Artista:</strong> {{ song.artistName }}</p>
+      <p><strong>Fecha de lanzamiento:</strong> {{ song.releaseDate | date:'dd/MM/yyyy' }}</p>
+
+      <div class="player-control" *ngIf="song.youtubeUrl">
+        <button (click)="togglePlay()" class="play-button">
+          {{ isPlaying ? '⏸️ Pausar' : '▶️ Reproducir' }}
+        </button>
+
+        <!-- 👇 El id debe coincidir con el usado en el .ts: 'yt-player-detail' -->
+        <div id="yt-player-detail" style="width: 0; height: 0; overflow: hidden;"></div>
+      </div>
+
+      <button (click)="openAddToPlaylist(song)" class="add-to-playlist-btn">➕ Agregar a playlist</button>
+    </div>
+  </div>
+</div>
+
+<app-add-song-to-playlist-modal
+  *ngIf="showAddToPlaylistModal && selectedSongForPlaylist"
+  [songId]="selectedSongForPlaylist.id"
+  (close)="onCloseAddToPlaylist()"
+  (songAdded)="onSongAddedToPlaylist()">
+</app-add-song-to-playlist-modal>
+
+<div *ngIf="loading" class="loading-text">Cargando canción...</div>
+<div *ngIf="error" class="error-text">{{ error }}</div>
