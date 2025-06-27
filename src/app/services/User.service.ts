@@ -5,7 +5,8 @@ import {
   LoginRequest,
   UpdateUserRequest,
   UserResponse,
-  AuthResponse
+  AuthResponse,
+  GoogleOAuthRequest
 } from '../models/user.model';
 import { Observable } from 'rxjs';
 
@@ -44,6 +45,15 @@ export class UserService {
   
   getUserByUsername(username: string): Observable<UserResponse> {
     return this.apiService.get<UserResponse>(`${this.endpoint}/username/${username}`);
+  }
+
+  // Métodos específicos para Google OAuth
+  loginWithGoogle(request: GoogleOAuthRequest): Observable<AuthResponse> {
+    return this.apiService.post<AuthResponse>(`${this.endpoint}/google/login`, request);
+  }
+
+  registerWithGoogle(request: GoogleOAuthRequest): Observable<any> {
+    return this.apiService.post<any>(`${this.endpoint}/google/register`, request);
   }
 
 }
