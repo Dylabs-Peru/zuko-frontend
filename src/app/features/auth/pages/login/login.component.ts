@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -6,6 +6,7 @@ import { UserService } from "../../../../services/User.service";
 import { ArtistService } from "../../../../services/Artist.service";
 import { AuthService } from "../../../../services/Auth.service";
 import { TokenMonitorService } from "../../../../services/TokenMonitor.service";
+import { GoogleAuthService } from "../../../../services/GoogleAuth.service";
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -15,20 +16,38 @@ import { RouterLink } from '@angular/router';
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  loading: boolean = false;  constructor(
+  loading: boolean = false;
+  showFallbackButton: boolean = false;
+
+  constructor(
     private fb: FormBuilder,
     private UserService: UserService,
     private artistService: ArtistService,
     private authService: AuthService,
     private tokenMonitorService: TokenMonitorService,
+    private googleAuthService: GoogleAuthService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
       email: ['', Validators.required],
       password: ['', Validators.required]
     });
+  }
+
+  ngOnInit() {
+    // Renderizar el botón de Google después de que el componente se inicialice
+    setTimeout(() => {
+      this.googleAuthService.renderGoogleButton('google-signin-button');
+      // Mostrar botón fallback después de 3 segundos si Google no carga
+      setTimeout(() => {
+        const googleButton = document.getElementById('google-signin-button');
+        if (!googleButton || googleButton.children.length === 0) {
+          this.showFallbackButton = true;
+        }
+      }, 3000);
+    }, 500);
   }
 
   onSubmit() {
@@ -88,5 +107,24 @@ export class LoginComponent {
         }
       });
     }
+  }
+
+  /**
+   * Inicia sesión con Google
+   */
+  signInWithGoogle(): void {
+    if (this.loading) return;
+    
+    this.loading = true;
+    console.log('🔍 Iniciando Google Auth desde /auth/login');
+    
+    this.googleAuthService.signInWithGoogle().then(() => {
+      console.log('Proceso de Google Auth iniciado desde login');
+      // El resto del proceso se maneja en el GoogleAuthService
+    }).catch((error) => {
+      console.error('Error al iniciar login con Google:', error);
+      this.loading = false;
+      alert('Error al conectar con Google. Por favor, intenta de nuevo.');
+    });
   }
 }
