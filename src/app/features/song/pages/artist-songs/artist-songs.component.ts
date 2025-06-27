@@ -15,8 +15,7 @@ import { AddSongToPlaylistModalComponent } from '../../../playlist/components/ag
 export class ArtistSongsComponent implements OnInit {
   @Input() artistId!: number;
   @Input() isOwnProfile = false;
-
-  songs: SongResponse[] = [];
+  @Input() songs: SongResponse[] = [];
   loading = true;
 
   openMenuIndex: number | null = null;
@@ -31,6 +30,7 @@ export class ArtistSongsComponent implements OnInit {
 
   selectedSongForPlaylist: SongResponse | null = null;
   showAddToPlaylistModal = false;
+  previewImageUrl: string | null = null;
 
   constructor(private songService: SongService) {}
 
@@ -39,6 +39,20 @@ export class ArtistSongsComponent implements OnInit {
   }
 
   loadSongs(): void {
+    this.playerRefs = {}; // Reinicia los reproductores
+  this.isPlaying = {};
+  if (this.artistId) {
+    this.songService.getSongsByArtist(this.artistId).subscribe({
+      next: (songs) => {
+        this.songs = songs;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      }
+    });
+  } else {
+    // fallback por si quieres usarlo en "mis canciones"
     this.songService.getMySongs().subscribe({
       next: (songs) => {
         this.songs = songs;
@@ -49,6 +63,7 @@ export class ArtistSongsComponent implements OnInit {
       }
     });
   }
+}
 
   openCreateForm(): void {
     this.editingSong = { title: '', isPublicSong: false };
@@ -87,7 +102,7 @@ export class ArtistSongsComponent implements OnInit {
 
     const songPayload = {
       title,
-      isPublicSong: this.editingSong.isPublicSong!, youtubeUrl: this.editingSong.youtubeUrl || ''
+      isPublicSong: this.editingSong.isPublicSong!, youtubeUrl: this.editingSong.youtubeUrl || '', imageUrl: this.editingSong.imageUrl || ''
     };
 
     const request$ = this.editingSong.id
@@ -177,7 +192,6 @@ togglePlay(index: number, youtubeUrl: string): void {
 
   const player = this.playerRefs[index];
 
-  // Si no hay reproductor, inicialízalo y luego reproduce
   if (!player) {
     this.initYouTubePlayer(index, videoId);
     setTimeout(() => this.play(index), 500);
@@ -188,7 +202,7 @@ togglePlay(index: number, youtubeUrl: string): void {
     player.pauseVideo();
     this.isPlaying[index] = false;
   } else {
-    player.seekTo(0); // ✅ Esto reinicia el video desde el inicio
+    player.seekTo(0);
     this.play(index);
   }
 }
@@ -199,4 +213,45 @@ play(index: number): void {
   this.isPlaying[index] = true;
 }
 
+coverFile: File | null = null;
+uploading = false;
+
+onImageSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.[0]) return;
+
+  const file = input.files[0];
+  this.coverFile = file;
+
+  // Vista previa inmediata
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    this.previewImageUrl = e.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  // Subir a Cloudinary
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'zuko_pfps');
+
+  this.uploading = true;
+  fetch('https://api.cloudinary.com/v1_1/dqk8inmwe/image/upload', {
+    method: 'POST',
+    body: formData
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      this.uploading = false;
+      if (data.secure_url) {
+        this.editingSong.imageUrl = data.secure_url; // ← Guarda la URL para enviar
+      } else {
+        alert('Error al subir la imagen');
+      }
+    })
+    .catch(() => {
+      this.uploading = false;
+      alert('Error al subir la imagen');
+    });
+}
 }
