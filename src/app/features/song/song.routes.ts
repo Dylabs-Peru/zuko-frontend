@@ -5,5 +5,12 @@ export const SONG_ROUTES: Routes = [
   {
     path: 'my-songs',
     component: ArtistSongsComponent
+  },
+  {
+    path: 'detail/:id',
+    loadComponent: () =>
+      import('./pages/song-detail/song-detail.component').then(
+        (m) => m.SongDetailComponent
+      )
   }
 ];
