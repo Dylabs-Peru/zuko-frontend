@@ -20,30 +20,60 @@ body {
     padding: 0;
 }
 
+
+.playlist-cover-large {
+  width: 220px;
+  height: 220px;
+  min-width: 220px;
+  min-height: 220px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+.playlist-header-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  padding-bottom: 24px;
+}
+
+.playlist-type {
+  font-size: 1rem;
+  color: #fff;
+  opacity: 0.8;
+  margin-bottom: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 .header {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 40px;
-    position: relative;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: 300px;
-    color: white;
+    flex-direction: row;
+    background: linear-gradient(to bottom, #2b0000, #550000);
+    padding: 40px 40px 32px 40px;
+    height: 320px;
+    box-sizing: border-box;
+    gap: 40px;    
 }
 
 .header h1 {
-    font-size: 3rem;
-    margin: 0;
+    font-size: 4rem;
+    margin: 0 0 18px 0;
     color: #fff;
     font-weight: bold;
+    line-height: 1.1;
 }
 
 .header .details {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #fff;
-    opacity: 1;
+    opacity: 0.95;
+    margin-top: 8px;
 }
 
 .controls {
