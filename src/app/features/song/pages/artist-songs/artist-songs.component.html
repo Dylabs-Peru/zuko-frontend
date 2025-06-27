@@ -2,11 +2,6 @@
 
   <div *ngIf="loading">Cargando...</div>
 
-  <!-- Usuario no es artista (otro perfil) -->
-  <div *ngIf="!loading && !isOwnProfile" class="no-profile">
-    Este usuario no tiene un perfil de artista.
-  </div>
-
   <!-- Artista sin canciones -->
   <div *ngIf="!loading && isOwnProfile && songs.length === 0" class="no-songs">
     No tienes canciones disponibles.
@@ -15,6 +10,14 @@
   <!-- Lista de canciones -->
   <ul *ngIf="songs.length > 0">
     <li *ngFor="let song of songs; let i = index" class="song-item">
+      <!-- Portada de la canción -->
+    <div class="song-cover">
+      <img *ngIf="song.imageUrl; else noCover" [src]="song.imageUrl" alt="Portada de {{ song.title }}" class="cover-image" />
+      <ng-template #noCover>
+        <div class="cover-placeholder">📷</div>
+      </ng-template>
+    </div>
+
       <div class="song-info">
         <div class="song-title">
           <span class="song-index">{{ i + 1 }}.</span>
@@ -26,12 +29,11 @@
         </small>
       </div>
 
-<!-- Botón de Reproducir/Pausar si tiene URL -->
         <div *ngIf="song.youtubeUrl" class="player-control">
           <button (click)="togglePlay(i, song.youtubeUrl)" class="play-button" [title]="isPlaying[i] ? 'Pausar' : 'Reproducir'">
             {{ isPlaying[i] ? '⏸️' : '▶️' }}
           </button>
-          <!-- iframe oculto -->
+          
           <div id="yt-player-{{i}}" style="width: 0; height: 0; overflow: hidden;"></div>
         </div>
 
@@ -49,38 +51,35 @@
 
   <button *ngIf="isOwnProfile" class="create-song-button" (click)="openCreateForm()"> Crear canción </button>
 
-  <!-- Modal Crear/Editar -->
   <div *ngIf="showSongForm" class="modal">
     <div class="modal-content">
       <h2>{{ editingSong.id ? 'Editar canción' : 'Crear canción' }}</h2>
       <form (submit)="onSubmit($event)">
+
+        <!-- Vista previa de imagen -->
+        <div class="cover-preview-container">
+          <img *ngIf="editingSong.imageUrl; else noImage" [src]="editingSong.imageUrl" class="cover-preview" alt="Portada" />
+          <ng-template #noImage>
+            <div class="cover-placeholder">📷</div>
+          </ng-template>
+        </div>
+
+<!-- Botón para subir portada -->
+        <label class="upload-cover-label">
+        <input type="file" accept="image/*" (change)="onImageSelected($event)" hidden />
+        <span class="upload-cover-button">Subir portada</span>
+        </label>
+
         <label for="title">Título:</label>
-        <input
-          id="title"
-          type="text"
-          [(ngModel)]="editingSong.title"
-          name="title"
-          required
-        />
+        <input id="title" type="text" [(ngModel)]="editingSong.title" name="title" required />
 
         <div class="form-error" *ngIf="formError">{{ formError }}</div>
 
         <label for="isPublicSong">¿Es pública?</label>
-        <input
-          id="isPublicSong"
-          type="checkbox"
-          [(ngModel)]="editingSong.isPublicSong"
-          name="isPublicSong"
-        />
+        <input id="isPublicSong" type="checkbox" [(ngModel)]="editingSong.isPublicSong" name="isPublicSong" />
 
-        <label for="youtubeUrl">Enlace de YouTube:</label>
-        <input
-          id="youtubeUrl"
-          type="text"
-          [(ngModel)]="editingSong.youtubeUrl"
-          name="youtubeUrl"
-        />
-
+        <label for="youtubeUrl">Enlace de la canción:</label>
+        <input id="youtubeUrl" type="text" [(ngModel)]="editingSong.youtubeUrl" name="youtubeUrl" />
 
         <div class="form-buttons">
           <button type="submit" class="save-button">Guardar</button>
