@@ -5,6 +5,8 @@ import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CreatePlaylistDialogComponent } from '../../components/crear-playlist/crear-playlist.component';
 import { Router } from '@angular/router';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-playlist-library',
   standalone: true,
@@ -15,11 +17,11 @@ import { Router } from '@angular/router';
 })
 export class PlaylistLibraryComponent implements OnInit {
   playlists: PlaylistResponse[] = [];
-  filteredPlaylists: PlaylistResponse[] = [];
   isLoading = false;
   error = '';
   searchQuery = '';
   showCreateDialog = false;
+  searchQueryChanged = new Subject<string>(); 
 
   constructor(private playlistService: PlaylistService, 
               private cdr: ChangeDetectorRef,
@@ -28,6 +30,12 @@ export class PlaylistLibraryComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPlaylists();
+    this.searchQueryChanged.pipe(
+      debounceTime(350),           // Espera 350 ms tras dejar de tipear
+      distinctUntilChanged()       // Solo emite si cambió el texto
+    ).subscribe(q => {
+      this.onSearchReal(q);
+    });
   }
 
   loadPlaylists(): void {
@@ -36,7 +44,6 @@ export class PlaylistLibraryComponent implements OnInit {
     this.playlistService.getMyPlaylists().subscribe({
       next: (playlists) => {
         this.playlists = playlists;
-        this.applyFilter();
         this.isLoading = false;
         this.cdr.markForCheck(); 
       },
@@ -49,26 +56,30 @@ export class PlaylistLibraryComponent implements OnInit {
     });
   }
 
-  onSearch(): void {
-    const q = this.searchQuery.trim().toLowerCase();
-    if (!q) {
-      this.filteredPlaylists = this.playlists;
-    } else {
-      this.filteredPlaylists = this.playlists.filter(p =>
-        p.name.toLowerCase().includes(q)
-      );
-    }
-    this.cdr.markForCheck(); 
+
+   onSearch(): void {
+    this.searchQueryChanged.next(this.searchQuery);
   }
 
-  applyFilter(): void {
-    const q = this.searchQuery.trim().toLowerCase();
-    if (!q) {
-      this.filteredPlaylists = this.playlists;
+  onSearchReal(q: string): void {
+    const query = q.trim();
+    if (!query) {
+      this.loadPlaylists();
     } else {
-      this.filteredPlaylists = this.playlists.filter(p =>
-        p.name.toLowerCase().includes(q)
-      );
+      this.isLoading = true;
+      this.error = '';
+      this.playlistService.searchMyPlaylistsByName(query).subscribe({
+        next: (playlists) => {
+          this.playlists = playlists;
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.error = 'Error en la búsqueda de playlists';
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        }
+      });
     }
   }
 
@@ -82,7 +93,6 @@ export class PlaylistLibraryComponent implements OnInit {
 
   onPlaylistCreated(newPlaylist: PlaylistResponse) {
     this.playlists = [newPlaylist, ...this.playlists];
-    this.applyFilter();  
     this.showCreateDialog = false;
   }
   goToPlaylist(playlistId: number | string): void  {
