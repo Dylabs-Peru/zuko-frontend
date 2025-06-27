@@ -2,11 +2,15 @@ import { AddPlaylistToShortcutsRequest, ShortcutsResponse } from './../models/sh
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { ApiService } from './Api.service';
+import { BehaviorSubject } from 'rxjs';
+import { PlaylistSummaryResponse } from '../models/playlist.model';
 
 @Injectable({
    providedIn: 'root'
 })
 export class ShortcutsService {
+  private playlistsSubject = new BehaviorSubject<PlaylistSummaryResponse[]>([]);
+  playlists$ = this.playlistsSubject.asObservable();
   private endpoint = '/shortcuts';
   constructor(private api: ApiService) {}
 
@@ -21,7 +25,14 @@ export class ShortcutsService {
 
   getShortcutsByUser(): Observable<ShortcutsResponse> {
     return this.api.get<{ data: ShortcutsResponse }>(this.endpoint)
-      .pipe(map(response => response.data));
+      .pipe(map(response => {
+         this.playlistsSubject.next(response.data.Playlists)
+        return  response.data
+      })
+    );
+  }
+  getCurrentShortcutsPlaylists(): PlaylistSummaryResponse[] {
+    return this.playlistsSubject.value;
   }
 }
 

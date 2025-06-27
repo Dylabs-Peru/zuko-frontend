@@ -2,6 +2,7 @@
 <div class="popup-menu" *ngIf="visible">
   <button class="menu-item" *ngIf="canEdit" (click)="edit.emit()">Editar Playlist</button>
   <button class="menu-item delete" *ngIf="canEdit" (click)="delete.emit()">Eliminar Playlist</button>
-  <button class="menu-item acceso-directo" (click)="addShortcut.emit()">Añadir a acceso directo</button>
+  <button class="menu-item acceso-directo" *ngIf="!isInShortcuts" (click)="addShortcut.emit()">Añadir a acceso directo</button>
+  <button class="menu-item borrar-acceso-directo" *ngIf="isInShortcuts" (click)="removeShortcut.emit()">Eliminar de acceso directo</button>
   <button class="close-btn" (click)="close.emit()" aria-label="Cerrar">&times;</button>
 </div>

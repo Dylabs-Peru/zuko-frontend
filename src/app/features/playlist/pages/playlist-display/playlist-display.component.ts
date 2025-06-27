@@ -1,3 +1,4 @@
+import { PlaylistSummaryResponse } from './../../../../models/playlist.model';
 import { ConfirmDeleteDialogComponent } from './../../components/borrar-playlist/confirm-delete-dialog.component';
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
@@ -34,6 +35,7 @@ export class PlaylistDisplayComponent implements OnInit {
   songs: SongResponse[] = [];
   selectedSongForPlaylist: SongResponse | null = null;
   showAddToPlaylistModal = false;
+  shortcutsPlaylists: PlaylistSummaryResponse[] = [];
 
   constructor(
             private playlistService: PlaylistService, 
@@ -59,6 +61,10 @@ export class PlaylistDisplayComponent implements OnInit {
       const authObj = JSON.parse(auth);
       this.userID = authObj.user?.id || null;
     }
+      this.shortcutService.playlists$.subscribe(playlists => {
+      this.shortcutsPlaylists = playlists;
+    });
+      this.shortcutService.getShortcutsByUser().subscribe();
     }
 
     onEditPlaylist() {
@@ -159,6 +165,7 @@ export class PlaylistDisplayComponent implements OnInit {
       this.shortcutService.addPlaylistToShortcuts(request).subscribe({
         next: (response) => {
           console.log('Playlist agregada a accesos directos:', response);
+          this.shortcutService.getShortcutsByUser().subscribe();
           this.showMenu = false;
           alert('Playlist agregada a accesos directos');
         },
@@ -168,6 +175,29 @@ export class PlaylistDisplayComponent implements OnInit {
         }
       });
     }
+
+    onRemoveFromShortcut() {
+    if (!this.playlist) return;
+    this.shortcutService.removePlaylistFromShortcuts(this.playlist.playlistId).subscribe({
+      next: () => {
+        this.shortcutService.getShortcutsByUser().subscribe();
+        this.showMenu = false;
+        alert('Playlist eliminada de accesos directos');
+      },
+      error: (err) => {
+        alert('No se pudo eliminar la playlist de accesos directos');
+      }
+    });
+  }
+
+  isInShortcuts(): boolean {
+    console.log('shortcutsPlaylists:', this.shortcutsPlaylists, 'playlist:', this.playlist);
+    return this.shortcutsPlaylists?.some(p => p.playlistId === this.playlist?.playlistId);
+  }
+
+   goToHome(): void  {
+    this.router.navigate(['/home']);
+  }
 }
 
 

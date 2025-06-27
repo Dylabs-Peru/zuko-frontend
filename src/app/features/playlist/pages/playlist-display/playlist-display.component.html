@@ -21,8 +21,10 @@
     [visible]="showMenu"
     [canEdit]="canEdit()"
     (edit)="onEditPlaylist()"
+    [isInShortcuts]="isInShortcuts()"
     (delete)="onDeletePlaylist()"
     (addShortcut)="onAddToShortcut()"
+    (removeShortcut)="onRemoveFromShortcut()"
     (close)="showMenu = false">
   </app-playlist-options-popup>
 
