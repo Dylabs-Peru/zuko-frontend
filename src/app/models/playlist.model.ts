@@ -23,3 +23,10 @@ export interface UpdatePlaylistRequest {
     isPublic ?: boolean;
     url_image ?: string;
 }
+
+export interface PlaylistSummaryResponse {
+    playlistId: number;
+    name: string;
+    url_image?: string;
+    owner: string;
+}
