@@ -69,7 +69,9 @@
             [src]="userProfileImage" 
             [alt]="isArtist ? 'Perfil Artista' : 'Perfil Usuario'" 
             [title]="username"
-            class="profile-icon">
+            class="profile-icon"
+            (error)="onImageError($event)"
+            loading="lazy">
         </a>
         <div class="dropdown-content">
           <div class="user-info">

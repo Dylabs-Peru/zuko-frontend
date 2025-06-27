@@ -6,6 +6,7 @@ import { UserService } from '../../../../services/User.service';
 import { RoleService } from '../../../../services/Role.service';
 import { UserResponse, CreateUserRequest, UpdateUserRequest } from '../../../../models/user.model';
 import { RoleResponse } from '../../../../models/role.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-admin-users',
@@ -319,6 +320,23 @@ export class AdminUsersComponent implements OnInit {
 
   getUserStatusColor(isActive: boolean): string {
     return isActive ? '#4CAF50' : '#F44336';
+  }
+
+  /**
+   * Obtiene la URL de la imagen de perfil o el placeholder por defecto
+   */
+  getProfileImageUrl(url_image: string | null | undefined): string {
+    if (!url_image || url_image.trim() === '') {
+      return environment.defaultProfileImage;
+    }
+    return url_image;
+  }
+
+  /**
+   * Maneja errores de carga de imagen y establece el placeholder
+   */
+  onImageError(event: any): void {
+    event.target.src = environment.defaultProfileImage;
   }
 
   goBack() {

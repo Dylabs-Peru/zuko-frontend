@@ -43,10 +43,12 @@
       <div class="users-grid" *ngIf="users.length > 0">
         <div class="user-card" *ngFor="let user of users">
           <div class="user-header">
-            <div class="user-avatar">              <img 
-                [src]="user.url_image || 'assets/default-avatar.png'" 
+            <div class="user-avatar">
+              <img 
+                [src]="getProfileImageUrl(user.url_image)" 
                 [alt]="user.username"
-                (error)="$any($event.target).src='assets/default-avatar.png'"
+                (error)="onImageError($event)"
+                loading="lazy"
               />
             </div>
             <div class="user-info">

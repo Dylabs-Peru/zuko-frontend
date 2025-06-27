@@ -209,7 +209,7 @@ export class GoogleAuthService {
 
     this.userService.loginWithGoogle(googleRequest).subscribe({
       next: (response: any) => {
-        console.log('✅ Login con Google exitoso:', response);
+        console.log(' Login con Google exitoso:', response);
         
         // Mensaje de bienvenida personalizado
         const userName = response.user?.name || googleUser.name || 'Usuario';
@@ -222,7 +222,7 @@ export class GoogleAuthService {
         this.redirectAfterLogin(response);
       },
       error: (error: any) => {
-        console.error('❌ Error en login con Google:', error);
+        console.error(' Error en login con Google:', error);
         console.log('Status del error:', error.status);
         
         // Extraer mensaje específico del backend
@@ -230,7 +230,7 @@ export class GoogleAuthService {
         
         // Si el usuario no existe, mostrar confirmación para registrarse
         if (error.status === 404 || error.status === 401 || errorMessage.includes('not found') || errorMessage.includes('No existe una cuenta')) {
-          console.log('🔍 Usuario no encontrado en /auth/login - mostrando confirmación');
+          console.log(' Usuario no encontrado en /auth/login - mostrando confirmación');
           this.showRegistrationConfirmation(googleUser);
         } else {
           // Mostrar mensaje específico del backend
@@ -244,11 +244,11 @@ export class GoogleAuthService {
    * Intenta hacer registro con Google
    */
   private attemptGoogleRegister(googleRequest: any, googleUser: GoogleUser): void {
-    console.log('📝 Intentando registro con Google...');
+    console.log(' Intentando registro con Google...');
 
     this.userService.registerWithGoogle(googleRequest).subscribe({
       next: (response: any) => {
-        console.log('✅ Registro con Google exitoso:', response);
+        console.log(' Registro con Google exitoso:', response);
         
         // Mostrar mensaje de éxito
         alert(`¡Bienvenido a Zuko, ${googleUser.name}!\\n\\nTu cuenta ha sido creada exitosamente.`);
@@ -263,7 +263,7 @@ export class GoogleAuthService {
         this.redirectAfterLogin(authData);
       },
       error: (error: any) => {
-        console.error('❌ Error al registrar con Google:', error);
+        console.error(' Error al registrar con Google:', error);
         
         // Extraer mensaje específico del backend
         const errorMessage = this.extractErrorMessage(error);
@@ -289,25 +289,25 @@ export class GoogleAuthService {
       
       // 1. Primero intentar obtener el mensaje de la excepción del backend
       if (error?.error?.message) {
-        console.log('📄 Mensaje de excepción encontrado:', error.error.message);
+        console.log('Mensaje de excepción encontrado:', error.error.message);
         return error.error.message;
       }
       
       // 2. Si el error viene como string directo
       if (typeof error?.error === 'string') {
-        console.log('📄 Error como string:', error.error);
+        console.log('Error como string:', error.error);
         return error.error;
       }
       
       // 3. Intentar obtener desde diferentes ubicaciones comunes
       if (error?.message) {
-        console.log('📄 Mensaje desde error.message:', error.message);
+        console.log('Mensaje desde error.message:', error.message);
         return error.message;
       }
       
       // 4. Para errores HTTP, intentar extraer el mensaje del body
       if (error?.error?.error) {
-        console.log('📄 Mensaje desde error.error.error:', error.error.error);
+        console.log('Mensaje desde error.error.error:', error.error.error);
         return error.error.error;
       }
       
@@ -319,7 +319,7 @@ export class GoogleAuthService {
         
         for (const field of possibleFields) {
           if (errorObj[field] && typeof errorObj[field] === 'string') {
-            console.log(`📄 Mensaje encontrado en ${field}:`, errorObj[field]);
+            console.log(` Mensaje encontrado en ${field}:`, errorObj[field]);
             return errorObj[field];
           }
         }
@@ -328,19 +328,19 @@ export class GoogleAuthService {
       // 6. Si es un error HTTP con status, mostrar información básica
       if (error?.status) {
         const statusMessage = `Error ${error.status}${error.statusText ? ': ' + error.statusText : ''}`;
-        console.log('📄 Mensaje de status HTTP:', statusMessage);
+        console.log(' Mensaje de status HTTP:', statusMessage);
         return statusMessage;
       }
       
       // 7. Fallback - convertir todo el error a string si es posible
       const errorString = JSON.stringify(error);
       if (errorString && errorString !== '{}') {
-        console.log('📄 Error serializado:', errorString);
+        console.log(' Error serializado:', errorString);
         return 'Error del servidor: ' + errorString;
       }
       
       // 8. Fallback final
-      console.log('📄 Usando mensaje genérico');
+      console.log(' Usando mensaje genérico');
       return 'Ha ocurrido un error inesperado en el servidor. Por favor, intenta de nuevo.';
       
     } catch (e) {

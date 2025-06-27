@@ -9,6 +9,7 @@ import { CreateArtistComponent } from '../../../artist/components/create-artist/
 import { ActivateStatusArtistComponent } from '../../../artist/components/activate-status-artist/activate-status-artist.component';
 import { ArtistResponse } from '../../../../models/artist.model';
 import { AuthService } from '../../../../services/Auth.service';
+import { environment } from '../../../../../environments/environment';
 
 
 @Component({
@@ -101,6 +102,23 @@ export class ProfileComponent implements OnInit {
     setTimeout(() => {
       this.logout();
     }, 0);
+  }
+
+  /**
+   * Obtiene la URL de la imagen de perfil o el placeholder por defecto
+   */
+  getProfileImageUrl(url_image: string | null | undefined): string {
+    if (!url_image || url_image.trim() === '') {
+      return environment.defaultProfileImage;
+    }
+    return url_image;
+  }
+
+  /**
+   * Maneja errores de carga de imagen y establece el placeholder
+   */
+  onImageError(event: any): void {
+    event.target.src = environment.defaultProfileImage;
   }
 
   logout() {
