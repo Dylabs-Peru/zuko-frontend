@@ -40,3 +40,13 @@
   cursor: pointer;
   font-weight: bold;
 }
+
+.yes-btn:hover {
+  background: #b30000;
+  color: #fff;
+}
+
+.no-btn:hover {
+  background: #e0e0e0;
+  color: #141414;
+}
