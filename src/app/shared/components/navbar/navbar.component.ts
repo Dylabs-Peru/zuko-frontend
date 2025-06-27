@@ -104,7 +104,7 @@ export class NavbarComponent {
 
     forkJoin({
       user: this.userService.getUserByUsername(this.searchTerm.trim()).pipe(catchError(() => of(null))),
-      songs: this.songService.getMySongs().pipe(catchError(() => of([]))),
+      songs: this.songService.searchPublicSongsByTitle(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       artist: this.artistService.getArtistByName(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       albums: this.albumService.getAlbumsByTitle(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       playlists: this.playlistService.getPublicPlaylistsByName(this.searchTerm.trim()).pipe(catchError(() => of([])))
@@ -157,9 +157,10 @@ export class NavbarComponent {
   }
 
   goToSong(songId: number) {
-    this.router.navigate(['/songs', songId]);
-    this.showResults = false;
-  }
+  this.router.navigate(['/songs/detail', songId]);
+  this.showResults = false;
+  this.searchTerm = '';
+}
 
   goToArtist(artistName: string) {
     this.router.navigate(['/artist/profile-artist', artistName]);
