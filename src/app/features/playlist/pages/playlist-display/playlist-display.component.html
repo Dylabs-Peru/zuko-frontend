@@ -1,11 +1,15 @@
 <div *ngIf="playlist && !loading" class="playlist-detail-root">
-  <div class="header" [ngStyle]="{'background-image': 'url(' + playlist.url_image + ')'}">
+  <div class="header">
+  <div class="playlist-cover-large"
+      [ngStyle]="{'background-image': 'url(' + playlist.url_image + ')'}">
+  </div>
+  <div class="playlist-header-info" >
     <h1>{{ playlist.name }}</h1>
     <div class="details">
-       {{ playlist.createdAt | date }} &bull; {{ playlist.songs.length }} Canciones
+       {{ playlist.createdAt | date }} &bull; {{ playlist.songs.length }} Canciones &bull; {{ playlist.description }}
     </div>
   </div>
-
+</div>
   <div class="controls">
   <button class="play-btn" title="Reproducir">
     <span class="icon-play"></span>

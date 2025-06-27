@@ -27,6 +27,6 @@ export interface UpdatePlaylistRequest {
 export interface PlaylistSummaryResponse {
     playlistId: number;
     name: string;
-    url_image?: string;
+    urlImage?: string;
     owner: string;
 }

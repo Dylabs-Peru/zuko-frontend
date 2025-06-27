@@ -190,8 +190,7 @@ export class PlaylistDisplayComponent implements OnInit {
     });
   }
 
-  isInShortcuts(): boolean {
-    console.log('shortcutsPlaylists:', this.shortcutsPlaylists, 'playlist:', this.playlist);
+  isInShortcuts(): boolean {  
     return this.shortcutsPlaylists?.some(p => p.playlistId === this.playlist?.playlistId);
   }
 

@@ -8,13 +8,13 @@
  <div class="playlists-grid">
     <div 
         class="playlist-card"
-        *ngFor="let playlist of playlists"
+        *ngFor="let playlist of playlists"    
         tabindex="0"
         (click)="goToPlaylist(playlist.playlistId)"
         [attr.aria-label]="'Abrir playlist ' + playlist.name"
     >
         <div class="playlist-cover"
-        [ngStyle]="{ 'background-image': playlist.url_image ? 'url(' + playlist.url_image + ')' : '' }" 
+        [ngStyle]="{ 'background-image': playlist.urlImage ? 'url(' + playlist.urlImage + ')' : '' }" 
         ></div>
             <div class="playlist-info">
             <span class="playlist-name">{{ playlist.name }}</span>
