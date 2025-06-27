@@ -297,3 +297,76 @@ input.error:focus {
   opacity: 0.7;
 }
 
+/* Divisor */
+.divider {
+  width: 100%;
+  text-align: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.divider span {
+  background: #B71C1C;
+  color: #FFFFFF;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Botón de Google */
+.google-btn {
+  width: 100%;
+  background: #FFFFFF;
+  color: #757575;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.875rem 1rem;
+  border: 2px solid #DADCE0;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.google-btn:hover:not(:disabled) {
+  background: #F8F9FA;
+  border-color: #D2D3D4;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.google-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.google-icon {
+  flex-shrink: 0;
+}
+
+/* Contenedor para el botón oficial de Google */
+.google-button-container {
+  width: 100%;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.google-button-container > div {
+  width: 100% !important;
+}
+
