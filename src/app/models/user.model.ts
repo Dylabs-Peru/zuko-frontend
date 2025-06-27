@@ -5,7 +5,17 @@ export interface CreateUserRequest {
   url_image?: string;
   description?: string;
   roleName?: string; 
-  isActive?: boolean;  
+  isActive?: boolean;
+  // Campos adicionales para Google Auth
+  isGoogleAuth?: boolean;
+  googleId?: string;
+  googleData?: {
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    photoUrl?: string;
+    provider?: string;
+  };
 }
 
 export interface UpdateUserRequest {
@@ -20,6 +30,20 @@ export interface UpdateUserRequest {
 export interface LoginRequest {
   email: string;
   password: string;
+  // Campos adicionales para Google Auth
+  isGoogleAuth?: boolean;
+  googleId?: string;
+  googleData?: {
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    photoUrl?: string;
+    provider?: string;
+  };
+}
+
+export interface GoogleOAuthRequest {
+  googleToken: string;
 }
 
 export interface UserResponse {
