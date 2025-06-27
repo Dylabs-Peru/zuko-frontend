@@ -112,7 +112,7 @@ body {
   display: block;
   width: 28px;
   height: 28px;
-  margin-left: 4px; 
+  margin-left: 0px; 
   mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="black"/></svg>') no-repeat center/contain;
   background: #000;
 }
@@ -280,4 +280,30 @@ tr:hover {
   font-size: 18px;
   margin-right: 4px;
   vertical-align: middle;
+}
+
+.icon-pause {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="20" fill="black"/><rect x="17" y="4" width="5" height="20" fill="black"/></svg>') no-repeat center/contain;
+  background: #000;
+}
+.icon-play-playlist {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="white"/></svg>') no-repeat center/contain;
+  background: #fff;
+}
+
+.icon-pause-playlist {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="20" fill="white"/><rect x="17" y="4" width="5" height="20" fill="white"/></svg>') no-repeat center/contain;
+  background: #fff;
 }

@@ -36,6 +36,10 @@ export class PlaylistDisplayComponent implements OnInit {
   selectedSongForPlaylist: SongResponse | null = null;
   showAddToPlaylistModal = false;
   shortcutsPlaylists: PlaylistSummaryResponse[] = [];
+  currentSong: SongResponse | null = null;
+  isPlaying = false;
+  playerRef: any;
+  currentSongId: number | null = null;
 
   constructor(
             private playlistService: PlaylistService, 
@@ -196,6 +200,52 @@ export class PlaylistDisplayComponent implements OnInit {
 
    goToHome(): void  {
     this.router.navigate(['/home']);
+  }
+
+  playSong(song: SongResponse) {
+    const videoId = this.extractVideoId(song.youtubeUrl);
+    if (this.currentSongId === song.id && this.isPlaying) {
+      this.playerRef.pauseVideo();
+      this.isPlaying = false;
+    } else if (this.currentSongId === song.id && !this.isPlaying) {
+      this.playerRef.playVideo();
+      this.isPlaying = true;
+    } else {
+      this.currentSongId = song.id;
+      this.initYouTubePlayer(videoId);
+  }
+  }
+
+  extractVideoId(url: string): string {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : '';
+  }
+
+  initYouTubePlayer(videoId: string): void {
+    setTimeout(() => {
+      this.playerRef = new (window as any).YT.Player('yt-player-playlist', {
+        videoId,
+        height: '0',
+        width: '0',
+        events: {
+          onReady: () => {
+            this.playerRef.playVideo();
+            this.isPlaying = true;
+          }
+        }
+      });
+    }, 100);
+  }
+
+  togglePlay(): void {
+    if (!this.playerRef) return;
+    if (this.isPlaying) {
+      this.playerRef.pauseVideo();
+      this.isPlaying = false;
+    } else {
+      this.playerRef.playVideo();
+      this.isPlaying = true;
+    }
   }
 }
 
