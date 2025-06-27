@@ -8,7 +8,7 @@
  <div class="playlists-grid">
     <div 
         class="playlist-card"
-        *ngFor="let playlist of shortcuts"
+        *ngFor="let playlist of playlists"
         tabindex="0"
         (click)="goToPlaylist(playlist.playlistId)"
         [attr.aria-label]="'Abrir playlist ' + playlist.name"
@@ -18,7 +18,7 @@
         ></div>
             <div class="playlist-info">
             <span class="playlist-name">{{ playlist.name }}</span>
-            <span class="playlist-owner"></span>
+            <span class="playlist-owner">{{playlist.owner}}</span>
             <button class="playlist-play-btn" 
             aria-label="Reproducir playlist"
             (click)="goToPlaylist(playlist.playlistId); $event.stopPropagation()">

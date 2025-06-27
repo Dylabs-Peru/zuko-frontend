@@ -12,7 +12,7 @@ import { AlbumService } from '../../../../services/Album.service';
 import { AlbumResponse } from '../../../../models/album.model';
 import { AddSongToPlaylistModalComponent } from '../../components/agregar-cancion-playlist/add-song-to-playlist.component';
 import { SongResponse } from '../../../../models/song.model';
-import { ShortcutService } from '../../../../services/shortcuts.service';
+import { ShortcutsService } from '../../../../services/shortcuts.service';
 
 @Component({
   selector: 'app-playlist-display',
@@ -40,11 +40,11 @@ export class PlaylistDisplayComponent implements OnInit {
             private route: ActivatedRoute,
             private router: Router,
             private albumService: AlbumService,
-            private shortcutService: ShortcutService
+            private shortcutService: ShortcutsService
   ) {}
    
    ngOnInit(): void {
-    this.route.snapshot.params['id'];this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(params => {
     const playlistId = params.get('id');
     if (!playlistId) {
       this.error = 'ID de playlist no especificado';
@@ -74,7 +74,7 @@ export class PlaylistDisplayComponent implements OnInit {
     onConfirmDelete() {
     this.playlistService.deletePlaylist(this.playlist!.playlistId).subscribe({
       next: () => {
-        this.shortcutService.removeShortcut(this.playlist!.playlistId);
+        this.shortcutService.removePlaylistFromShortcuts(this.playlist!.playlistId);
         this.showDeleteDialog = false;
         this.router.navigate(['/playlist/library']);
       },
@@ -102,7 +102,7 @@ export class PlaylistDisplayComponent implements OnInit {
 
     onPlaylistEdited(editedPlaylist: PlaylistResponse) {
       this.playlist = editedPlaylist;
-     this.showEditDialog = false;
+      this.showEditDialog = false;
     }
 
     canEdit(): boolean {
@@ -155,17 +155,18 @@ export class PlaylistDisplayComponent implements OnInit {
 
     onAddToShortcut() {
       if (!this.playlist) return;
-      const userId = this.userID;
-      if (!userId) return;
-      const key = `shortcuts_${userId}`;
-      const current = JSON.parse(localStorage.getItem(key) || '[]');
-      if (!current.find((p: any) => p.playlistId === this.playlist!.playlistId)) {
-        current.push(this.playlist);
-        localStorage.setItem(key, JSON.stringify(current));
-      }
-      this.showMenu = false;
-      alert('Playlist agregada a accesos directos');
-    
+      const request = {playlistId: this.playlist.playlistId}
+      this.shortcutService.addPlaylistToShortcuts(request).subscribe({
+        next: (response) => {
+          console.log('Playlist agregada a accesos directos:', response);
+          this.showMenu = false;
+          alert('Playlist agregada a accesos directos');
+        },
+        error: (err) => {
+          console.error('Error al agregar playlist a accesos directos:', err);
+          alert(this.error = err.error?.detail || 'No se pudo agregar la playlist a accesos directos');
+        }
+      });
     }
 }
 
