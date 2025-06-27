@@ -11,8 +11,9 @@
   </div>
 </div>
   <div class="controls">
-  <button class="play-btn" title="Reproducir">
-    <span class="icon-play"></span>
+  <button (click) = "togglePlay()" class="play-btn" title="Reproducir">
+    <span *ngIf = "isPlaying" class="icon-pause"></span>
+    <span *ngIf = "!isPlaying" class="icon-play"></span>
   </button>
   <button class="shuffle-btn" title="Aleatorio">
     <span class="icon-shuffle"></span>
@@ -82,7 +83,17 @@
           </button>
         </td>
         <td class="play-col">
-          <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
+          <button 
+           (click)="playSong(song)"
+           class="song-play-btn" 
+           [title]="currentSongId === song.id && isPlaying ? 'Pausar' : 'Reproducir canción'">
+          <span 
+            *ngIf="currentSongId === song.id && isPlaying" 
+            class="icon-pause-playlist"></span>
+          <span 
+            *ngIf="!(currentSongId === song.id && isPlaying)" 
+            class="icon-play-playlist"></span>
+          </button>
         </td>
       </tr>
       </ng-container>
@@ -94,4 +105,5 @@
     (close)="onCloseAddToPlaylist()"
     (songAdded)="onSongAddedToPlaylist()">
     </app-add-song-to-playlist-modal>
+<div id="yt-player-playlist" style="width:0; height:0; overflow:hidden;"></div>
 </div>
