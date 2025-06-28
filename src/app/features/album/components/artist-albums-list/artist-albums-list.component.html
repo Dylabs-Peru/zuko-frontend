@@ -22,6 +22,7 @@
   <div *ngIf="openMenuAlbumId === album.id" class="dropdown-menu">
     <button (click)="editAlbum(album)">Editar Álbum</button>
     <button (click)="confirmDeleteAlbum(album)">Eliminar Álbum</button>
+    <button (click)="addAlbumToShortcut(album)">Añadir a acceso directo</button>
   </div>
 </ng-container>
         </div>

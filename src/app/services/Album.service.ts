@@ -5,6 +5,10 @@ import { ApiService } from './Api.service';
 
 @Injectable({ providedIn: 'root' })
 export class AlbumService {
+  // Obtener álbumes por artistId (perfil de otro artista)
+  getAlbumsByArtist(artistId: number): Observable<AlbumResponse[]> {
+    return this.apiService.get<AlbumResponse[]>(`${this.endpoint}/by-artist/${artistId}`);
+  }
   private endpoint = '/albums';
 
   constructor(private apiService: ApiService) {}
