@@ -97,12 +97,12 @@ export class ProfileComponent implements OnInit {
   onArtistCreated(artist: ArtistResponse) {
     if (this.user) {
       this.user.isArtist = true;
-      // Actualizar el usuario en localStorage para reflejar el cambio en toda la app
+      // Actualizar el usuario en localStorage
       const auth = localStorage.getItem('auth');
       if (auth) {
         const authObj = JSON.parse(auth);
         authObj.user.isArtist = true;
-        // Guardar el nombre de artista para el flujo robusto (navbar y perfil de artista)
+        // Guardar el nombre de artista
         if (artist && artist.name) {
           authObj.user.artistName = artist.name;
         }
@@ -111,7 +111,7 @@ export class ProfileComponent implements OnInit {
     }
     this.closeArtistModal();
     this.artistaCreadoExitoso = true;
-    // Navegar automáticamente como en login/register tras 2 segundos
+    //  tras 2 segundos
     setTimeout(() => {
       // Siempre navegar a /artist/profile-artist/:name
       let artistName = '';

@@ -4,6 +4,7 @@ import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard
 import { AdminGenresComponent } from './pages/admin-genres/admin-genres.component';
 import { AdminUsersComponent } from './pages/admin-users/admin-users.component';
 import { AdminRolesComponent } from './pages/admin-roles/admin-roles.component';
+import { AdminArtistsComponent } from './pages/admin-artists/admin-artists.component';
 
 export const ADMIN_ROUTES: Routes = [
   { 
@@ -13,6 +14,10 @@ export const ADMIN_ROUTES: Routes = [
   { 
     path: 'users', 
     component: AdminUsersComponent
+  },
+  { 
+    path: 'artists', 
+    component: AdminArtistsComponent
   },
   { 
     path: 'genres', 
