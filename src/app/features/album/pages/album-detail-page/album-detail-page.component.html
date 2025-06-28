@@ -10,10 +10,9 @@
 
   <div class="controls">
     <button (click)="togglePlay()" class="play-btn" title="Reproducir">
-      <span *ngIf="isPlaying" class="icon-pause"></span>
-      <span *ngIf="!isPlaying" class="icon-play"></span>
+      <span class="icon-play"></span>
     </button>
-    <button class="shuffle-btn" title="Aleatorio">
+    <button (click)="shufflePlay()" class="shuffle-btn" title="Aleatorio">
       <span class="icon-shuffle"></span>
     </button>
     <button class="options-btn" title="Más opciones" (click)="showMenu = true">

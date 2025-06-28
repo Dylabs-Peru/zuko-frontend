@@ -45,14 +45,33 @@ export class AlbumDetailPageComponent implements OnInit {
     });
   }
 
+  shufflePlay(): void {
+    if (!this.album || !this.album.songs || this.album.songs.length === 0) return;
+    const availableSongs = this.album.songs;
+    // Si sólo hay una canción, simplemente la reproduce
+    if (availableSongs.length === 1) {
+      this.playSong(availableSongs[0]);
+      return;
+    }
+    // Elige una canción aleatoria distinta a la actual si es posible
+    let randomIndex: number;
+    do {
+      randomIndex = Math.floor(Math.random() * availableSongs.length);
+    } while (availableSongs.length > 1 && availableSongs[randomIndex].id === this.currentSongId);
+    this.playSong(availableSongs[randomIndex]);
+  }
+
   togglePlay(): void {
-    if (!this.playerRef) return;
-    if (this.isPlaying) {
-      this.playerRef.pauseVideo();
-      this.isPlaying = false;
-    } else {
+    if (!this.album || !this.album.songs || this.album.songs.length === 0) return;
+    const firstSong = this.album.songs[0];
+    if (this.currentSongId === firstSong.id && this.playerRef) {
+      // Si ya está sonando o pausada la primera, reinicia desde el principio
+      this.playerRef.seekTo(0);
       this.playerRef.playVideo();
       this.isPlaying = true;
+    } else {
+      // Si no está sonando la primera, la inicia
+      this.playSong(firstSong);
     }
   }
 
@@ -106,10 +125,23 @@ export class AlbumDetailPageComponent implements OnInit {
             this.isPlaying = true;
           },
           onStateChange: (event: any) => {
-            // Cuando termina la canción, resetea el estado
+            // Cuando termina la canción, reproduce la siguiente si existe
             if (event.data === (window as any).YT.PlayerState.ENDED) {
-              this.isPlaying = false;
-              this.currentSongId = null;
+              if (this.album && this.album.songs && this.currentSongId != null) {
+                const idx = this.album.songs.findIndex((s: any) => s.id === this.currentSongId);
+                if (idx !== -1 && idx < this.album.songs.length - 1) {
+                  // Hay siguiente canción
+                  const nextSong = this.album.songs[idx + 1];
+                  this.playSong(nextSong);
+                } else {
+                  // No hay siguiente, detén todo
+                  this.isPlaying = false;
+                  this.currentSongId = null;
+                }
+              } else {
+                this.isPlaying = false;
+                this.currentSongId = null;
+              }
             }
           }
         }
