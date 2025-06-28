@@ -28,7 +28,7 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
   tab: 'info' | 'songs' = 'info';
 
   // Canciones del álbum (mock por ahora)
-  songs: { id: number; name: string; artist: string; releaseDate: string }[] = [];
+  songs: { id: number; name: string; artist: string; releaseDate: string; imageUrl?: string }[] = [];
   selectedSongIds: number[] = [];
 
 
@@ -50,7 +50,8 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
           id: song.id,
           name: song.title,
           artist: song.artistName,
-          releaseDate: song.releaseDate || ''
+          releaseDate: song.releaseDate || '',
+          imageUrl: song.imageUrl || ''
         }));
       },
       error: (err) => {

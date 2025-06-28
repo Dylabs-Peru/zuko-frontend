@@ -47,6 +47,17 @@ export class UserService {
     return this.apiService.get<UserResponse>(`${this.endpoint}/username/${username}`);
   }
 
+  /**
+   * Busca usuarios por nombre de usuario para la funcionalidad de búsqueda
+   * La búsqueda es case-insensitive y se filtra adicionalmente en el frontend
+   * @param username Término de búsqueda para el nombre de usuario
+   * @returns Lista de usuarios que coinciden con el término de búsqueda
+   */
+  searchUsersByUsername(username: string): Observable<UserResponse[]> {
+    const encodedUsername = encodeURIComponent(username);
+    return this.apiService.get<UserResponse[]>(`${this.endpoint}/search?username=${encodedUsername}`);
+  }
+
   // Métodos específicos para Google OAuth
   loginWithGoogle(request: GoogleOAuthRequest): Observable<AuthResponse> {
     return this.apiService.post<AuthResponse>(`${this.endpoint}/google/login`, request);
@@ -55,5 +66,7 @@ export class UserService {
   registerWithGoogle(request: GoogleOAuthRequest): Observable<any> {
     return this.apiService.post<any>(`${this.endpoint}/google/register`, request);
   }
+
+  
 
 }

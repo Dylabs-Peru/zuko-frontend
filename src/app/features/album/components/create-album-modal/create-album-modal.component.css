@@ -204,17 +204,52 @@ input[type="text"], select {
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 14px;
+  gap: 16px;
 }
+.song-info {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+}
+.song-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.song-index {
+  color: #888;
+  min-width: 24px;
+  text-align: right;
+}
+.meta {
+  margin-left: auto;
+  color: #666;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 .song-info {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 .song-cover {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.song-cover img.cover-image {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 .song-name {
   font-size: 14px;
