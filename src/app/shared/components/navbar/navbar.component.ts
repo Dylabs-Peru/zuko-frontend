@@ -13,6 +13,7 @@ import { ArtistResponse } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/Artist.service';
 import { AuthService } from '../../../services/Auth.service';
 import { AlbumService } from '../../../services/Album.service';
+import { environment } from '../../../../environments/environment';
 import { filter } from 'rxjs/operators';
 import { PlaylistResponse } from '../../../models/playlist.model';
 import { PlaylistService } from '../../../services/playlist.service';
@@ -84,7 +85,14 @@ export class NavbarComponent {
 
   get userProfileImage(): string {
     const user = this.currentUser;
-    return user?.url_image || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg';
+    return user?.url_image || environment.defaultProfileImage;
+  }
+
+  /**
+   * Maneja errores de carga de imagen y establece el placeholder
+   */
+  onImageError(event: any): void {
+    event.target.src = environment.defaultProfileImage;
   }
 
   get username(): string {

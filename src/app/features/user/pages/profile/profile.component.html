@@ -17,9 +17,10 @@
   
   <div class="profile-header">    <div class="profile-avatar">
       <img 
-        [src]="user.url_image || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'" 
+        [src]="getProfileImageUrl(user.url_image)" 
         alt="Avatar" 
-        (error)="$any($event.target).src='https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'"
+        (error)="onImageError($event)"
+        loading="lazy"
       />
     </div>
     

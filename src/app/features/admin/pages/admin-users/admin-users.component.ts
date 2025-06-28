@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { UserService } from '../../../../services/User.service';
 import { RoleService } from '../../../../services/Role.service';
 import { UserResponse, CreateUserRequest, UpdateUserRequest } from '../../../../models/user.model';
 import { RoleResponse } from '../../../../models/role.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-admin-users',
@@ -34,6 +35,10 @@ export class AdminUsersComponent implements OnInit {
   editImagePreview: string = '';
   uploadingImage = false;
   
+  // Error handling
+  createUserError: string = '';
+  editUserError: string = '';
+  
   // Forms
   createUserForm: FormGroup;
   editUserForm: FormGroup;
@@ -48,7 +53,7 @@ export class AdminUsersComponent implements OnInit {
     this.createUserForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, AdminUsersComponent.passwordValidator]],
       description: [''],
       url_image: [''],
       roleName: ['User', [Validators.required]],
@@ -106,6 +111,7 @@ export class AdminUsersComponent implements OnInit {
       isActive: true 
     });
     this.createImagePreview = '';
+    this.createUserError = '';
   }
 
   closeCreateForm() {
@@ -117,6 +123,7 @@ export class AdminUsersComponent implements OnInit {
   onCreateUser() {
     if (this.createUserForm.valid) {
       this.loading = true;
+      this.createUserError = '';
       const userData: CreateUserRequest = this.createUserForm.value;
       
       this.userService.createUser(userData).subscribe({
@@ -128,6 +135,19 @@ export class AdminUsersComponent implements OnInit {
         error: (error) => {
           console.error('Error creating user:', error);
           this.loading = false;
+          
+          // Handle specific error messages
+          if (error.error?.message) {
+            this.createUserError = error.error.message;
+          } else if (error.error?.error) {
+            this.createUserError = error.error.error;
+          } else if (error.status === 409) {
+            this.createUserError = 'El nombre de usuario o email ya están en uso';
+          } else if (error.status === 400) {
+            this.createUserError = 'Los datos proporcionados no son válidos';
+          } else {
+            this.createUserError = 'Error al crear el usuario. Intenta nuevamente.';
+          }
         }
       });
     }
@@ -307,6 +327,28 @@ export class AdminUsersComponent implements OnInit {
     }
   }
 
+  // Custom password validator
+  static passwordValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value) return null;
+
+    const hasNumber = /[0-9]/.test(value);
+    const hasLetter = /[a-zA-Z]/.test(value);
+    const isValidLength = value.length >= 6;
+
+    const passwordValid = hasNumber && hasLetter && isValidLength;
+
+    if (!passwordValid) {
+      const errors: ValidationErrors = {};
+      if (!isValidLength) errors['minlength'] = { requiredLength: 6, actualLength: value.length };
+      if (!hasNumber) errors['requiresNumber'] = true;
+      if (!hasLetter) errors['requiresLetter'] = true;
+      return errors;
+    }
+
+    return null;
+  }
+
   // Utility methods
   getRoleColor(roleName: string): string {
     switch (roleName.toLowerCase()) {
@@ -319,6 +361,63 @@ export class AdminUsersComponent implements OnInit {
 
   getUserStatusColor(isActive: boolean): string {
     return isActive ? '#4CAF50' : '#F44336';
+  }
+
+  /**
+   * Obtiene la URL de la imagen de perfil o el placeholder por defecto
+   */
+  getProfileImageUrl(url_image: string | null | undefined): string {
+    if (!url_image || url_image.trim() === '') {
+      return environment.defaultProfileImage;
+    }
+    return url_image;
+  }
+
+  /**
+   * Maneja errores de carga de imagen y establece el placeholder
+   */
+  onImageError(event: any): void {
+    event.target.src = environment.defaultProfileImage;
+  }
+
+  /**
+   * Obtiene el mensaje de error para un campo específico del formulario de creación
+   */
+  getCreateFieldError(fieldName: string): string {
+    const field = this.createUserForm.get(fieldName);
+    if (field && field.invalid && field.touched) {
+      if (field.errors?.['required']) {
+        return `${this.getFieldDisplayName(fieldName)} es requerido`;
+      }
+      if (field.errors?.['minlength']) {
+        const requiredLength = field.errors['minlength'].requiredLength;
+        return `${this.getFieldDisplayName(fieldName)} debe tener al menos ${requiredLength} caracteres`;
+      }
+      if (field.errors?.['email']) {
+        return 'El formato del email no es válido';
+      }
+      if (field.errors?.['requiresNumber']) {
+        return 'La contraseña debe contener al menos un número';
+      }
+      if (field.errors?.['requiresLetter']) {
+        return 'La contraseña debe contener al menos una letra';
+      }
+    }
+    return '';
+  }
+
+  /**
+   * Obtiene el nombre de display para un campo
+   */
+  private getFieldDisplayName(fieldName: string): string {
+    const displayNames: { [key: string]: string } = {
+      'username': 'Nombre de usuario',
+      'email': 'Email',
+      'password': 'Contraseña',
+      'description': 'Descripción',
+      'roleName': 'Rol'
+    };
+    return displayNames[fieldName] || fieldName;
   }
 
   goBack() {
