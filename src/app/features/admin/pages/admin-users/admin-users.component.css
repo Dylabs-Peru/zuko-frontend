@@ -397,6 +397,16 @@
   margin-top: 0.25rem;
 }
 
+.error-message.general-error {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  font-weight: 500;
+  text-align: center;
+}
+
 /* Checkbox Styles */
 .checkbox-label {
   display: flex;
