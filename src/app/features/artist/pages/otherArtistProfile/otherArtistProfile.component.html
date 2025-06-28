@@ -4,7 +4,7 @@
   <h1 class="profile-title">Perfil de Artista</h1>
   <div class="profile-header">
     <div class="profile-avatar">
-      <img *ngIf="artist.urlImage; else defaultAvatar" [src]="artist.urlImage" alt="Foto de perfil">
+      <img *ngIf="userOwner?.url_image; else defaultAvatar" [src]="userOwner.url_image" alt="Foto de perfil">
       <ng-template #defaultAvatar>
         <div class="avatar-placeholder">&#128100;</div>
       </ng-template>

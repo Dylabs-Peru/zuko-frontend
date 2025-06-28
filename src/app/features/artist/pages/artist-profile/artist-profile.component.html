@@ -12,7 +12,7 @@
   
     <div class="profile-header">
       <div class="profile-avatar">
-        <img *ngIf="artist.urlImage; else defaultAvatar" [src]="artist.urlImage" alt="Foto de perfil">
+        <img *ngIf="user?.url_image; else defaultAvatar" [src]="user.url_image" alt="Foto de perfil">
         <ng-template #defaultAvatar>
           <div class="avatar-placeholder">&#128100;</div>
         </ng-template>
@@ -79,7 +79,6 @@
     [name]="artist?.name"
     [biography]="artist?.biography"
     [country]="artist?.country"
-    [urlImage]="artist?.urlImage"
     (save)="onSaveArtistProfile($event)"
     (close)="showEditModal = false"
   ></app-edit-artist-profile-modal>

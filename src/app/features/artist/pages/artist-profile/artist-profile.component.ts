@@ -19,6 +19,7 @@ import { ChangeStatusArtistComponent } from '../../components/change-status-arti
   styleUrls: ['./artist-profile.component.css']
 })
 export class ProfileArtistComponent implements OnInit {
+  user: any = null; // <-- Agregado para exponer user al template
   showCreateAlbumModal = false;
 
   openCreateAlbumModal() {
@@ -58,6 +59,15 @@ export class ProfileArtistComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Carga el usuario desde localStorage para exponerlo al template
+    const auth = localStorage.getItem('auth');
+    if (auth) {
+      try {
+        this.user = JSON.parse(auth).user;
+      } catch {
+        this.user = null;
+      }
+    }
     console.log('ProfileArtistComponent - ngOnInit');
     this.route.paramMap.subscribe(params => {
       const artistName = params.get('name');

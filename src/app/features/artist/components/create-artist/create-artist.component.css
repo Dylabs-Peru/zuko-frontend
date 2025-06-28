@@ -111,3 +111,54 @@
     border-radius: 4px;
     text-align: center;
   }
+
+/* Dropdown personalizado para selector de país */
+
+.selector-container label {
+  font-weight: normal;
+  font-size: 17px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-header {
+  background-color: #f2f2f2;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-list {
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  list-style: none;
+  padding: 10px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 10;
+  position: absolute;
+  width: 100%;
+}
+
+.dropdown-list li {
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown-list li:hover {
+  background-color: #f0f0f0;
+}

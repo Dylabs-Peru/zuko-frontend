@@ -20,10 +20,19 @@ export class CreateArtistComponent {
     submitted = false;
     successMessage = '';
     errorMessage: string = '';
-  
+
+    dropdownOpen = false;
+    selectedCountry: string | null = null;
+
     @Output() close = new EventEmitter<void>();
     @Output() artistCreated = new EventEmitter<ArtistResponse>();
   
+    countries: string[] = [
+      'Argentina', 'Bolivia', 'Brasil', 'Chile', 'Colombia', 'Costa Rica', 'Cuba', 'Ecuador', 'El Salvador', 'España',
+      'Estados Unidos', 'Guatemala', 'Honduras', 'México', 'Nicaragua', 'Panamá', 'Paraguay', 'Perú', 'Puerto Rico',
+      'República Dominicana', 'Uruguay', 'Venezuela', 'Canadá', 'Francia', 'Italia', 'Alemania', 'Reino Unido', 'Japón', 'China'
+    ];
+
     constructor(
       private fb: FormBuilder,
       private artistService: ArtistService,
@@ -34,6 +43,16 @@ export class CreateArtistComponent {
         country: ['', Validators.required],
         biography: ['', [Validators.required, Validators.minLength(10)]],
       });
+    }
+
+    toggleDropdown() {
+      this.dropdownOpen = !this.dropdownOpen;
+    }
+
+    selectCountry(country: string) {
+      this.selectedCountry = country;
+      this.artistForm.get('country')?.setValue(country);
+      this.dropdownOpen = false;
     }
   
     closeModal() {
@@ -55,13 +74,13 @@ export class CreateArtistComponent {
       const request: CreateArtistRequest = { name, country, biography };
   
       this.artistService.createArtist(this.username, request).subscribe({
-        next: (artist) => {
-          console.log('Respuesta del backend al crear artista:', artist); // Debug
+        next: (artist: any) => {
+          console.log('Respuesta del backend al crear artista:', artist);
           this.successMessage = '¡Artista creado exitosamente!';
           this.artistForm.reset();
           this.submitted = false;
-          this.artistCreated.emit(artist);
-          // Ya no redirige ni hace logout aquí. El padre (profile) controla el flujo tras crear artista.
+          this.artistCreated.emit(artist.data);
+          // Ya no redirige ni hace logout aquí.
           this.close.emit();
         },
         error: (err) => {
