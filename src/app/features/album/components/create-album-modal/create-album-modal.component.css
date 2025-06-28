@@ -120,18 +120,19 @@ input[type="text"], select {
   color: #fff;
 }
 .remove-cover-btn {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
+  position: static;
+  display: block;
+  margin: 16px auto 0 auto;
   background: rgba(183,28,28,0.85);
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 12px;
-  padding: 3px 10px;
+  font-size: 13px;
+  padding: 6px 18px;
   cursor: pointer;
   z-index: 2;
   transition: background 0.2s;
+  text-align: center;
 }
 .remove-cover-btn:hover {
   background: #d32f2f;
