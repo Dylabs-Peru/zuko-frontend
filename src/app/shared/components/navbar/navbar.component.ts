@@ -122,10 +122,16 @@ export class NavbarComponent {
 
       // Ahora users es un array, no un solo usuario
       if (users && Array.isArray(users) && users.length > 0) {
-        // Filtrar usuarios case-insensitive, similar a como se hace con songs
-        this.userResults = users.filter(user => 
-          user.username.toLowerCase().includes(this.searchTerm.trim().toLowerCase())
-        );
+        // Filtrar usuarios case-insensitive y excluir el usuario actual
+        const currentUser = this.currentUser;
+        this.userResults = users.filter(user => {
+          // Filtro 1: Case-insensitive
+          const matchesSearch = user.username.toLowerCase().includes(this.searchTerm.trim().toLowerCase());
+          // Filtro 2: No incluir el usuario actual
+          const isNotCurrentUser = !currentUser || user.username !== currentUser.username;
+          
+          return matchesSearch && isNotCurrentUser;
+        });
       } else {
         this.userResults = [];
       }
