@@ -111,15 +111,30 @@ export class NavbarComponent {
     this.playlistResults = [];
 
     forkJoin({
-      user: this.userService.getUserByUsername(this.searchTerm.trim()).pipe(catchError(() => of(null))),
+      users: this.userService.searchUsersByUsername(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       songs: this.songService.searchPublicSongsByTitle(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       artist: this.artistService.getArtistByName(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       albums: this.albumService.getAlbumsByTitle(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       playlists: this.playlistService.getPublicPlaylistsByName(this.searchTerm.trim()).pipe(catchError(() => of([])))
-    }).subscribe(({ user, songs, artist, albums, playlists }) => {
+    }).subscribe(({ users, songs, artist, albums, playlists }) => {
+      console.log("Users:", users);
       console.log("Playlists:", playlists);
 
-      if (user) this.userResults = [user];
+      // Ahora users es un array, no un solo usuario
+      if (users && Array.isArray(users) && users.length > 0) {
+        // Filtrar usuarios case-insensitive y excluir el usuario actual
+        const currentUser = this.currentUser;
+        this.userResults = users.filter(user => {
+          // Filtro 1: Case-insensitive
+          const matchesSearch = user.username.toLowerCase().includes(this.searchTerm.trim().toLowerCase());
+          // Filtro 2: No incluir el usuario actual
+          const isNotCurrentUser = !currentUser || user.username !== currentUser.username;
+          
+          return matchesSearch && isNotCurrentUser;
+        });
+      } else {
+        this.userResults = [];
+      }
       if (artist && Array.isArray(artist) && artist.length > 0) {
         this.artistResults = artist;
       } else {
@@ -136,7 +151,13 @@ export class NavbarComponent {
        if (playlists && Array.isArray(playlists)) {
         this.playlistResults = playlists
       }
-      if (!user && (!this.songResults || this.songResults.length === 0) && (!this.artistResults || this.artistResults.length === 0) && (!this.albumResults || this.albumResults.length === 0) && (!this.playlistResults || this.playlistResults.length === 0)) {
+      
+      // Verificar si no hay resultados en ninguna categoría
+      if ((!this.userResults || this.userResults.length === 0) && 
+          (!this.songResults || this.songResults.length === 0) && 
+          (!this.artistResults || this.artistResults.length === 0) && 
+          (!this.albumResults || this.albumResults.length === 0) && 
+          (!this.playlistResults || this.playlistResults.length === 0)) {
         this.errorMsg = 'No se encontraron resultados';
       }
 
