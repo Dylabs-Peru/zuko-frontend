@@ -20,6 +20,14 @@ export class AdminDashboardComponent {
       color: '#B71C1C'
     },
     {
+      id: 'artists',
+      title: 'Gestión de Artistas',
+      description: 'Administrar artistas y permisos',
+      icon: '🧑‍🎤',
+      route: '/admin/artists',
+      color: '#B71C1C'
+    },
+    {
       id: 'genres',
       title: 'Gestión de Géneros',
       description: 'Crear, editar y eliminar géneros musicales',
