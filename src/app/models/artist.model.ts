@@ -8,6 +8,7 @@ export interface CreateArtistRequest {
     name?: string;
     country?: string;
     biography?: string;
+    urlImage?: string;
   }
 
   export interface ArtistResponse {

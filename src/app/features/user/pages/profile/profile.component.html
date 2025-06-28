@@ -1,4 +1,11 @@
 <div class="profile-container" *ngIf="user; else noUser">
+
+  <!-- Mensaje de éxito barra fija arriba -->
+  <div *ngIf="artistaCreadoExitoso" class="success-message success-fixed">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:8px;"><polyline points="20,6 9,17 4,12"></polyline></svg>
+    ¡Artista creado exitosamente!
+  </div>
+
   <div class="profile-title-row" style="display: flex; align-items: center; gap: 16px;">
     <h1 class="profile-title" style="margin: 0;">Mi Perfil</h1>
     <app-activate-status-artist
@@ -20,7 +27,7 @@
     <div class="profile-info">
       <div class="profile-name">{{ user.username }}</div>
       <div class="profile-email">{{ user.email }}</div>
-      <button class="artist-btn" (click)="openArtistModal()" *ngIf="!user?.isArtist">
+      <button class="artist-btn" (click)="openArtistModal()" *ngIf="!user?.isArtist && !artistInactivo">
         Convertirse en artista
       </button>
     </div>
