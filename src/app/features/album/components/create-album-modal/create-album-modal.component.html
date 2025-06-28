@@ -41,19 +41,31 @@
     </div>
     <div *ngIf="tab==='songs'">
       <div class="song-list-scroll">
-        <div class="song-list">
-          <div class="song-item" *ngFor="let song of songs; let i = index">
-            <div class="song-info">
-              <div class="song-cover"></div>
-              <span class="song-name">{{ song.name }}</span>
-            </div>
-            <div class="song-actions">
-              <span class="song-duration">{{ song.releaseDate | date:'yyyy-MM-dd' }}</span>
-              <input type="checkbox" [checked]="selectedSongIds.includes(song.id)" (change)="toggleSongSelection(song.id)" class="select-song-checkbox" />
-            </div>
-          </div>
-        </div>
+  <ul class="song-list" *ngIf="songs.length > 0">
+    <li class="song-item" *ngFor="let song of songs; let i = index">
+      <!-- Portada de la canción (solo placeholder, no hay imageUrl) -->
+      <div class="song-cover">
+        <img *ngIf="song.imageUrl; else noCover" [src]="song.imageUrl" alt="Portada de {{ song.name }}" class="cover-image" />
+        <ng-template #noCover>
+          <div class="cover-placeholder">📷</div>
+        </ng-template>
       </div>
+      <div class="song-info">
+        <div class="song-title">
+          <span class="song-index">{{ i + 1 }}.</span>
+          <strong class="song-name">{{ song.name }}</strong>
+        </div>
+        <small class="meta">
+          Fecha: {{ song.releaseDate | date: 'dd/MM/yyyy' }}
+        </small>
+      </div>
+      <div class="song-actions">
+        <input type="checkbox" [checked]="selectedSongIds.includes(song.id)" (change)="toggleSongSelection(song.id)" class="select-song-checkbox" />
+      </div>
+    </li>
+  </ul>
+  <div *ngIf="songs.length === 0" class="no-songs">No tienes canciones disponibles.</div>
+</div>
       <div class="save-section">
         <button class="save-button" (click)="saveSongs()" [disabled]="selectedSongIds.length < 2 || isSaving">
           {{ isSaving ? 'Guardando...' : 'Guardar' }}
