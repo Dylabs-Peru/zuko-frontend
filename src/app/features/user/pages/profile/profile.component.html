@@ -27,7 +27,7 @@
     <div class="profile-info">
       <div class="profile-name">{{ user.username }}</div>
       <div class="profile-email">{{ user.email }}</div>
-      <button class="artist-btn" (click)="openArtistModal()" *ngIf="!user?.isArtist && !artistInactivo">
+      <button class="artist-btn" (click)="openArtistModal()" *ngIf="!user?.isArtist">
         Convertirse en artista
       </button>
     </div>
