@@ -16,6 +16,12 @@ import { DeleteAlbumModalComponent } from '../delete-album-modal/delete-album-mo
 })
 
 export class ArtistAlbumsListComponent implements OnInit, OnDestroy {
+  // ...
+  addAlbumToShortcut(album: any) {
+    // Aquí va la lógica real para añadir a acceso directo
+    alert(`Álbum "${album.title}" añadido a acceso directo (demo)`);
+    this.openMenuAlbumId = null;
+  }
   @Input() isOwnProfile: boolean = false;
 
   openMenuAlbumId: number | null = null;
