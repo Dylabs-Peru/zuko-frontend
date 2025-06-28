@@ -35,27 +35,18 @@ export class OtherArtistProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      const idParam = params.get('id');
-      if (idParam) {
-        const id = Number(idParam);
+      const artistName = params.get('id');
+      if (artistName) {
         this.loading = true;
-
-        this.artistService.getArtistById(id).subscribe({
+        this.artistService.getArtistByName(artistName).subscribe({
           next: (artist) => {
             this.artist = Array.isArray(artist) ? artist[0] : artist;
             this.loading = false;
-
-            // 🔥 Obtener el usuario dueño del artista (para la imagen)
+  
             if (this.artist?.userId) {
               this.userService.getUserById(this.artist.userId).subscribe({
                 next: (user: any) => {
                   this.userOwner = user;
-                  console.log('[Perfil Otro Artista] userOwner cargado:', user);
-                  if (user?.url_image) {
-                    console.log('[Perfil Otro Artista] url_image:', user.url_image);
-                  } else {
-                    console.warn('[Perfil Otro Artista] userOwner no tiene url_image');
-                  }
                 },
                 error: () => {
                   this.userOwner = null;

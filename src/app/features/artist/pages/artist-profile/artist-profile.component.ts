@@ -6,6 +6,7 @@ import { ArtistResponse } from '../../../../models/artist.model';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EditArtistProfileModalComponent } from '../../components/edit-artist-profile-modal/edit-artist-profile-modal.component';
+import { EditProfileModalComponent } from '../../../user/components/edit-profile-modal/edit-profile-modal.component';
 import { ArtistAlbumsListComponent } from '../../../album/components/artist-albums-list/artist-albums-list.component';
 import { CreateAlbumModalComponent } from '../../../album/components/create-album-modal/create-album-modal.component';
 import { ArtistSongsComponent } from '../../../song/pages/artist-songs/artist-songs.component';
@@ -14,7 +15,7 @@ import { ChangeStatusArtistComponent } from '../../components/change-status-arti
 @Component({
   selector: 'app-profile-artist',
   standalone: true,
-  imports: [CommonModule, EditArtistProfileModalComponent, ArtistAlbumsListComponent, CreateAlbumModalComponent, ArtistSongsComponent, ChangeStatusArtistComponent],
+  imports: [CommonModule, EditArtistProfileModalComponent, EditProfileModalComponent, ArtistAlbumsListComponent, CreateAlbumModalComponent, ArtistSongsComponent, ChangeStatusArtistComponent],
   templateUrl: './artist-profile.component.html',
   styleUrls: ['./artist-profile.component.css']
 })
@@ -44,10 +45,15 @@ export class ProfileArtistComponent implements OnInit {
   showAlbumsSection: boolean = false;
   showSongsSection: boolean = false;
   artist: any = null;
+  artistOwnerUser: any = null; // Usuario dueño del artista visitado
   userEmail: string = '';
   isOwnArtistProfile = false;
   showEditModal = false;
   imagePreview: string | null = null;
+
+  // Modal de edición de usuario (foto)
+  showEditUserModal = false;
+
 
   constructor(
     private artistService: ArtistService,
@@ -102,12 +108,51 @@ export class ProfileArtistComponent implements OnInit {
     const updateReq = {
       name: data.name,
       biography: data.biography,
-      urlImage: data.urlImage,
       country: data.country
     };
+    // 1. Actualiza datos del artista
     this.artistService.updateArtist(this.artist.id, updateReq).subscribe({
       next: (updated) => {
         this.artist = { ...this.artist, ...updated };
+        // 2. Si la imagen cambió, actualiza el usuario dueño
+        if (data.url_image && this.artistOwnerUser) {
+          if (this.artistOwnerUser.url_image !== data.url_image) {
+            this.userService.updateUser(this.artistOwnerUser.id, {
+              url_image: data.url_image
+            }).subscribe((updatedUser: any) => {
+              this.artistOwnerUser = updatedUser;
+              // Actualiza localStorage si corresponde
+              const auth = localStorage.getItem('auth');
+              if (auth) {
+                const authObj = JSON.parse(auth);
+                if (authObj.user && authObj.user.id === updatedUser.id) {
+                  authObj.user = updatedUser;
+                  localStorage.setItem('auth', JSON.stringify(authObj));
+                }
+              }
+              // Refleja el cambio en el artista (frontend)
+              this.artist = { ...this.artist, urlImage: updatedUser.url_image };
+            });
+          } else {
+            // Si solo se editó la imagen, actualiza el usuario dueño
+            this.userService.updateUser(this.artistOwnerUser.id, {
+              url_image: data.url_image
+            }).subscribe((updatedUser: any) => {
+              this.artistOwnerUser = updatedUser;
+              // Actualiza localStorage si corresponde
+              const auth = localStorage.getItem('auth');
+              if (auth) {
+                const authObj = JSON.parse(auth);
+                if (authObj.user && authObj.user.id === updatedUser.id) {
+                  authObj.user = updatedUser;
+                  localStorage.setItem('auth', JSON.stringify(authObj));
+                }
+              }
+              // Refleja el cambio en el artista (frontend)
+              this.artist = { ...this.artist, urlImage: updatedUser.url_image };
+            });
+          }
+        }
         this.showEditModal = false;
         alert('Perfil de artista actualizado correctamente');
       },
@@ -160,12 +205,55 @@ export class ProfileArtistComponent implements OnInit {
         };
         if (this.artist?.userId) {
           this.loadUserEmail(this.artist.userId);
+          this.loadArtistOwnerUser(this.artist.userId); // Nuevo: obtener usuario dueño
+        } else {
+          this.artistOwnerUser = null;
         }
       },
       error: (error) => {
         console.error('Error al cargar el artista:', error);
         this.router.navigate(['/profile']);
       }
+    });
+  }
+
+  // Nuevo: obtener el usuario dueño del artista
+  private loadArtistOwnerUser(userId: number) {
+    this.userService.getUserById(userId).subscribe({
+      next: (user: any) => {
+        this.artistOwnerUser = user;
+      },
+      error: () => {
+        this.artistOwnerUser = null;
+      }
+    });
+  }
+
+  // Abrir modal de edición de usuario (foto)
+  openEditUserModal() {
+    this.showEditUserModal = true;
+  }
+  closeEditUserModal() {
+    this.showEditUserModal = false;
+  }
+  onSaveEditUser(data: { username: string; description: string; url_image: string }) {
+    if (!this.artistOwnerUser) return;
+    this.userService.updateUser(this.artistOwnerUser.id, {
+      username: data.username,
+      description: data.description,
+      url_image: data.url_image
+    }).subscribe((updatedUser) => {
+      this.artistOwnerUser = updatedUser;
+      // Actualizar el usuario en localStorage si es el propio
+      const auth = localStorage.getItem('auth');
+      if (auth) {
+        const authObj = JSON.parse(auth);
+        if (authObj.user && authObj.user.id === updatedUser.id) {
+          authObj.user = updatedUser;
+          localStorage.setItem('auth', JSON.stringify(authObj));
+        }
+      }
+      this.closeEditUserModal();
     });
   }
 

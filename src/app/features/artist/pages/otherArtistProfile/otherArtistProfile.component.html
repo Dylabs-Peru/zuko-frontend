@@ -4,10 +4,14 @@
   <h1 class="profile-title">Perfil de Artista</h1>
   <div class="profile-header">
     <div class="profile-avatar">
-      <img *ngIf="userOwner?.url_image; else defaultAvatar" [src]="userOwner.url_image || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'" alt="Foto de perfil" (error)="$any($event.target).src='https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'" loading="lazy">
-      <ng-template #defaultAvatar>
-        <div class="avatar-placeholder">&#128100;</div>
-      </ng-template>
+      <img *ngIf="userOwner?.url_image && userOwner?.id === artist?.userId; else defaultAvatar"
+     [src]="userOwner.url_image"
+     alt="Foto de perfil"
+     (error)="$any($event.target).src='https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'"
+     loading="lazy">
+<ng-template #defaultAvatar>
+  <div class="avatar-placeholder">&#128100;</div>
+</ng-template>
     </div>
     <div class="profile-info">
       <span class="role">Artista</span>

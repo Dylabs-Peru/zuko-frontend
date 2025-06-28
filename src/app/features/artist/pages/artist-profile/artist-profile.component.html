@@ -11,13 +11,22 @@
     </div>
   
     <div class="profile-header">
-      <div class="profile-avatar">
-        <img *ngIf="user?.url_image; else defaultAvatar" [src]="user.url_image" alt="Foto de perfil">
+      <div class="profile-avatar" style="position:relative;">
+        <img *ngIf="artistOwnerUser?.url_image; else defaultAvatar" [src]="artistOwnerUser.url_image" alt="Foto de perfil">
         <ng-template #defaultAvatar>
           <div class="avatar-placeholder">&#128100;</div>
         </ng-template>
       </div>
-  
+
+      <app-edit-profile-modal
+        *ngIf="showEditUserModal && artistOwnerUser"
+        [username]="artistOwnerUser.username"
+        [description]="artistOwnerUser.description"
+        [url_image]="artistOwnerUser.url_image"
+        (close)="closeEditUserModal()"
+        (save)="onSaveEditUser($event)">
+      </app-edit-profile-modal>
+
       <div class="profile-info">
         <span class="role">Artista</span>
         <div class="profile-name">{{ artist.name || 'Nombre de Usuario' }}</div>
@@ -79,9 +88,11 @@
     [name]="artist?.name"
     [biography]="artist?.biography"
     [country]="artist?.country"
+    [url_image]="artistOwnerUser?.url_image"
     (save)="onSaveArtistProfile($event)"
     (close)="showEditModal = false"
-  ></app-edit-artist-profile-modal>
+  >
+  </app-edit-artist-profile-modal>
   
   <ng-template #loading>
     <div class="no-user">Cargando perfil del artista...</div>
