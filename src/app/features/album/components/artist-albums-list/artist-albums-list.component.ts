@@ -100,18 +100,31 @@ export class ArtistAlbumsListComponent implements OnInit, OnDestroy {
   fetchAlbums(): void {
     this.isLoading = true;
     this.error = '';
-    // Si tu endpoint requiere el nombre del álbum, puedes pasar '' para traer todos
-    this.albumService.getAlbumsByTitleAndUser('').subscribe({
-      next: (res) => {
-        // Ajusta según la estructura real de la respuesta
-        this.albums = res.data || [];
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.albums = [];
-        this.isLoading = false;
-      }
-    });
+    if (this.artistId) {
+      // Si hay artistId, cargar álbumes del artista visitado
+      this.albumService.getAlbumsByArtist(this.artistId).subscribe({
+        next: (albums) => {
+          this.albums = albums || [];
+          this.isLoading = false;
+        },
+        error: () => {
+          this.albums = [];
+          this.isLoading = false;
+        }
+      });
+    } else {
+      // Si no hay artistId, cargar álbumes propios
+      this.albumService.getAlbumsByTitleAndUser('').subscribe({
+        next: (res) => {
+          this.albums = res.data || [];
+          this.isLoading = false;
+        },
+        error: () => {
+          this.albums = [];
+          this.isLoading = false;
+        }
+      });
+    }
   }
 
   // Llama esto desde el modal al crear

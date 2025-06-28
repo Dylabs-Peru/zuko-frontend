@@ -24,7 +24,10 @@ export interface AlbumResponse {
 
 // Resumen de canción dentro de un álbum
 export interface AlbumSongSummaryResponse {
+  id: number;
   title: string;
+  releaseDate: string;
+  youtubeUrl: string;
 }
 
 // Opcional: Modelo para una canción en la petición (basado en SongRequest)
