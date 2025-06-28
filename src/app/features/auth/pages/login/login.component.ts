@@ -88,8 +88,8 @@ export class LoginComponent implements OnInit {
                 console.warn('No se detectó perfil de artista activo para este usuario tras login.');
               }
               this.loading = false;
-              // Iniciar el monitor de token después del login exitoso
-              this.tokenMonitorService.startMonitoring();
+              // Reiniciar el monitor de token después del login exitoso
+              this.tokenMonitorService.restartMonitoring();
               window.location.href = '/home';
             },
             error: (err) => {
