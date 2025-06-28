@@ -1,16 +1,51 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PlaylistOptionsPopupComponent } from '../../../playlist/components/playlist-options-popup/playlist-options-popup.component';
+import { EditAlbumModalComponent } from '../../components/edit-album-modal/edit-album-modal.component';
+import { DeleteAlbumModalComponent } from '../../components/delete-album-modal/delete-album-modal.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlbumService } from '../../../../services/Album.service';
 
 @Component({
   selector: 'app-album-detail-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PlaylistOptionsPopupComponent, EditAlbumModalComponent, DeleteAlbumModalComponent],
   templateUrl: './album-detail-page.component.html',
   styleUrls: ['./album-detail-page.component.css']
 })
 export class AlbumDetailPageComponent implements OnInit {
+  showEditModal = false;
+  showDeleteModal = false;
+
+  onEditAlbum() {
+    this.showEditModal = true;
+    this.showMenu = false;
+  }
+  onDeleteAlbum() {
+    this.showDeleteModal = true;
+    this.showMenu = false;
+  }
+  closeEditModal() {
+    this.showEditModal = false;
+  }
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+  }
+  onAlbumEdited() {
+    this.fetchAlbum();
+    this.closeEditModal();
+  }
+  onAlbumDeleted() {
+    this.router.navigate(['/artist/profile-artist']);
+  }
+  onAddAlbumToShortcut() {
+    alert('Añadir a acceso directo (demo)');
+    this.showMenu = false;
+  }
+  onRemoveAlbumFromShortcut() {
+    alert('Eliminar de acceso directo (demo)');
+    this.showMenu = false;
+  }
   showMenu = false;
   album: any = null;
   loading = true;
@@ -25,6 +60,10 @@ export class AlbumDetailPageComponent implements OnInit {
   constructor(private route: ActivatedRoute, private albumService: AlbumService, private router: Router) {}
 
   ngOnInit() {
+    this.fetchAlbum();
+  }
+
+  fetchAlbum() {
     const albumId = this.route.snapshot.paramMap.get('id');
     if (!albumId) {
       this.error = 'ID de álbum no especificado';
