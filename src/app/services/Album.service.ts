@@ -33,6 +33,16 @@ export class AlbumService {
     return this.apiService.get<any>(`${this.endpoint}/search/artist?title=${encodeURIComponent(title)}`);
   }
 
+  // Buscar álbumes del artista autenticado
+  searchMyAlbums(title: string): Observable<AlbumResponse[]> {
+    return this.apiService.get<AlbumResponse[]>(`${this.endpoint}/search/artist?title=${encodeURIComponent(title)}`);
+  }
+
+  // Listar todos los álbumes del artista autenticado
+  getMyAlbums(): Observable<AlbumResponse[]> {
+    return this.apiService.get<AlbumResponse[]>(`${this.endpoint}/artist`);
+  }
+
   // Listar todos los álbumes
   getAllAlbums(): Observable<any> {
     return this.apiService.get<any>(`${this.endpoint}`);

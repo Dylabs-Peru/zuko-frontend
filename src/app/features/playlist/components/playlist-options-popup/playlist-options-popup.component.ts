@@ -16,5 +16,10 @@ export class PlaylistOptionsPopupComponent {
   @Input() canEdit = false; 
   @Input() isInShortcuts = false;
   @Output() removeShortcut = new EventEmitter<void>();
+
+  @Input() editText: string = 'Editar Playlist';
+  @Input() deleteText: string = 'Eliminar Playlist';
+  @Input() addShortcutText: string = 'Añadir a acceso directo';
+  @Input() removeShortcutText: string = 'Eliminar de acceso directo';
 }
 

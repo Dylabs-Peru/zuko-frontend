@@ -34,36 +34,43 @@
 
           <div class="save-section" style="justify-content: flex-end; gap: 8px;">
             <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
-            <button class="save-button" type="button" (click)="onSave()" [disabled]="!editTitle || !editGenreId || isSaving">
-              {{ isSaving ? 'Guardando...' : 'Guardar cambios' }}
-            </button>
           </div>
         </div>
       </div>
     </div>
     <div *ngIf="tab==='songs'">
       <div class="song-list-scroll">
-        <div class="song-list">
-          <div class="song-item" *ngFor="let song of songs; let i = index">
+        <ul class="song-list" *ngIf="songs.length > 0">
+          <li class="song-item" *ngFor="let song of songs; let i = index">
+            <div class="song-cover">
+              <img *ngIf="song.imageUrl; else noCover" [src]="song.imageUrl" alt="Portada de {{ song.title }}" class="cover-image" />
+              <ng-template #noCover>
+                <div class="cover-placeholder">📷</div>
+              </ng-template>
+            </div>
             <div class="song-info">
-              <div class="song-cover"></div>
-              <span class="song-name">{{ song.title }}</span>
-              <span class="song-artist">{{ song.artistName }}</span>
+              <div class="song-title">
+                <span class="song-index">{{ i + 1 }}.</span>
+                <strong class="song-name">{{ song.title }}</strong>
+              </div>
+              <small class="meta">
+                Fecha: {{ song.releaseDate | date: 'dd/MM/yyyy' }}
+              </small>
             </div>
             <div class="song-actions">
-              <span class="song-duration">{{ song.releaseDate | date:'yyyy-MM-dd' }}</span>
               <input type="checkbox" [checked]="selectedSongIds.includes(song.id)" (change)="toggleSongSelection(song.id)" class="select-song-checkbox" />
             </div>
-          </div>
-        </div>
+          </li>
+        </ul>
+        <div *ngIf="songs.length === 0" class="no-songs">No tienes canciones disponibles.</div>
       </div>
       <div class="save-section">
-        <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
         <button class="save-button" type="button" (click)="onSave()" [disabled]="selectedSongIds.length < 2 || isSaving">
           {{ isSaving ? 'Guardando...' : 'Guardar cambios' }}
         </button>
+        <span class="min-songs-warning" [style.visibility]="selectedSongIds.length < 2 ? 'visible' : 'hidden'">Selecciona al menos dos canciones para crear el álbum</span>
+        <button class="cancel-button" type="button" (click)="onClose()">Cancelar</button>
       </div>
-      <div *ngIf="selectedSongIds.length < 2" class="min-songs-warning">Selecciona al menos 2 canciones</div>
     </div>
   </div>
 </div>
