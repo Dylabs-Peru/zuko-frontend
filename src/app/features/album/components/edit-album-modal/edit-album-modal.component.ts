@@ -39,7 +39,8 @@ export class EditAlbumModalComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['album'] && this.album) {
       this.editTitle = this.album.title || '';
-      this.editGenreId = this.album.genreId || null;
+
+      this.editGenreId = this.album.genreId !== undefined && this.album.genreId !== null ? Number(this.album.genreId) : null;
       // Portada actual
       this.coverUrl = this.album.cover || '';
       this.coverFile = null;

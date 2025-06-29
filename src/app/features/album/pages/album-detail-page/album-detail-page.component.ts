@@ -74,7 +74,15 @@ export class AlbumDetailPageComponent implements OnInit {
     this.error = '';
     this.albumService.getAlbumById(Number(albumId)).subscribe({
       next: (res) => {
-        this.album = res.data || res; // Ajusta según estructura real
+
+        const rawAlbum = res.data || res;
+
+        // Corrige el campo genreId para el modal de edición
+        this.album = {
+          ...rawAlbum,
+          genreId: rawAlbum.genreId ?? (rawAlbum.genre ? rawAlbum.genre.id : null)
+        };
+        console.log('DEBUG fetchAlbum this.album:', this.album);
         this.loading = false;
       },
       error: (err) => {
