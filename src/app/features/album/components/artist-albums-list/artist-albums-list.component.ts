@@ -3,14 +3,16 @@ import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { AlbumResponse } from '../../../../models/album.model';
 import { RouterModule } from '@angular/router';
 import { AlbumService } from '../../../../services/Album.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FormsModule } from '@angular/forms';
 import { EditAlbumModalComponent } from '../edit-album-modal/edit-album-modal.component';
 import { DeleteAlbumModalComponent } from '../delete-album-modal/delete-album-modal.component';
 
 @Component({
   selector: 'app-artist-albums-list',
   standalone: true,
-  imports: [NgIf, NgFor, NgStyle, RouterModule, EditAlbumModalComponent, DeleteAlbumModalComponent],
+  imports: [NgIf, NgFor, NgStyle, RouterModule, FormsModule, EditAlbumModalComponent, DeleteAlbumModalComponent],
   templateUrl: './artist-albums-list.component.html',
   styleUrls: ['./artist-albums-list.component.css']
 })
@@ -74,15 +76,60 @@ export class ArtistAlbumsListComponent implements OnInit, OnDestroy {
   albums: AlbumResponse[] = [];
   isLoading = true;
   error = '';
+  albumSearchQuery: string = '';
+  searchQueryChanged: Subject<string> = new Subject<string>();
 
   private albumCreatedSubscription: Subscription | null = null;
 
   constructor(private albumService: AlbumService) {}
 
+  onSearch(): void {
+    this.searchQueryChanged.next(this.albumSearchQuery);
+  }
+
+  private onSearchReal(query: string): void {
+    const q = query.trim();
+    if (!q) {
+      this.fetchAlbums();
+      return;
+    }
+    this.isLoading = true;
+    this.error = '';
+    if (this.artistId) {
+      this.albumService.getAlbumsByArtist(this.artistId).subscribe({
+        next: (albums) => {
+          // Filtro en frontend por nombre (si backend no soporta búsqueda por nombre de artista ajeno)
+          this.albums = albums.filter(a => a.title.toLowerCase().includes(q.toLowerCase()));
+          this.isLoading = false;
+        },
+        error: () => {
+          this.albums = [];
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.albumService.searchMyAlbums(q).subscribe({
+        next: (albums) => {
+          this.albums = albums;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.albums = [];
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
   ngOnInit(): void {
     this.fetchAlbums();
     // Escucha el evento global de álbum creado
     this.albumCreatedSubscription = this.listenForAlbumCreated();
+    this.searchQueryChanged
+      .pipe(debounceTime(350), distinctUntilChanged())
+      .subscribe((query: string) => {
+        this.onSearchReal(query);
+      });
   }
 
   ngOnDestroy(): void {
