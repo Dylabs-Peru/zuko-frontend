@@ -136,7 +136,8 @@ export class NavbarComponent {
         this.userResults = [];
       }
       if (artist && Array.isArray(artist) && artist.length > 0) {
-        this.artistResults = artist;
+        // Solo artistas activos
+        this.artistResults = artist.filter(a => a.isActive !== false);
       } else {
         this.artistResults = [];
       }
