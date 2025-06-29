@@ -113,6 +113,18 @@
         <form [formGroup]="createArtistForm" (ngSubmit)="onCreateArtist()">
           <div class="form-row">
             <div class="form-group">
+              <label for="createUser">Usuario</label>
+              <select id="createUser" formControlName="userId">
+                <option value="" disabled selected>Selecciona un usuario</option>
+                <option *ngFor="let user of eligibleUsers" [value]="user.id">
+                  {{ user.username }} ({{ user.email }})
+                </option>
+              </select>
+              <div class="error-message" *ngIf="createArtistForm.get('userId')?.invalid && createArtistForm.get('userId')?.touched">
+                Debes seleccionar un usuario.
+              </div>
+            </div>
+            <div class="form-group">
               <label for="createUsername">Nombre de Artista</label>
               <input 
                 id="createUsername" 
@@ -120,12 +132,10 @@
                 type="text" 
                 placeholder="Nombre de artista único"
               />
-              <div class="error-message" *ngIf="createArtistForm.get('username')?.invalid && createArtistForm.get('username')?.touched">
-                {{ getCreateFieldError('username') }}
+              <div class="error-message" *ngIf="createArtistForm.get('name')?.invalid && createArtistForm.get('name')?.touched">
+                {{ getCreateFieldError('name') }}
               </div>
             </div>
-  
-            
           </div>
   
           
@@ -200,7 +210,7 @@
   </label>
 </div>
 
-          <div class="form-group">
+    <!--      <div class="form-group">
             <label>Foto de Perfil</label>
             <div class="image-upload-section">
               <div class="image-preview" (click)="createFileInput.click()">
@@ -244,7 +254,7 @@
                 </small>
               </div>
             </div>
-          </div>
+          </div>-->
   
           <!-- Error message -->
           <div class="error-message general-error" *ngIf="createArtistError">

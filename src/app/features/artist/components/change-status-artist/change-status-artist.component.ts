@@ -66,7 +66,7 @@ export class ChangeStatusArtistComponent {
     this.statusChanged.emit(false);
     this.loading = false;
     this.closeConfirmModal();
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/user/Myprofile']);
   }
 
 }

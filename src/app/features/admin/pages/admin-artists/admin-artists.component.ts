@@ -20,6 +20,7 @@ export class AdminArtistsComponent implements OnInit {
 
   artists: ArtistResponse[] = [];
   users: UserResponse[] = [];
+  eligibleUsers: UserResponse[] = [];
   loading = false;
 
   // Modal states
@@ -49,6 +50,7 @@ export class AdminArtistsComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.createArtistForm = this.fb.group({
+      userId: ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(3)]],
       biography: ['', [Validators.required, Validators.minLength(10)]],
       country: ['', [Validators.required]],
@@ -82,6 +84,9 @@ export class AdminArtistsComponent implements OnInit {
           const user = users.find(u => u.id === artist.userId);
           return { ...artist, user };
         });
+        // Filtrar usuarios que NO tienen perfil de artista
+        const artistUserIds = new Set(artists.map(a => a.userId));
+        this.eligibleUsers = users.filter(u => !artistUserIds.has(u.id));
         this.loading = false;
       },
       error: (error) => {
@@ -120,34 +125,52 @@ export class AdminArtistsComponent implements OnInit {
     this.createImagePreview = '';
   }
 
-  onCreateArtist() {
-    if (this.createArtistForm.valid) {
-      this.loading = true;
-      this.createArtistError = '';
-      const artistData: CreateArtistRequest = this.createArtistForm.value;
-      if (this.createImagePreview) {
-        artistData.urlImage = this.createImagePreview;
-      }
-      this.artistService.createArtist(artistData.name, artistData).subscribe({
-        next: () => {
-          this.loadArtists();
-          this.closeCreateForm();
-          this.loading = false;
-        },
-        error: (error) => {
-          console.error('Error creando artista:', error);
-          this.loading = false;
-          if (error.error?.message) {
-            this.createArtistError = error.error.message;
-          } else if (error.error?.error) {
-            this.createArtistError = error.error.error;
-          } else {
-            this.createArtistError = 'Error desconocido al crear artista';
-          }
-        }
-      });
+  private updateUserImage(userId: number, urlImage: string, callback: () => void) {
+  this.userService.updateUser(userId, { url_image: urlImage }).subscribe({
+    next: () => callback(),
+    error: () => callback() // Siempre recarga aunque falle la imagen
+  });
+}
+
+onCreateArtist() {
+  if (this.createArtistForm.valid) {
+    this.loading = true;
+    this.createArtistError = '';
+    const formValue = this.createArtistForm.value;
+    const artistData: CreateArtistRequest = {
+      name: formValue.name,
+      biography: formValue.biography,
+      country: formValue.country,
+      urlImage: this.createImagePreview || formValue.urlImage,
+      userId: formValue.userId
+    } as any;
+    const selectedUser = this.eligibleUsers.find(u => u.id == formValue.userId);
+    if (!selectedUser) {
+      this.createArtistError = 'Usuario seleccionado no válido.';
+      this.loading = false;
+      return;
     }
+    this.artistService.createArtist(selectedUser.username, artistData).subscribe({
+      next: () => {
+        this.loadArtistsAndUsers();
+        this.closeCreateForm();
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error creando artista:', error);
+        this.loading = false;
+        if (error.error?.message) {
+          this.createArtistError = error.error.message;
+        } else if (error.error?.error) {
+          this.createArtistError = error.error.error;
+        } else {
+          this.createArtistError = 'Error desconocido al crear artista';
+        }
+      }
+    });
   }
+}
+
 
   // Editar Artista
   openEditForm(artist: ArtistResponse) {
