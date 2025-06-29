@@ -69,6 +69,11 @@ export class ActivateStatusArtistComponent {
     this.statusChanged.emit(true);
     this.loading = false;
     this.closeConfirmModal();
-    this.router.navigate(['/artist-profile']);
+    // Redirigir al perfil de artista tras reactivar
+    if (this.artistName) {
+      this.router.navigate(['/artist/profile-artist', this.artistName]);
+    } else {
+      this.router.navigate(['/artist/profile-artist']);
+    }
   }
   }
