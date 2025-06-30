@@ -225,6 +225,7 @@ export class PlaylistDisplayComponent implements OnInit {
       // Nueva canción
       this.currentSongIndex = songIndex;
       this.currentSongId = song.id;
+      this.isPlaying = true; // Actualiza inmediatamente para sincronizar iconos
       
       // Si está en modo shuffle, actualiza currentPlaybackIndex
       if (this.isShuffleMode) {
@@ -243,10 +244,11 @@ export class PlaylistDisplayComponent implements OnInit {
   initYouTubePlayer(videoId: string): void {
     console.log('🚀 Inicializando player con video ID:', videoId);
     if (this.playerRef && this.playerRef.loadVideoById) {
-    console.log('🔄 Reutilizando player existente');
-    this.playerRef.loadVideoById(videoId);
-    return;
-  }
+      console.log('🔄 Reutilizando player existente');
+      this.playerRef.loadVideoById(videoId);
+      this.isPlaying = true; // Asegura que el estado se actualice inmediatamente
+      return;
+    }
     setTimeout(() => {
       if (!(window as any).YT) {
       console.error('❌ YouTube API no está disponible');
