@@ -40,6 +40,7 @@ export class PlaylistDisplayComponent implements OnInit {
   isPlaying = false;
   playerRef: any;
   currentSongId: number | null = null;
+  currentSongIndex: number | null = null;
 
   constructor(
             private playlistService: PlaylistService, 
@@ -204,13 +205,18 @@ export class PlaylistDisplayComponent implements OnInit {
 
   playSong(song: SongResponse) {
     const videoId = this.extractVideoId(song.youtubeUrl);
-    if (this.currentSongId === song.id && this.isPlaying) {
+    console.log('🎬 Video ID extraído:', videoId);
+    console.log('🔗 URL original:', song.youtubeUrl);
+    console.log('🎯 YouTube API disponible:', !!(window as any).YT);
+    const songIndex = this.playlist!.songs.findIndex(s => s.id === song.id);
+    if (this.currentSongIndex === songIndex && this.isPlaying) {
       this.playerRef.pauseVideo();
       this.isPlaying = false;
-    } else if (this.currentSongId === song.id && !this.isPlaying) {
+    } else if (this.currentSongIndex === songIndex && !this.isPlaying) {
       this.playerRef.playVideo();
       this.isPlaying = true;
     } else {
+      this.currentSongIndex = songIndex;
       this.currentSongId = song.id;
       this.initYouTubePlayer(videoId);
   }
@@ -222,18 +228,50 @@ export class PlaylistDisplayComponent implements OnInit {
   }
 
   initYouTubePlayer(videoId: string): void {
+    console.log('🚀 Inicializando player con video ID:', videoId);
+    if (this.playerRef && this.playerRef.loadVideoById) {
+    console.log('🔄 Reutilizando player existente');
+    this.playerRef.loadVideoById(videoId);
+    return;
+  }
     setTimeout(() => {
+      if (!(window as any).YT) {
+      console.error('❌ YouTube API no está disponible');
+      return;
+    }
+      try {
       this.playerRef = new (window as any).YT.Player('yt-player-playlist', {
         videoId,
         height: '0',
         width: '0',
         events: {
           onReady: () => {
+            console.log('✅ Player listo, intentando reproducir...');
             this.playerRef.playVideo();
             this.isPlaying = true;
-          }
+          },
+          onError: (error: any) => {
+            console.error('❌ Error en el player:', error);
+          },
+         onStateChange: (event: any) => {
+            console.log('🎵 Estado del player cambió:', event.data);
+            if (event.data === (window as any).YT.PlayerState.ENDED) {
+              if (this.currentSongIndex !== null && this.currentSongIndex < this.playlist!.songs.length - 1) {
+                const nextSong = this.playlist!.songs[this.currentSongIndex + 1];
+                this.playSong(nextSong);
+              } else {
+                // Última canción
+                this.isPlaying = false;
+                this.currentSongId = null;
+                this.currentSongIndex = null;
+              }
+            }
+          } 
         }
       });
+    } catch (error) {
+      console.error('❌ Error creando el player:', error);
+    }
     }, 100);
   }
 
