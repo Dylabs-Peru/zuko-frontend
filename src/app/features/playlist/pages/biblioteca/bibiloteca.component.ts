@@ -22,6 +22,7 @@ export class PlaylistLibraryComponent implements OnInit {
   searchQuery = '';
   showCreateDialog = false;
   searchQueryChanged = new Subject<string>(); 
+  isSearching = false;
 
   constructor(private playlistService: PlaylistService, 
               private cdr: ChangeDetectorRef,
@@ -61,13 +62,15 @@ export class PlaylistLibraryComponent implements OnInit {
     this.searchQueryChanged.next(this.searchQuery);
   }
 
-  onSearchReal(q: string): void {
-    const query = q.trim();
-    if (!query) {
+  onSearchReal(query: string): void {
+    this.isSearching = query.trim() !== '';
+    this.isLoading = true;
+    this.error = '';
+
+    if (query.trim() === '') {
       this.loadPlaylists();
-    } else {
-      this.isLoading = true;
-      this.error = '';
+      return;
+    } 
       this.playlistService.searchMyPlaylistsByName(query).subscribe({
         next: (playlists) => {
           this.playlists = playlists;
@@ -79,9 +82,9 @@ export class PlaylistLibraryComponent implements OnInit {
           this.isLoading = false;
           this.cdr.markForCheck();
         }
-      });
-    }
+    });
   }
+  
 
   onOpenCreateDialog() {
   this.showCreateDialog = true;
