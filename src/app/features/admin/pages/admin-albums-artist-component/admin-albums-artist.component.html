@@ -1,0 +1,70 @@
+<div class="admin-section-container">
+  <div class="section-header">
+    <button class="back-btn" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+      Volver
+    </button>
+    <h1 class="section-title" *ngIf="artist">Lista de Álbumes de "{{ artist.name }}"</h1>
+    <h1 class="section-title" *ngIf="!artist">Lista de Álbumes</h1>
+    <p class="section-subtitle">Todos los álbumes registrados para este artista</p>
+
+  </div>
+  <div class="section-content">
+    <div class="loading-container" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Cargando álbumes...</p>
+    </div>
+    <div class="album-actions-bar">
+      <button class="create-btn" (click)="onCreateAlbum()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Crear Nuevo Álbum
+      </button>
+    </div>
+    <div class="empty-state" *ngIf="!loading && albums.length === 0">
+      <div class="empty-icon">💿</div>
+      <h3>No hay álbumes registrados para este artista</h3>
+    </div>
+
+    <div class="albums-grid" *ngIf="!loading && albums.length > 0">
+      <div class="album-card-placeholder" *ngFor="let album of albums">
+        <div class="album-card-media">
+          <div class="album-cover" *ngIf="album.cover">
+            <img [src]="album.cover" [alt]="album.title" class="album-cover-img" />
+          </div>
+        </div>
+        <div class="album-card-content">
+          <div class="album-title">{{ album.title }}</div>
+          <div class="album-meta">
+            <div class="album-year">Año: {{ album.releaseYear }}</div>
+            <div class="album-artist">Artista: {{ album.artistName }}</div>
+            <div class="album-genre">Género: {{ album.genreName }}</div>
+          </div>
+          <div class="album-actions">
+            <button class="edit-btn" (click)="onEditAlbum(album)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m18 2 4 4-14 14H4v-4z"></path>
+                <path d="m14.5 5.5 4 4"></path>
+              </svg>
+              Editar
+            </button>
+            <button class="delete-btn" (click)="onDeleteAlbum(album)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3,6 5,6 21,6"></polyline>
+                <path d="m19,6-1,14a2,2 0 0,1-2,2H8a2,2 0 0,1-2-2L5,6"></path>
+                <path d="m10,11 0,6"></path>
+                <path d="m14,11 0,6"></path>
+              </svg>
+              Eliminar
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

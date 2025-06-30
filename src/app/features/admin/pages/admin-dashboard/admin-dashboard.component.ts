@@ -36,6 +36,14 @@ export class AdminDashboardComponent {
       color: '#D32F2F'
     },
     {
+      id: 'albums',
+      title: 'Gestión de Álbumes',
+      description: 'Crear, editar y eliminar álbumes',
+      icon: '💿',
+      route: '/admin/albums',
+      color: '#B71C1C'
+    },
+    {
       id: 'roles',
       title: 'Gestión de Roles',
       description: 'Configurar roles y permisos del sistema',
