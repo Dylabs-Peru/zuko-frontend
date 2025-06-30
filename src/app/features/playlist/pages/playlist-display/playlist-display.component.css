@@ -136,6 +136,15 @@ body {
   filter: brightness(100) invert(0); 
 }
 
+.shuffle-btn.active {
+  background: rgba(185, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.shuffle-btn.active .icon-shuffle {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(7500%) hue-rotate(0deg) brightness(90%) contrast(120%);
+}
+
 .options-btn {
   background: none;
   border: none;

@@ -41,6 +41,9 @@ export class PlaylistDisplayComponent implements OnInit {
   playerRef: any;
   currentSongId: number | null = null;
   currentSongIndex: number | null = null;
+  isShuffleMode = false; 
+  playbackOrder: number[] = []; 
+  currentPlaybackIndex = 0; 
 
   constructor(
             private playlistService: PlaylistService, 
@@ -208,18 +211,28 @@ export class PlaylistDisplayComponent implements OnInit {
     console.log('🎬 Video ID extraído:', videoId);
     console.log('🔗 URL original:', song.youtubeUrl);
     console.log('🎯 YouTube API disponible:', !!(window as any).YT);
+    
     const songIndex = this.playlist!.songs.findIndex(s => s.id === song.id);
-    if (this.currentSongIndex === songIndex && this.isPlaying) {
+    
+    // Si es la misma canción, solo pause/play
+    if (this.currentSongId === song.id && this.isPlaying) {
       this.playerRef.pauseVideo();
       this.isPlaying = false;
-    } else if (this.currentSongIndex === songIndex && !this.isPlaying) {
+    } else if (this.currentSongId === song.id && !this.isPlaying) {
       this.playerRef.playVideo();
       this.isPlaying = true;
     } else {
+      // Nueva canción
       this.currentSongIndex = songIndex;
       this.currentSongId = song.id;
+      
+      // Si está en modo shuffle, actualiza currentPlaybackIndex
+      if (this.isShuffleMode) {
+        this.currentPlaybackIndex = this.playbackOrder.findIndex(index => index === songIndex);
+      }
+      
       this.initYouTubePlayer(videoId);
-  }
+    }
   }
 
   extractVideoId(url: string): string {
@@ -256,14 +269,29 @@ export class PlaylistDisplayComponent implements OnInit {
          onStateChange: (event: any) => {
             console.log('🎵 Estado del player cambió:', event.data);
             if (event.data === (window as any).YT.PlayerState.ENDED) {
-              if (this.currentSongIndex !== null && this.currentSongIndex < this.playlist!.songs.length - 1) {
-                const nextSong = this.playlist!.songs[this.currentSongIndex + 1];
-                this.playSong(nextSong);
+              if (this.isShuffleMode) {
+                // Modo shuffle: usar el array de reproducción
+                if (this.currentPlaybackIndex < this.playbackOrder.length - 1) {
+                  this.currentPlaybackIndex++;
+                  const nextSongIndex = this.playbackOrder[this.currentPlaybackIndex];
+                  const nextSong = this.playlist!.songs[nextSongIndex];
+                  this.playSong(nextSong);
+                } else {
+                  // Última canción en shuffle
+                  this.isPlaying = false;
+                  this.currentSongId = null;
+                  this.currentSongIndex = null;
+                }
               } else {
-                // Última canción
-                this.isPlaying = false;
-                this.currentSongId = null;
-                this.currentSongIndex = null;
+                // Modo normal: orden secuencial
+                if (this.currentSongIndex !== null && this.currentSongIndex < this.playlist!.songs.length - 1) {
+                  const nextSong = this.playlist!.songs[this.currentSongIndex + 1];
+                  this.playSong(nextSong);
+                } else {
+                  this.isPlaying = false;
+                  this.currentSongId = null;
+                  this.currentSongIndex = null;
+                }
               }
             }
           } 
@@ -276,7 +304,19 @@ export class PlaylistDisplayComponent implements OnInit {
   }
 
   togglePlay(): void {
-    if (!this.playerRef) return;
+    if (!this.playerRef) {
+      // Si no hay reproductor, reproduce una canción aleatoria si está en shuffle
+      if (this.isShuffleMode && this.playlist && this.playlist.songs.length > 0) {
+        const randomIndex = Math.floor(Math.random() * this.playlist.songs.length);
+        const randomSong = this.playlist.songs[randomIndex];
+        this.playSong(randomSong);
+      } else if (!this.isShuffleMode && this.playlist && this.playlist.songs.length > 0) {
+        // Si no está en shuffle, reproduce la primera canción
+        this.playSong(this.playlist.songs[0]);
+      }
+      return;
+    }
+    
     if (this.isPlaying) {
       this.playerRef.pauseVideo();
       this.isPlaying = false;
@@ -285,7 +325,36 @@ export class PlaylistDisplayComponent implements OnInit {
       this.isPlaying = true;
     }
   }
+
+  toggleShuffle(): void {
+    this.isShuffleMode = !this.isShuffleMode;
+    
+    if (this.isShuffleMode) {
+      // Crea array de índices y lo baraja
+      this.playbackOrder = Array.from({length: this.playlist!.songs.length}, (_, i) => i);
+      this.shuffleArray(this.playbackOrder);
+
+      // Si hay una canción reproduciéndose, encuentra su posición en el array shuffleado
+      if (this.currentSongIndex !== null) {
+        this.currentPlaybackIndex = this.playbackOrder.findIndex(index => index === this.currentSongIndex);
+      }
+    } else {
+      // Modo normal: resetea las variables de shuffle
+      this.playbackOrder = [];
+      this.currentPlaybackIndex = 0;
+    }
+  }
+
+  private shuffleArray(array: number[]): void {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}  
+
 }
+
+
 
 
 
