@@ -6,16 +6,38 @@
   background: #B11212;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 15px 30px;
+  justify-content: center;
+  padding: 0 28px;
   box-sizing: border-box;
   font-family: 'Manjari', Arial, sans-serif;
   position: fixed;
   bottom: 0;
   left: 0;
   z-index: 1000;
+  gap: 40px;
 }
 
+/* Controles de la izquierda */
+.player-left-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 120px; 
+  flex: 0 0 auto; 
+  order: 1;
+}
+
+/* Controles del centro (tiempo y barra) */
+.player-center-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  min-width: 600px; 
+  order: 2;
+}
+
+/* Mantener compatibilidad con player-controls existente */
 .player-controls {
   display: flex;
   align-items: center;
@@ -75,9 +97,6 @@
   background: #000;
 }
 
-/* Placeholder icons, puedes poner SVG reales */
-
-
 .icon-restart, .icon-next, .icon-queue {
   display: block;
   width: 28px;
@@ -108,8 +127,7 @@
 /* Barra de progreso */
 .player-progress-container {
   flex: 1;
-  min-width: 170px;
-  max-width: 370px;
+  min-width: 500px;
   margin: 0 10px;
   display: flex;
   align-items: center;
@@ -128,7 +146,9 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-left: auto;
+  min-width: 200px; 
+  flex: 0 0 auto; /* No crecer ni contraer */
+  order: 3;
 }
 
 .player-song-cover {

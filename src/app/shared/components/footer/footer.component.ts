@@ -12,11 +12,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent implements OnInit, OnDestroy {
-  currentTime = '00:00';
-  durationText = '00:00';
-  currentTimeSeconds = 0;
-  duration = 0;
-
+  // Ya no necesitamos estas propiedades locales
   private subscriptions: Subscription[] = [];
 
   constructor(private musicPlayerService: MusicPlayerService) {
@@ -24,6 +20,8 @@ export class FooterComponent implements OnInit, OnDestroy {
     effect(() => {
       console.log('🎵 Footer - Signal currentSong:', this.musicPlayerService.currentSong());
       console.log('🎵 Footer - Signal isPlaying:', this.musicPlayerService.isPlaying());
+      console.log('🎵 Footer - Current time:', this.musicPlayerService.currentTimeFormatted());
+      console.log('🎵 Footer - Duration:', this.musicPlayerService.durationFormatted());
     });
   }
 
@@ -36,6 +34,22 @@ export class FooterComponent implements OnInit, OnDestroy {
     return this.musicPlayerService.isPlaying();
   }
 
+  get currentTime() {
+    return this.musicPlayerService.currentTimeFormatted();
+  }
+
+  get durationText() {
+    return this.musicPlayerService.durationFormatted();
+  }
+
+  get currentTimeSeconds() {
+    return this.musicPlayerService.currentTime();
+  }
+
+  get duration() {
+    return this.musicPlayerService.duration();
+  }
+
   ngOnInit(): void {
     console.log('🎵 Footer inicializado');
     // Ya no necesitamos suscripciones para signals, pero mantenemos para compatibilidad si es necesario
@@ -43,6 +57,7 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    // El servicio manejará su propio cleanup
   }
 
   togglePlay(): void {
@@ -57,16 +72,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLInputElement;
     const seekTime = parseInt(target.value, 10);
     
-    const player = this.musicPlayerService.playerRef();
-    if (player && player.seekTo) {
-      player.seekTo(seekTime);
-    }
-  }
-
-  // Helper para formatear tiempo
-  private formatTime(seconds: number): string {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    console.log('🎯 Seeking to:', seekTime, 'seconds');
+    this.musicPlayerService.seekTo(seekTime);
   }
 }

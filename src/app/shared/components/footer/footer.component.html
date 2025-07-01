@@ -1,16 +1,18 @@
 <footer class="player-footer" *ngIf="currentSong">
-  <div class="player-controls">
-    
+  <!-- Controles de reproducción (izquierda) -->
+  <div class="player-left-controls">
     <button (click)="restartSong()" class="icon-btn" title="Reiniciar">
       <span class="icon-restart"></span>
     </button>
 
-    
     <button (click)="togglePlay()" class="play-btn" title="Reproducir/Pausar">
       <span *ngIf="isPlaying" class="icon-pause"></span>
       <span *ngIf="!isPlaying" class="icon-play"></span>
     </button>
+  </div>
 
+  <!-- Controles de tiempo centrados -->
+  <div class="player-center-controls">
     <!-- Tiempo transcurrido -->
     <span class="player-time">{{ currentTime || '00:00' }}</span>
 
