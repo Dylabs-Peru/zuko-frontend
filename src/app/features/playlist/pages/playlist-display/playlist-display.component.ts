@@ -14,6 +14,7 @@ import { AlbumResponse } from '../../../../models/album.model';
 import { AddSongToPlaylistModalComponent } from '../../components/agregar-cancion-playlist/add-song-to-playlist.component';
 import { SongResponse } from '../../../../models/song.model';
 import { ShortcutsService } from '../../../../services/shortcuts.service';
+import { MusicPlayerService } from '../../../../services/music-player.service';
 
 @Component({
   selector: 'app-playlist-display',
@@ -50,7 +51,8 @@ export class PlaylistDisplayComponent implements OnInit {
             private route: ActivatedRoute,
             private router: Router,
             private albumService: AlbumService,
-            private shortcutService: ShortcutsService
+            private shortcutService: ShortcutsService,
+            private musicPlayerService: MusicPlayerService
   ) {}
    
    ngOnInit(): void {
@@ -227,6 +229,11 @@ export class PlaylistDisplayComponent implements OnInit {
       this.currentSongId = song.id;
       this.isPlaying = true; // Actualiza inmediatamente para sincronizar iconos
       
+      // Actualizar el servicio global
+      console.log('🎵 Actualizando servicio global con canción:', song);
+      this.musicPlayerService.setCurrentSong(song);
+      this.musicPlayerService.setPlayingState(true);
+      
       // Si está en modo shuffle, actualiza currentPlaybackIndex
       if (this.isShuffleMode) {
         this.currentPlaybackIndex = this.playbackOrder.findIndex(index => index === songIndex);
@@ -264,6 +271,10 @@ export class PlaylistDisplayComponent implements OnInit {
             console.log('✅ Player listo, intentando reproducir...');
             this.playerRef.playVideo();
             this.isPlaying = true;
+            
+            // Actualizar el servicio global
+            this.musicPlayerService.setPlayerRef(this.playerRef);
+            this.musicPlayerService.setPlayingState(true);
           },
           onError: (error: any) => {
             console.error('❌ Error en el player:', error);
@@ -283,6 +294,10 @@ export class PlaylistDisplayComponent implements OnInit {
                   this.isPlaying = false;
                   this.currentSongId = null;
                   this.currentSongIndex = null;
+                  
+                  // Actualizar servicio global
+                  this.musicPlayerService.setPlayingState(false);
+                  this.musicPlayerService.setCurrentSong(null);
                 }
               } else {
                 // Modo normal: orden secuencial
@@ -293,6 +308,10 @@ export class PlaylistDisplayComponent implements OnInit {
                   this.isPlaying = false;
                   this.currentSongId = null;
                   this.currentSongIndex = null;
+                  
+                  // Actualizar servicio global
+                  this.musicPlayerService.setPlayingState(false);
+                  this.musicPlayerService.setCurrentSong(null);
                 }
               }
             }

@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap');
+
+.player-footer {
+  width: 99.2%;
+  height: 53px;
+  background: #B11212;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  box-sizing: border-box;
+  font-family: 'Manjari', Arial, sans-serif;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.icon-btn {
+  width: 45px;
+  height: 45px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,0.11);
+}
+
+.play-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.play-btn:hover {
+  background: #D80000;
+}
+
+.icon-play, .icon-pause {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0;
+}
+
+.icon-play {
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="black"/></svg>') no-repeat center/contain;
+  background: #000;
+}
+
+.icon-pause {
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="20" fill="black"/><rect x="17" y="4" width="5" height="20" fill="black"/></svg>') no-repeat center/contain;
+  background: #000;
+}
+
+/* Placeholder icons, puedes poner SVG reales */
+
+
+.icon-restart, .icon-next, .icon-queue {
+  display: block;
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  border-radius: 3px;
+  opacity: 0.85;
+}
+
+.icon-restart { 
+  background: #fff url('https://res.cloudinary.com/dqk8inmwe/image/upload/v1751325166/SAVE_20250630_181020_qzvl73.jpg') center/contain no-repeat; 
+  transform: rotate(180deg);
+}
+.icon-next { background: #fff url('https://res.cloudinary.com/dqk8inmwe/image/upload/v1751325166/SAVE_20250630_181020_qzvl73.jpg') center/contain no-repeat; }
+/* .icon-queue { background: #fff url('assets/queue-icon.svg') center/contain no-repeat; } */
+
+/* Tiempos */
+.player-time {
+  color: #fff;
+  font-family: 'Manjari', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  width: 48px;
+  text-align: center;
+  opacity: 1;
+}
+
+/* Barra de progreso */
+.player-progress-container {
+  flex: 1;
+  min-width: 170px;
+  max-width: 370px;
+  margin: 0 10px;
+  display: flex;
+  align-items: center;
+}
+.player-progress {
+  width: 100%;
+  accent-color: #fff;
+  background: #fff;
+  height: 4px;
+  border-radius: 3px;
+  outline: none;
+  margin: 0 7px;
+}
+
+.player-song-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+}
+
+.player-song-cover {
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+  border-radius: 7px;
+  background: #eee;
+}
+
+.player-song-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.artist-name {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: #fff;
+  opacity: 0.67;
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+
+.song-name {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: #fff;
+  opacity: 1;
+  line-height: 1.1;
+}
+
+.queue-btn {
+  width: 45px;
+  height: 45px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  margin-left: 8px;
+  transition: background 0.15s;
+}
+
+.queue-btn:hover {
+  background: rgba(255,255,255,0.11);
+}

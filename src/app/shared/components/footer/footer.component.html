@@ -1,0 +1,47 @@
+<footer class="player-footer" *ngIf="currentSong">
+  <div class="player-controls">
+    
+    <button (click)="restartSong()" class="icon-btn" title="Reiniciar">
+      <span class="icon-restart"></span>
+    </button>
+
+    
+    <button (click)="togglePlay()" class="play-btn" title="Reproducir/Pausar">
+      <span *ngIf="isPlaying" class="icon-pause"></span>
+      <span *ngIf="!isPlaying" class="icon-play"></span>
+    </button>
+
+    <!-- Tiempo transcurrido -->
+    <span class="player-time">{{ currentTime || '00:00' }}</span>
+
+    <!-- Barra de progreso -->
+    <div class="player-progress-container">
+      <input
+        type="range"
+        min="0"
+        [max]="duration || 0"
+        [value]="currentTimeSeconds || 0"
+        (input)="onSeek($event)"
+        class="player-progress"
+      />
+    </div>
+
+    <!-- Tiempo total -->
+    <span class="player-time">{{ durationText || '00:00' }}</span>
+  </div>
+
+  <!-- Info de la canción actual (derecha) -->
+  <div class="player-song-info">
+    <img
+      [src]="currentSong.imageUrl"
+      alt="cover"
+      class="player-song-cover"
+      width="35"
+      height="35"
+    />
+    <div class="player-song-meta">
+      <span class="artist-name">{{ currentSong.artistName || 'Artista' }}</span>
+      <span class="song-name">{{ currentSong.title || 'Canción' }}</span>
+    </div>
+  </div>
+</footer>
