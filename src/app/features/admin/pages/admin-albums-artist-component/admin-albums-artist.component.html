@@ -68,3 +68,117 @@
     </div>
   </div>
 </div>
+
+<div class="modal-overlay" *ngIf="showCreateAlbumModal" (click)="onCloseCreateAlbumModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Crear Nuevo Álbum</h3>
+      <button class="close-btn" (click)="onCloseCreateAlbumModal()">×</button>
+    </div>
+    <div class="modal-tabs">
+      <span [class.active-tab]="albumTab==='info'" (click)="onTabClick('info')">Información Básica</span>
+      <span [class.active-tab]="albumTab==='songs'" (click)="onTabClick('songs')" [class.disabled]="!canGoToSongsTab()">Canciones</span>
+    </div>
+    <div class="error-message small-error" *ngIf="showTabError">
+      Por favor completa todos los campos obligatorios antes de continuar.
+    </div>
+    <form *ngIf="albumTab==='info'" (ngSubmit)="onNextAlbumInfo()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="albumTitle">Título del álbum</label>
+          <input id="albumTitle" type="text" [(ngModel)]="albumForm.title" name="albumTitle" required placeholder="Título del álbum" (blur)="onFieldTouched('title')" />
+          <div class="error-message" *ngIf="shouldShowError('title')">El título es obligatorio</div>
+        </div>
+        <div class="form-group">
+          <label for="albumGenre">Género</label>
+          <select id="albumGenre" [(ngModel)]="albumForm.genreId" name="albumGenre" required (blur)="onFieldTouched('genreId')" (change)="onFieldTouched('genreId')">
+            <option value="" disabled selected>Selecciona un género</option>
+            <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
+          </select>
+          <div class="error-message" *ngIf="shouldShowError('genreId')">El género es obligatorio</div>
+        </div>
+      </div>
+      <div class="form-group" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center;">
+        <label style="margin-bottom: 0.5rem;">Portada</label>
+        <div class="cover-upload-section">
+          <div class="cover-preview-container" *ngIf="albumForm.coverUrl; else noCover">
+            <img [src]="albumForm.coverUrl" alt="Portada" class="cover-preview" />
+          </div>
+          <ng-template #noCover>
+            <div class="album-cover-preview no-cover">
+              <span class="cover-placeholder">📷</span>
+            </div>
+          </ng-template>
+          <div class="cover-upload-btn-container">
+            <label class="save-button upload-cover-label">
+              <input type="file" accept="image/*" (change)="onAlbumCoverSelected($event)" hidden />
+              <span>Subir portada</span>
+            </label>
+          </div>
+          <div class="cover-upload-btn-container" *ngIf="albumForm.coverUrl">
+            <button type="button" class="remove-cover-btn" (click)="removeAlbumCover()">
+              <span>Quitar portada</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <form *ngIf="albumTab==='songs'" (ngSubmit)="onSaveAlbum()">
+      <div class="song-list-scroll">
+        <ul class="song-list" *ngIf="songs.length > 0">
+          <li class="song-item" *ngFor="let song of songs; let i = index">
+            <div class="song-cover">
+              <img *ngIf="song.imageUrl; else noCover2" [src]="song.imageUrl" alt="Portada de {{ song.name }}" class="cover-image" />
+              <ng-template #noCover2>
+                <div class="cover-placeholder">📷</div>
+              </ng-template>
+            </div>
+            <div class="song-info">
+              <div class="song-title">
+                <span class="song-index">{{ i + 1 }}.</span>
+                <strong class="song-name">{{ song.name }}</strong>
+              </div>
+              <small class="meta">
+                Fecha: {{ song.releaseDate | date: 'dd/MM/yyyy' }}
+              </small>
+            </div>
+            <div class="song-actions">
+              <input 
+                type="checkbox" 
+                [checked]="albumForm.selectedSongIds.includes(song.id)" 
+                (change)="toggleAlbumSongSelection(song.id)" 
+                class="select-song-checkbox" 
+                id="song-{{song.id}}"
+                [attr.aria-label]="'Seleccionar ' + song.name"
+              />
+            </div>
+          </li>
+        </ul>
+        <div *ngIf="songs.length === 0" class="no-songs">No tienes canciones disponibles.</div>
+      </div>
+      
+      <!-- Mensaje de validación de canciones -->
+      <div class="error-message" *ngIf="shouldShowError('songs')">
+        Debes seleccionar al menos {{minSongsRequired}} canciones para crear el álbum
+      </div>
+      
+      <div class="save-section">
+        <button 
+          class="cancel-button" 
+          type="button" 
+          (click)="onCloseCreateAlbumModal()"
+        >
+          Cancelar
+        </button>
+        <button 
+          class="save-button" 
+          type="submit" 
+          [disabled]="albumForm.selectedSongIds.length < minSongsRequired || isSaving"
+          (click)="fieldTouched.songs = true"
+        >
+          {{ isSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
