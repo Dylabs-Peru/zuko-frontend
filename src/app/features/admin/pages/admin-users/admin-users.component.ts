@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -48,7 +48,8 @@ export class AdminUsersComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private roleService: RoleService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.createUserForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
@@ -82,8 +83,9 @@ export class AdminUsersComponent implements OnInit {
     this.loading = true;
     this.userService.getAllUsers().subscribe({
       next: (users) => {
-        this.users = users;
+        this.users = [...users]; // Crear una nueva referencia del array para forzar detección de cambios
         this.loading = false;
+        this.cdr.detectChanges(); // Forzar detección de cambios
       },
       error: (error) => {
         console.error('Error loading users:', error);
@@ -281,13 +283,18 @@ export class AdminUsersComponent implements OnInit {
     if (confirm(`¿Estás seguro de que quieres ${action} a ${user.username}?`)) {
       this.loading = true;
       this.userService.toggleUserActiveStatus(user.id).subscribe({
-        next: () => {
-          this.loadUsers();
-          this.loading = false;
+        next: (response) => {
+          // Recargar la página para mostrar los cambios
+          window.location.reload();
         },
         error: (error) => {
           console.error('Error toggling user status:', error);
-          this.loading = false;
+          // Si el status es 200, es exitoso aunque Angular lo marque como error
+          if (error.status === 200) {
+            window.location.reload();
+          } else {
+            this.loading = false;
+          }
         }
       });
     }

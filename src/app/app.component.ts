@@ -53,7 +53,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   get isAuthRoute(): boolean {
     // Debug: muestra la url current
-    console.log('Current URL:', this.currentUrl);
     // Oculta navbar si la url contiene /auth, /login o /register en cualquier parte
     return (
       this.currentUrl.includes('/auth/login') ||

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../../services/User.service';
 import { UserResponse } from '../../../../../models/user.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -14,8 +14,14 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OtherProfileComponent implements OnInit{
   user: UserResponse | null = null;
+  userNotFound: boolean = false;
+  userInactive: boolean = false;
 
-  constructor(private userService: UserService, private route: ActivatedRoute) {}
+  constructor(
+    private userService: UserService, 
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -24,13 +30,29 @@ export class OtherProfileComponent implements OnInit{
       if (username) {
         this.userService.getUserByUsername(username).subscribe(user => {
           console.log('User response:', user);
-          this.user = user;
+          
+          // Verificar si el usuario está activo
+          if (user && user.isActive === false) {
+            console.log('Usuario inactivo, redirigiendo...');
+            this.userInactive = true;
+            this.user = null;
+            // Opcional: redirigir a una página de error o home
+            // this.router.navigate(['/']);
+          } else {
+            this.user = user;
+            this.userInactive = false;
+          }
+          this.userNotFound = false;
         }, err => {
           console.error('Error al buscar usuario:', err);
           this.user = null;
+          this.userNotFound = true;
+          this.userInactive = false;
         });
       } else {
         this.user = null;
+        this.userNotFound = true;
+        this.userInactive = false;
       }
     });
   }

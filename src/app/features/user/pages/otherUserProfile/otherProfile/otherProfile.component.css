@@ -131,3 +131,36 @@
   color: red;
   text-align: center;
 }
+
+.no-user-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 40px;
+  font-family: 'Manrope', sans-serif;
+}
+
+.no-user-message {
+  text-align: center;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.no-user-message h2 {
+  color: #495057;
+  font-size: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.no-user-message p {
+  color: #6c757d;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
