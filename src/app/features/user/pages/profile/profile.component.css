@@ -90,13 +90,30 @@
   margin-left: auto;
 }
 
-.dots-btn {
-  font-size: 50px;
-  color: #666;
-  background: none;
-  border: none;
-  cursor: pointer;
+.profile-actions {
+  margin-left: auto;
+}
+
+.profile-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
   margin-right: 80px;
+  cursor: pointer;
+  height: 24px;
+}
+
+.profile-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: #888;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background 0.2s;
+}
+
+.profile-dots:hover span {
+  background-color: #b71c1c;
 }
 
 .profile-bio-section {
