@@ -1,0 +1,133 @@
+<div class="admin-section-container">
+  <!-- Header -->
+  <div class="section-header">
+    <button class="back-btn" (click)="goBack()">← Volver</button>
+    <h2 class="section-title">Gestión de Canciones</h2>
+    <p class="section-subtitle">Crea, edita o elimina canciones como administrador</p>
+  </div>
+
+  <!-- Botón crear -->
+  <div class="actions-bar">
+    <button class="create-btn" (click)="openCreateForm()">+ Nueva Canción</button>
+  </div>
+
+  <div class="filter-bar">
+  <label for="sortSelect">Ordenar por:</label>
+  <select id="sortSelect" [(ngModel)]="selectedSort" (change)="sortSongs()">
+    <option value="newest">Más nuevo primero</option>
+    <option value="oldest">Más antiguo primero</option>
+    <option value="title">Título A-Z</option>
+  </select>
+</div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando canciones...</p>
+  </div>
+
+  <!-- Estado vacío -->
+  <div *ngIf="!loading && songs.length === 0" class="empty-state">
+    <div class="empty-icon">🎵</div>
+    <h3>No hay canciones registradas</h3>
+    <p>Haz clic en el botón para añadir una nueva canción</p>
+  </div>
+
+  <!-- Tarjetas -->
+  <div class="users-grid" *ngIf="songs.length > 0">
+    <div class="user-card" *ngFor="let song of songs">
+      <div class="user-header">
+        <div class="user-avatar">
+          <img [src]="getImageUrl(song.imageUrl)" alt="Portada">
+        </div>
+        <div class="user-info">
+          <h4 class="user-name">{{ song.title }}</h4>
+          <p class="user-email">{{ song.artistName }}</p>
+          <span class="status-badge" [class.active]="song.isPublicSong" [class.inactive]="!song.isPublicSong">
+            {{ song.isPublicSong ? 'Pública' : 'Privada' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="user-description">
+        <p><strong>Fecha de lanzamiento:</strong> {{ song.releaseDate | date:'dd/MM/yyyy' }}</p>
+      </div>
+
+      <div class="user-actions">
+        <button class="edit-btn" (click)="openEditForm(song)">Editar</button>
+        <button class="toggle-btn deactivate" (click)="deleteSong(song.id)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Crear / Editar -->
+  <div class="modal-overlay" *ngIf="showCreateForm || showEditForm">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>{{ showCreateForm ? 'Crear Canción' : 'Editar Canción' }}</h3>
+        <button class="close-btn" (click)="closeForms()">×</button>
+      </div>
+
+      <form [formGroup]="showCreateForm ? createForm : editForm" (ngSubmit)="showCreateForm ? createSong() : editSong()">
+        <!-- Título -->
+        <div class="form-group">
+          <label>Título</label>
+          <input formControlName="title" type="text" />
+        </div>
+
+        <!-- Pública o no -->
+        <div class="form-group">
+          <label>¿Canción pública?</label>
+          <input type="checkbox" formControlName="isPublicSong" />
+        </div>
+
+        <!-- Select artista (solo al crear) -->
+        <div class="form-group" *ngIf="showCreateForm">
+          <label>Artista</label>
+          <select formControlName="artistId">
+            <option value="" disabled selected>Selecciona un artista</option>
+            <option *ngFor="let artist of artists" [value]="artist.id">
+              {{ artist.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- YouTube -->
+        <div class="form-group">
+          <label>URL de YouTube</label>
+          <input formControlName="youtubeUrl" type="url" />
+        </div>
+
+        <!-- Imagen -->
+        <div class="image-upload-section">
+          <label>Portada:</label>
+          <div class="image-preview">
+            <img *ngIf="previewImageUrl; else placeholder" [src]="previewImageUrl" class="preview-image" />
+            <ng-template #placeholder>
+              <div class="upload-placeholder">
+                <span>📷</span>
+                <p>Sin portada</p>
+              </div>
+            </ng-template>
+            <div class="upload-overlay" *ngIf="uploading">
+              <div class="spinner"></div>
+              <p>Subiendo...</p>
+            </div>
+          </div>
+          <label class="upload-btn">
+            Subir imagen
+            <input type="file" accept="image/*" (change)="onImageSelected($event)" hidden />
+          </label>
+        </div>
+
+        <!-- Botones -->
+        <div class="form-actions">
+          <button class="cancel-btn" type="button" (click)="closeForms()">Cancelar</button>
+          <button class="submit-btn" type="submit" [disabled]="(showCreateForm ? createForm : editForm).invalid">
+            {{ showCreateForm ? 'Crear' : 'Actualizar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
