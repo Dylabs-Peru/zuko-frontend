@@ -1,4 +1,41 @@
 <div class="library-container">
+
+<!-- 🔔 Nuevo Lanzamiento (Carrusel) -->
+<div class="carousel-banner" *ngIf="latestSongsToday.length > 0">
+  <div class="carousel-slider">
+    <div
+      class="banner-content"
+      *ngFor="let song of latestSongsToday; let i = index"
+      [class.slide-in-left]="i === currentSongIndex && slideDirection === 'left'"
+      [class.slide-in-right]="i === currentSongIndex && slideDirection === 'right'"
+      [class.hidden]="i !== currentSongIndex"
+    >
+      <img class="banner-image" [src]="song.imageUrl" alt="Portada de la canción" />
+      <div class="banner-text">
+        <div class="new-label">🎉 NUEVO LANZAMIENTO</div>
+        <div class="new-release-title">{{ song.title }}</div>
+        <div class="artist-name">por {{ song.artistName }}</div>
+        <div class="subtitle">¡Escucha lo nuevo de {{ song.artistName }}!</div>
+        
+        <button class="play-btn" style="margin-left: 0.5rem" (click)="goToSong(song.id)">
+          Ver canción
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔁 Controles -->
+  <div class="carousel-controls" *ngIf="latestSongsToday.length > 1">
+    <button class="carousel-btn prev" (click)="prevBanner()">‹</button>
+    <button class="carousel-btn next" (click)="nextBanner()">›</button>
+  </div>
+
+  <!-- 🎬 YouTube player oculto -->
+  <div style="display: none">
+    <div id="yt-player-detail"></div>
+  </div>
+</div>
+
 <h1 class="shortcut-title">Accesos directos</h1>
 
 <div class="library-tabs">
@@ -26,4 +63,3 @@
             </div>
         </div>
     </div>
-</div>
