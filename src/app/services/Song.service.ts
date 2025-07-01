@@ -39,4 +39,8 @@ export class SongService {
     return this.api.get<SongResponse>(`/songs/${id}`);
   }
 
+  getAllSongs(): Observable<SongResponse[]> {
+  return this.api.get<SongResponse[]>('/songs/all');
+  }
+
 }

@@ -5,6 +5,7 @@ import { AdminGenresComponent } from './pages/admin-genres/admin-genres.componen
 import { AdminUsersComponent } from './pages/admin-users/admin-users.component';
 import { AdminRolesComponent } from './pages/admin-roles/admin-roles.component';
 import { AdminArtistsComponent } from './pages/admin-artists/admin-artists.component';
+import { AdminSongsComponent } from './pages/admin-songs/admin-songs.component';
 
 export const ADMIN_ROUTES: Routes = [
   { 
@@ -26,5 +27,9 @@ export const ADMIN_ROUTES: Routes = [
   { 
     path: 'roles', 
     component: AdminRolesComponent
+  },
+  {
+    path: 'songs',
+    component: AdminSongsComponent
   }
 ];
