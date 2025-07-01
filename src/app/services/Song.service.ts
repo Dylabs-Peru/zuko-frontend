@@ -40,7 +40,10 @@ export class SongService {
   }
 
   getAllSongs(): Observable<SongResponse[]> {
-  return this.api.get<SongResponse[]>('/songs/all');
+    return this.api.get<SongResponse[]>('/songs/all');
   }
 
+  getTop3PublicSongsToday(): Observable<SongResponse[]> {
+    return this.api.get<SongResponse[]>('/songs/top3-today');
+  }
 }
