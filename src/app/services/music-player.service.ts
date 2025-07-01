@@ -12,6 +12,7 @@ export class MusicPlayerService {
   private playerRefSignal = signal<any>(null);
   private currentTimeSignal = signal<number>(0);
   private durationSignal = signal<number>(0);
+  private sourcePlaylistIdSignal = signal<number | null>(null); // Nueva: ID de la playlist de origen
 
   // Interval para actualizar el tiempo
   private timeUpdateInterval: any;
@@ -32,6 +33,7 @@ export class MusicPlayerService {
   playerRef = this.playerRefSignal.asReadonly();
   currentTime = this.currentTimeSignal.asReadonly();
   duration = this.durationSignal.asReadonly();
+  sourcePlaylistId = this.sourcePlaylistIdSignal.asReadonly(); // Nueva: playlist de origen
 
   // Computed signals útiles
   hasCurrentSong = computed(() => this.currentSong() !== null);
@@ -53,6 +55,11 @@ export class MusicPlayerService {
     console.log('🎵 MusicPlayerService setCurrentSong:', song);
     this.currentSongSignal.set(song);
     this.currentSongSubject.next(song);
+    
+    // Si la canción es null, limpiar también la playlist de origen
+    if (!song) {
+      this.sourcePlaylistIdSignal.set(null);
+    }
   }
 
   setPlayingState(isPlaying: boolean): void {
@@ -150,5 +157,72 @@ export class MusicPlayerService {
   // Cleanup method para detener intervalos
   destroy(): void {
     this.stopTimeUpdates();
+  }
+
+  // Método para inicializar el reproductor global
+  initializeGlobalPlayer(elementId: string): void {
+    console.log('🚀 Inicializando reproductor global en elemento:', elementId);
+    
+    if (!(window as any).YT) {
+      console.error('❌ YouTube API no está disponible');
+      return;
+    }
+
+    try {
+      // Crear el reproductor global sin video inicial
+      const globalPlayer = new (window as any).YT.Player(elementId, {
+        height: '0',
+        width: '0',
+        events: {
+          onReady: () => {
+            console.log('✅ Reproductor global listo');
+            this.setPlayerRef(globalPlayer);
+          },
+          onError: (error: any) => {
+            console.error('❌ Error en reproductor global:', error);
+          },
+          onStateChange: (event: any) => {
+            console.log('🎵 Estado del reproductor global cambió:', event.data);
+            const YT = (window as any).YT;
+            
+            if (event.data === YT.PlayerState.PLAYING) {
+              this.setPlayingState(true);
+            } else if (event.data === YT.PlayerState.PAUSED) {
+              this.setPlayingState(false);
+            } else if (event.data === YT.PlayerState.ENDED) {
+              this.setPlayingState(false);
+              // Aquí podríamos agregar lógica para pasar a la siguiente canción
+              console.log('🔚 Canción terminada');
+            }
+          }
+        }
+      });
+    } catch (error) {
+      console.error('❌ Error creando reproductor global:', error);
+    }
+  }
+
+  // Método para cargar una nueva canción
+  loadSong(videoId: string, song: SongResponse, playlistId?: number): void {
+    const player = this.playerRef();
+    if (!player) {
+      console.error('❌ No hay reproductor disponible');
+      return;
+    }
+
+    console.log('🎵 Cargando canción:', song.title, 'Video ID:', videoId, 'Playlist ID:', playlistId);
+    this.setCurrentSong(song);
+    
+    // Establecer la playlist de origen
+    if (playlistId !== undefined) {
+      this.sourcePlaylistIdSignal.set(playlistId);
+    }
+    
+    if (player.loadVideoById) {
+      player.loadVideoById(videoId);
+      this.setPlayingState(true);
+    } else {
+      console.error('❌ Método loadVideoById no disponible');
+    }
   }
 }

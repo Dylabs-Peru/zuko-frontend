@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from './services/Auth.service';
 import { TokenMonitorService } from './services/TokenMonitor.service';
+import { MusicPlayerService } from './services/music-player.service';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { CommonModule } from '@angular/common';
@@ -21,7 +22,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private tokenMonitorService: TokenMonitorService
+    private tokenMonitorService: TokenMonitorService,
+    private musicPlayerService: MusicPlayerService
   ) {
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e: any) => {
       this.currentUrl = e.urlAfterRedirects;
@@ -39,6 +41,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.tokenMonitorService.startMonitoring();
       console.log('Monitor de token iniciado');
     }
+
+    // Inicializar el reproductor global
+    this.initializeGlobalPlayer();
   }
 
   ngOnDestroy(): void {
@@ -57,5 +62,17 @@ export class AppComponent implements OnInit, OnDestroy {
       this.currentUrl === '/login' ||
       this.currentUrl === '/register'
     );
+  }
+
+  private initializeGlobalPlayer(): void {
+    // Esperar a que YouTube API esté disponible
+    if (!(window as any).YT) {
+      console.log('⏳ Esperando YouTube API...');
+      setTimeout(() => this.initializeGlobalPlayer(), 100);
+      return;
+    }
+
+    console.log('🎯 Inicializando reproductor global');
+    this.musicPlayerService.initializeGlobalPlayer('global-yt-player');
   }
 }
