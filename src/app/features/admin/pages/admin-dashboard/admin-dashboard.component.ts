@@ -42,6 +42,14 @@ export class AdminDashboardComponent {
       icon: '🔐',
       route: '/admin/roles',
       color: '#C62828'
+    },
+    {
+      id: 'canciones',
+      title: 'Gestión de Canciones',
+      description: 'Crear, editar y eliminar canciones',
+      icon: '🎤',
+      route: '/admin/songs',
+      color: '#C62828'
     }
   ];
 
