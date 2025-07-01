@@ -5,7 +5,11 @@ import { AdminGenresComponent } from './pages/admin-genres/admin-genres.componen
 import { AdminUsersComponent } from './pages/admin-users/admin-users.component';
 import { AdminRolesComponent } from './pages/admin-roles/admin-roles.component';
 import { AdminArtistsComponent } from './pages/admin-artists/admin-artists.component';
+<<<<<<< HEAD
 import { AdminAlbumsComponent } from './pages/admin-albums/admin-albums.component';
+=======
+import { AdminSongsComponent } from './pages/admin-songs/admin-songs.component';
+>>>>>>> 49b2c291777bbae207ecf933d4acc01b70ae035b
 
 export const ADMIN_ROUTES: Routes = [
   { 
@@ -35,5 +39,9 @@ export const ADMIN_ROUTES: Routes = [
   { 
     path: 'roles', 
     component: AdminRolesComponent
+  },
+  {
+    path: 'songs',
+    component: AdminSongsComponent
   }
 ];
