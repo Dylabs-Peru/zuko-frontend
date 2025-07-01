@@ -44,5 +44,14 @@
 </div>
 
 <ng-template #noUser>
-  <div class="no-user">No se encontró información de usuario.<br>¿Estás logueado correctamente?</div>
+  <div class="no-user-container">
+    <div class="no-user-message" *ngIf="userInactive">
+      <h2>Usuario no disponible</h2>
+      <p>Este perfil de usuario no está disponible actualmente.</p>
+    </div>
+    <div class="no-user-message" *ngIf="userNotFound && !userInactive">
+      <h2>Usuario no encontrado</h2>
+      <p>No se encontró información de usuario.<br>¿Estás logueado correctamente?</p>
+    </div>
+  </div>
 </ng-template>
