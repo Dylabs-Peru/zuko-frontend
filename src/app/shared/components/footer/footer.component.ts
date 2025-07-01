@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MusicPlayerService } from '../../../services/music-player.service';
 import { SongResponse } from '../../../models/song.model';
@@ -12,8 +12,6 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent implements OnInit, OnDestroy {
-  currentSong: SongResponse | null = null;
-  isPlaying = false;
   currentTime = '00:00';
   durationText = '00:00';
   currentTimeSeconds = 0;
@@ -21,25 +19,26 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private musicPlayerService: MusicPlayerService) {}
+  constructor(private musicPlayerService: MusicPlayerService) {
+    // Effect para debug/logging cuando cambian los signals
+    effect(() => {
+      console.log('🎵 Footer - Signal currentSong:', this.musicPlayerService.currentSong());
+      console.log('🎵 Footer - Signal isPlaying:', this.musicPlayerService.isPlaying());
+    });
+  }
+
+  // Getters para acceder a los signals en el template
+  get currentSong() {
+    return this.musicPlayerService.currentSong();
+  }
+
+  get isPlaying() {
+    return this.musicPlayerService.isPlaying();
+  }
 
   ngOnInit(): void {
     console.log('🎵 Footer inicializado');
-    
-    // Suscribirse a los cambios del servicio
-    this.subscriptions.push(
-      this.musicPlayerService.currentSong$.subscribe((song: SongResponse | null) => {
-        console.log('🎵 Footer recibió canción:', song);
-        this.currentSong = song;
-      })
-    );
-
-    this.subscriptions.push(
-      this.musicPlayerService.isPlaying$.subscribe((isPlaying: boolean) => {
-        console.log('🎵 Footer recibió estado playing:', isPlaying);
-        this.isPlaying = isPlaying;
-      })
-    );
+    // Ya no necesitamos suscripciones para signals, pero mantenemos para compatibilidad si es necesario
   }
 
   ngOnDestroy(): void {
@@ -58,7 +57,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLInputElement;
     const seekTime = parseInt(target.value, 10);
     
-    const player = this.musicPlayerService.playerRef;
+    const player = this.musicPlayerService.playerRef();
     if (player && player.seekTo) {
       player.seekTo(seekTime);
     }

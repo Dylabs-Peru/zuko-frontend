@@ -1,6 +1,6 @@
 import { PlaylistSummaryResponse } from './../../../../models/playlist.model';
 import { ConfirmDeleteDialogComponent } from './../../components/borrar-playlist/confirm-delete-dialog.component';
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, computed, effect } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
@@ -38,8 +38,6 @@ export class PlaylistDisplayComponent implements OnInit {
   showAddToPlaylistModal = false;
   shortcutsPlaylists: PlaylistSummaryResponse[] = [];
   currentSong: SongResponse | null = null;
-  isPlaying = false;
-  playerRef: any;
   currentSongId: number | null = null;
   currentSongIndex: number | null = null;
   isShuffleMode = false; 
@@ -53,7 +51,37 @@ export class PlaylistDisplayComponent implements OnInit {
             private albumService: AlbumService,
             private shortcutService: ShortcutsService,
             private musicPlayerService: MusicPlayerService
-  ) {}
+  ) {
+    // Effect para sincronizar el estado local con el servicio global
+    effect(() => {
+      const globalIsPlaying = this.musicPlayerService.isPlaying();
+      const globalSong = this.musicPlayerService.currentSong();
+      
+      // Solo actualizar si hay cambios para evitar loops
+      if (globalSong && globalSong.id === this.currentSongId) {
+        // Si es la misma canción, sincronizar solo el estado de reproducción
+        if (this.isPlaying !== globalIsPlaying) {
+          console.log('🔄 Sincronizando estado de reproducción:', globalIsPlaying);
+          this.isPlaying = globalIsPlaying;
+        }
+      }
+    });
+  }
+
+  // Getter para acceder al estado de reproducción desde el servicio
+  get isPlaying(): boolean {
+    return this.musicPlayerService.isPlaying();
+  }
+
+  // Setter para mantener compatibilidad local
+  set isPlaying(value: boolean) {
+    // No hacer nada aquí, el estado se maneja a través del servicio
+  }
+
+  // Getter para acceder al playerRef desde el servicio
+  get playerRef(): any {
+    return this.musicPlayerService.playerRef();
+  }
    
    ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -217,18 +245,17 @@ export class PlaylistDisplayComponent implements OnInit {
     const songIndex = this.playlist!.songs.findIndex(s => s.id === song.id);
     
     // Si es la misma canción, solo pause/play
-    if (this.currentSongId === song.id && this.isPlaying) {
+    if (this.currentSongId === song.id && this.musicPlayerService.isPlaying()) {
       this.playerRef.pauseVideo();
-      this.isPlaying = false;
-    } else if (this.currentSongId === song.id && !this.isPlaying) {
+      this.musicPlayerService.setPlayingState(false);
+    } else if (this.currentSongId === song.id && !this.musicPlayerService.isPlaying()) {
       this.playerRef.playVideo();
-      this.isPlaying = true;
+      this.musicPlayerService.setPlayingState(true);
     } else {
       // Nueva canción
       this.currentSongIndex = songIndex;
       this.currentSongId = song.id;
-      this.isPlaying = true; // Actualiza inmediatamente para sincronizar iconos
-      
+ 
       // Actualizar el servicio global
       console.log('🎵 Actualizando servicio global con canción:', song);
       this.musicPlayerService.setCurrentSong(song);
@@ -253,7 +280,7 @@ export class PlaylistDisplayComponent implements OnInit {
     if (this.playerRef && this.playerRef.loadVideoById) {
       console.log('🔄 Reutilizando player existente');
       this.playerRef.loadVideoById(videoId);
-      this.isPlaying = true; // Asegura que el estado se actualice inmediatamente
+      this.musicPlayerService.setPlayingState(true); // Asegura que el estado se actualice inmediatamente
       return;
     }
     setTimeout(() => {
@@ -262,18 +289,17 @@ export class PlaylistDisplayComponent implements OnInit {
       return;
     }
       try {
-      this.playerRef = new (window as any).YT.Player('yt-player-playlist', {
+      const newPlayer = new (window as any).YT.Player('yt-player-playlist', {
         videoId,
         height: '0',
         width: '0',
         events: {
           onReady: () => {
             console.log('✅ Player listo, intentando reproducir...');
-            this.playerRef.playVideo();
-            this.isPlaying = true;
+            newPlayer.playVideo();
             
             // Actualizar el servicio global
-            this.musicPlayerService.setPlayerRef(this.playerRef);
+            this.musicPlayerService.setPlayerRef(newPlayer);
             this.musicPlayerService.setPlayingState(true);
           },
           onError: (error: any) => {
@@ -291,7 +317,6 @@ export class PlaylistDisplayComponent implements OnInit {
                   this.playSong(nextSong);
                 } else {
                   // Última canción en shuffle
-                  this.isPlaying = false;
                   this.currentSongId = null;
                   this.currentSongIndex = null;
                   
@@ -305,7 +330,6 @@ export class PlaylistDisplayComponent implements OnInit {
                   const nextSong = this.playlist!.songs[this.currentSongIndex + 1];
                   this.playSong(nextSong);
                 } else {
-                  this.isPlaying = false;
                   this.currentSongId = null;
                   this.currentSongIndex = null;
                   
@@ -338,12 +362,12 @@ export class PlaylistDisplayComponent implements OnInit {
       return;
     }
     
-    if (this.isPlaying) {
+    if (this.musicPlayerService.isPlaying()) {
       this.playerRef.pauseVideo();
-      this.isPlaying = false;
+      this.musicPlayerService.setPlayingState(false);
     } else {
       this.playerRef.playVideo();
-      this.isPlaying = true;
+      this.musicPlayerService.setPlayingState(true);
     }
   }
 
@@ -371,7 +395,9 @@ export class PlaylistDisplayComponent implements OnInit {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
-}  
+}
+
+
 
 }
 
