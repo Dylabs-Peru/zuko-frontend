@@ -50,7 +50,7 @@ export class HomePageComponent implements OnInit{
 
 
   loadLatestSongsToday(): void {
-    this.songService.getTop3PublicSongsToday().subscribe({
+    this.songService.getTop3PublicSongs().subscribe({
       next: (songs) => {
         this.latestSongsToday = songs;
         if (songs.length > 0) {

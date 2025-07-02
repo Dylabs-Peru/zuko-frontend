@@ -43,7 +43,7 @@ export class SongService {
     return this.api.get<SongResponse[]>('/songs/all');
   }
 
-  getTop3PublicSongsToday(): Observable<SongResponse[]> {
-    return this.api.get<SongResponse[]>('/songs/top3-today');
-  }
+  getTop3PublicSongs(): Observable<SongResponse[]> {
+  return this.api.get<SongResponse[]>('/songs/top3-latest');
+  }
 }
