@@ -35,7 +35,12 @@
 
         <div *ngIf="song.youtubeUrl" class="player-control">
           <button (click)="playSong(song)" class="play-button" [title]="isSongPlaying(song.id) ? 'Pausar' : 'Reproducir'">
-            {{ isSongPlaying(song.id) ? '⏸️' : '▶️' }}
+            <span 
+              *ngIf="isSongPlaying(song.id)" 
+              class="icon-pause-playlist"></span>
+            <span 
+              *ngIf="!isSongPlaying(song.id)" 
+              class="icon-play-playlist"></span>
           </button>
         </div>
 
