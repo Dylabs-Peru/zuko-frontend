@@ -154,4 +154,10 @@ goToSong(songId: number): void {
      this.router.navigate(['/playlist', playlistId]);
   }
 
+  defaultCoverUrl = 'https://res.cloudinary.com/dgrrhrvbq/image/upload/v1751432187/Group_25_rnsf9v.png';
+
+  getSafeImageUrl(imageUrl?: string | null): string {
+    return imageUrl || this.defaultCoverUrl;
+  }
+
 }

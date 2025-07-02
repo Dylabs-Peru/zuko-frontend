@@ -120,6 +120,6 @@ subscribeToRouteChanges(): void {
   }
 
   get safeImageUrl(): string {
-    return this.song?.imageUrl || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg';
+    return this.song?.imageUrl || 'https://res.cloudinary.com/dgrrhrvbq/image/upload/v1751432187/Group_25_rnsf9v.png';
   }
 }

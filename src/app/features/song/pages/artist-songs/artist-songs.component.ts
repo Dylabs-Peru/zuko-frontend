@@ -21,6 +21,7 @@ export class ArtistSongsComponent implements OnInit {
   openMenuIndex: number | null = null;
   showDeleteConfirm = false;
   songToDelete: SongResponse | null = null;
+  successMessage: string | null = null;
 
   playerRefs: { [key: number]: any } = {};
   isPlaying: { [key: number]: boolean } = {};
@@ -37,6 +38,13 @@ export class ArtistSongsComponent implements OnInit {
   ngOnInit(): void {
     this.loadSongs();
   }
+
+  showSuccess(message: string): void {
+  this.successMessage = message;
+  setTimeout(() => {
+    this.successMessage = null;
+  }, 3000); // Oculta después de 3 segundos
+}
 
   loadSongs(): void {
     this.playerRefs = {}; // Reinicia los reproductores
@@ -110,14 +118,16 @@ export class ArtistSongsComponent implements OnInit {
       : this.songService.createSong(songPayload);
 
     request$.subscribe({
-      next: () => {
-        this.loadSongs();
-        this.closeForm();
-      },
-      error: (err) => {
-        console.error('Error al guardar la canción', err);
-        this.formError = err.error?.message || 'Error al procesar la canción.';
-      }
+    next: () => {
+      this.loadSongs();
+      this.closeForm();
+      const msg = this.editingSong.id ? 'Canción editada correctamente' : 'Canción creada correctamente';
+      this.showSuccess(msg);
+    },
+    error: (err) => {
+      console.error('Error al guardar la canción', err);
+      this.formError = err.error?.message || 'Error al procesar la canción.';
+  }
     });
   }
 
@@ -142,6 +152,7 @@ export class ArtistSongsComponent implements OnInit {
       next: () => {
         this.loadSongs();
         this.cancelDelete();
+        this.showSuccess('Canción eliminada correctamente');
       },
       error: (err) => {
         console.error('Error al eliminar canción', err);
@@ -253,5 +264,10 @@ onImageSelected(event: Event): void {
       this.uploading = false;
       alert('Error al subir la imagen');
     });
+}
+
+defaultCoverUrl = 'https://res.cloudinary.com/dgrrhrvbq/image/upload/v1751432187/Group_25_rnsf9v.png';
+getSafeImageUrl(imageUrl?: string | null): string {
+  return imageUrl || this.defaultCoverUrl;
 }
 }
