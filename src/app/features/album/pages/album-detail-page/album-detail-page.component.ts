@@ -1,11 +1,20 @@
 import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PlaylistOptionsPopupComponent } from '../../../playlist/components/playlist-options-popup/playlist-options-popup.component';
+import { AlbumOptionsPopupComponent } from '../../components/album-options-popup/album-options-popup.component';
 import { EditAlbumModalComponent } from '../../components/edit-album-modal/edit-album-modal.component';
 import { DeleteAlbumModalComponent } from '../../components/delete-album-modal/delete-album-modal.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlbumService } from '../../../../services/Album.service';
 import { MusicPlayerService } from '../../../../services/music-player.service';
+import { ShortcutsService } from '../../../../services/shortcuts.service';
+import { firstValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+// Interfaz para la respuesta de accesos directos
+interface ShortcutsResponse {
+  Playlists: any[];
+  Albums: { id: number }[];
+}
 
 // Interfaz para el tipo de canción en el álbum
 interface Song {
@@ -23,7 +32,12 @@ interface Song {
 @Component({
   selector: 'app-album-detail-page',
   standalone: true,
-  imports: [CommonModule, PlaylistOptionsPopupComponent, EditAlbumModalComponent, DeleteAlbumModalComponent],
+  imports: [
+    CommonModule, 
+    AlbumOptionsPopupComponent, 
+    EditAlbumModalComponent, 
+    DeleteAlbumModalComponent
+  ],
   templateUrl: './album-detail-page.component.html',
   styleUrls: ['./album-detail-page.component.css']
 })
@@ -52,13 +66,76 @@ export class AlbumDetailPageComponent implements OnInit {
   onAlbumDeleted() {
     this.router.navigate(['/artist/profile-artist']);
   }
-  onAddAlbumToShortcut() {
-    alert('Añadir a acceso directo (demo)');
-    this.showMenu = false;
+  isInShortcuts = false;
+  loadingShortcuts = false;
+
+  async onAddAlbumToShortcut() {
+    if (!this.album?.id || this.loadingShortcuts) return;
+    
+    this.loadingShortcuts = true;
+    try {
+      // Primero verificamos si ya está en accesos directos
+      const isAlreadyInShortcuts = await firstValueFrom(
+        this.shortcutsService.getShortcutsByUser().pipe(
+          map((response: ShortcutsResponse) => {
+            return response.Albums?.some(album => album.id === this.album?.id) || false;
+          })
+        )
+      );
+
+      // Si ya está en accesos directos, solo actualizamos el estado
+      if (isAlreadyInShortcuts) {
+        this.isInShortcuts = true;
+        this.showMenu = false;
+        return;
+      }
+
+      // Si no está en accesos directos, intentamos agregarlo
+      try {
+        await firstValueFrom(this.shortcutsService.addAlbumToShortcuts({ albumId: this.album.id }));
+        this.isInShortcuts = true;
+        this.showMenu = false;
+      } catch (addError) {
+        // Verificamos si el error es porque ya está en accesos directos
+        const isInShortcuts = await firstValueFrom(
+          this.shortcutsService.getShortcutsByUser().pipe(
+            map((response: ShortcutsResponse) => {
+              return response.Albums?.some(album => album.id === this.album?.id) || false;
+            })
+          )
+        );
+
+        if (isInShortcuts) {
+          // Si está en accesos directos a pesar del error, lo consideramos éxito
+          this.isInShortcuts = true;
+          this.showMenu = false;
+        } else {
+          console.error('Error al agregar a accesos directos:', addError);
+          alert('No se pudo agregar el álbum a accesos directos');
+        }
+      }
+    } catch (error) {
+      console.error('Error al verificar accesos directos:', error);
+      alert('No se pudo verificar el estado de accesos directos');
+    } finally {
+      this.loadingShortcuts = false;
+    }
   }
-  onRemoveAlbumFromShortcut() {
-    alert('Eliminar de acceso directo (demo)');
-    this.showMenu = false;
+
+  async onRemoveAlbumFromShortcut() {
+    if (!this.album?.id || this.loadingShortcuts) return;
+    
+    this.loadingShortcuts = true;
+    try {
+      await firstValueFrom(this.shortcutsService.removeAlbumFromShortcuts(this.album.id));
+      this.isInShortcuts = false;
+      this.showMenu = false;
+    } catch (error) {
+      console.error('Error al quitar de accesos directos:', error);
+      alert('No se pudo quitar el álbum de accesos directos');
+    } finally {
+      this.loadingShortcuts = false;
+    }
   }
   showMenu = false;
   album: any = null;
@@ -86,7 +163,8 @@ export class AlbumDetailPageComponent implements OnInit {
     private route: ActivatedRoute, 
     private albumService: AlbumService, 
     private router: Router,
-    private musicPlayerService: MusicPlayerService
+    private musicPlayerService: MusicPlayerService,
+    private shortcutsService: ShortcutsService
   ) {
     // Sincronizar el estado local con el servicio global
     effect(() => {
@@ -98,6 +176,7 @@ export class AlbumDetailPageComponent implements OnInit {
 
   ngOnInit() {
     this.fetchAlbum();
+    this.checkIfInShortcuts();
   }
 
   fetchAlbum() {
@@ -242,8 +321,23 @@ export class AlbumDetailPageComponent implements OnInit {
     return match ? match[1] : '';
   }
 
-  public goToArtistProfile() {
+  public  goToArtistProfile() {
     this.router.navigate(['/artist/profile-artist']);
   }
-}
 
+  private checkIfInShortcuts() {
+    this.route.paramMap.subscribe(params => {
+      const albumId = params.get('id');
+      if (!albumId) return;
+      
+      this.shortcutsService.getShortcutsByUser().subscribe({
+        next: (response) => {
+          this.isInShortcuts = response.Albums?.some(album => album.id === +albumId) || false;
+        },
+        error: (error) => {
+          console.error('Error al verificar accesos directos:', error);
+        }
+      });
+    });
+  }
+}

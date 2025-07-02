@@ -2,7 +2,7 @@ import { ShortcutsService } from './../../services/shortcuts.service';
 import { Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ShortcutsResponse } from '../../models/shortcuts.model';
+import { ShortcutsResponse, AlbumSummaryResponse } from '../../models/shortcuts.model';
 import { PlaylistSummaryResponse } from './../../models/playlist.model';
 import { AlbumResponse } from '../../models/album.model';
 import { SongService } from '../../services/Song.service';
@@ -15,13 +15,14 @@ import { SongResponse } from '../../models/song.model';
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css'
 })
-export class HomePageComponent implements OnInit{
+export class HomePageComponent implements OnInit {
   shortcuts: ShortcutsResponse[] = [];
   playlists: PlaylistSummaryResponse[] = [];
-  albums : AlbumResponse[] = []; // actualizar  
+  albums: AlbumSummaryResponse[] = [];
   userId: number | null = null;
   shortcutsId: number | null = null;
   error = '';
+  activeTab: 'playlists' | 'albums' = 'playlists'; // Pestaña activa por defecto
   latestSongsToday: SongResponse[] = [];
   currentSongIndex = 0;
   playerRef: any = null;
@@ -150,8 +151,18 @@ goToSong(songId: number): void {
     });
   }
 
+  // Navegación
   goToPlaylist(playlistId: number) {
-     this.router.navigate(['/playlist', playlistId]);
+    this.router.navigate(['/playlist', playlistId]);
+  }
+
+  goToAlbum(albumId: number) {
+    this.router.navigate(['/album', albumId]);
+  }
+
+  // Cambiar entre pestañas
+  setActiveTab(tab: 'playlists' | 'albums') {
+    this.activeTab = tab;
   }
 
   defaultCoverUrl = 'https://res.cloudinary.com/dgrrhrvbq/image/upload/v1751432187/Group_25_rnsf9v.png';

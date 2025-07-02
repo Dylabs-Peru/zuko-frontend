@@ -15,23 +15,25 @@
     <button (click)="shufflePlay()" class="shuffle-btn" title="Aleatorio">
       <span class="icon-shuffle"></span>
     </button>
-    <button class="options-btn" title="Más opciones" (click)="showMenu = true">
-      <span class="icon-options"><span></span></span>
-    </button>
-    <app-playlist-options-popup
-      [visible]="showMenu"
-      [canEdit]="true"
-      [isInShortcuts]="false"
-      [editText]="'Editar Álbum'"
-      [deleteText]="'Eliminar Álbum'"
-      [addShortcutText]="'Añadir a acceso directo'"
-      [removeShortcutText]="'Eliminar de acceso directo'"
-      (edit)="onEditAlbum()"
-      (delete)="onDeleteAlbum()"
-      (addShortcut)="onAddAlbumToShortcut()"
-      (removeShortcut)="onRemoveAlbumFromShortcut()"
-      (close)="showMenu = false"
-    ></app-playlist-options-popup>
+    <div class="options-container">
+      <button class="options-btn" title="Más opciones" (click)="showMenu = !showMenu">
+        <span class="icon-options"><span></span></span>
+      </button>
+      <app-album-options-popup
+        [visible]="showMenu"
+        [canEdit]="true"
+        [isInShortcuts]="isInShortcuts"
+        [editText]="'Editar Álbum'"
+        [deleteText]="'Eliminar Álbum'"
+        [addShortcutText]="'Añadir a acceso directo'"
+        [removeShortcutText]="'Eliminar de acceso directo'"
+        (edit)="onEditAlbum()"
+        (delete)="onDeleteAlbum()"
+        (addShortcut)="onAddAlbumToShortcut()"
+        (removeShortcut)="onRemoveAlbumFromShortcut()"
+        (close)="showMenu = false"
+      ></app-album-options-popup>
+    </div>
   </div>
 
   <table>

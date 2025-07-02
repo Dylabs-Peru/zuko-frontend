@@ -32,7 +32,6 @@
           <div *ngIf="isOwnProfile && openMenuAlbumId === album.id" class="dropdown-menu">
             <button (click)="editAlbum(album)">Editar Álbum</button>
             <button (click)="confirmDeleteAlbum(album)">Eliminar Álbum</button>
-            <button (click)="addAlbumToShortcut(album)">Añadir a acceso directo</button>
           </div>
           <button class="play-button" [routerLink]="['/album', album.id]" title="Ver álbum"></button>
         </div>

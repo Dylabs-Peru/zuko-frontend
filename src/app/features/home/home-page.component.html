@@ -39,10 +39,24 @@
 <h1 class="shortcut-title">Accesos directos</h1>
 
 <div class="library-tabs">
-    <span class="tab-active">Playlists</span>
- </div>
+    <span 
+        [class.tab-active]="activeTab === 'playlists'"
+        (click)="setActiveTab('playlists')"
+        class="tab-link"
+    >
+        Playlists
+    </span>
+    <span 
+        [class.tab-active]="activeTab === 'albums'"
+        (click)="setActiveTab('albums')"
+        class="tab-link"
+    >
+        Álbumes
+    </span>
+</div>
 
- <div class="playlists-grid">
+<!-- Sección de Playlists -->
+<div class="playlists-grid" *ngIf="activeTab === 'playlists'">
     <div 
         class="playlist-card"
         *ngFor="let playlist of playlists"    
@@ -53,13 +67,39 @@
         <div class="playlist-cover"
         [ngStyle]="{ 'background-image': playlist.urlImage ? 'url(' + playlist.urlImage + ')' : '' }" 
         ></div>
-            <div class="playlist-info">
+        <div class="playlist-info">
             <span class="playlist-name">{{ playlist.name }}</span>
             <span class="playlist-owner">{{playlist.owner}}</span>
             <button class="playlist-play-btn" 
-            aria-label="Reproducir playlist"
-            (click)="goToPlaylist(playlist.playlistId); $event.stopPropagation()">
+                aria-label="Reproducir playlist"
+                (click)="goToPlaylist(playlist.playlistId); $event.stopPropagation()">
             </button>
-            </div>
         </div>
     </div>
+</div>
+
+<!-- Sección de Álbumes -->
+<div class="albums-grid" *ngIf="activeTab === 'albums'">
+    <div 
+        class="album-card"
+        *ngFor="let album of albums"
+        tabindex="0"
+        (click)="goToAlbum(album.id)"
+        [attr.aria-label]="'Abrir álbum ' + album.title"
+    >
+        <div 
+            class="album-cover"
+            [ngStyle]="{ 'background-image': album.cover ? 'url(' + album.cover + ')' : '' }"
+        >
+            <button class="album-play-btn" (click)="goToAlbum(album.id); $event.stopPropagation()" aria-label="Reproducir álbum">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+        <div class="album-info">
+            <h3 class="album-title">{{ album.title }}</h3>
+            <p class="album-artist">{{ album.artistName }}</p>
+        </div>
+    </div>
+</div>

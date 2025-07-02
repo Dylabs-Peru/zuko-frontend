@@ -90,6 +90,7 @@ body {
     gap: 50px;
     padding: 20px;
     background: none;
+    position: relative;
 }
 
 .controls button {
