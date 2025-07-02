@@ -34,11 +34,9 @@
       </div>
 
         <div *ngIf="song.youtubeUrl" class="player-control">
-          <button (click)="togglePlay(i, song.youtubeUrl)" class="play-button" [title]="isPlaying[i] ? 'Pausar' : 'Reproducir'">
-            {{ isPlaying[i] ? '⏸️' : '▶️' }}
+          <button (click)="playSong(song)" class="play-button" [title]="isSongPlaying(song.id) ? 'Pausar' : 'Reproducir'">
+            {{ isSongPlaying(song.id) ? '⏸️' : '▶️' }}
           </button>
-          
-          <div id="yt-player-{{i}}" style="width: 0; height: 0; overflow: hidden;"></div>
         </div>
 
       <!-- Acciones solo si es su perfil -->

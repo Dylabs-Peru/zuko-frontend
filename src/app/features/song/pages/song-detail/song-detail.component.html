@@ -10,11 +10,8 @@
 
       <div class="player-control" *ngIf="song.youtubeUrl">
         <button (click)="togglePlay()" class="play-button">
-          {{ isPlaying ? '⏸️ Pausar' : '▶️ Reproducir' }}
+          {{ isSongPlaying ? '⏸️ Pausar' : '▶️ Reproducir' }}
         </button>
-
-        <!-- 👇 El id debe coincidir con el usado en el .ts: 'yt-player-detail' -->
-        <div id="yt-player-detail" style="width: 0; height: 0; overflow: hidden;"></div>
       </div>
 
       <button (click)="openAddToPlaylist(song)" class="add-to-playlist-btn">Agregar a playlist</button>
