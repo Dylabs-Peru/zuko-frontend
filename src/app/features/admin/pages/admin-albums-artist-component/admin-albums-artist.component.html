@@ -72,7 +72,7 @@
 <div class="modal-overlay" *ngIf="showCreateAlbumModal" (click)="onCloseCreateAlbumModal()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Crear Nuevo Álbum</h3>
+      <h3>{{ isEditing ? ('Editar Álbum: ' + albumToEdit?.title) : 'Crear Nuevo Álbum' }}</h3>
       <button class="close-btn" (click)="onCloseCreateAlbumModal()">×</button>
     </div>
     <div class="modal-tabs">
@@ -180,5 +180,60 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Modal de confirmación para eliminar álbum -->
+<div class="modal-overlay" *ngIf="showDeleteConfirmModal" (click)="onCancelDelete()">
+  <div class="modal-card delete-confirm-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Eliminar Álbum</h3>
+      <button class="close-btn" (click)="onCancelDelete()" [disabled]="isDeleting">×</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="delete-warning">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <p>¿Estás seguro de que deseas eliminar el álbum <strong>"{{ albumToDelete?.title }}"</strong>?</p>
+        <p class="warning-text">Esta acción no se puede deshacer.</p>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button 
+        class="cancel-button" 
+        type="button" 
+        (click)="onCancelDelete()"
+        [disabled]="isDeleting"
+      >
+        Cancelar
+      </button>
+      <button 
+        class="delete-button" 
+        type="button" 
+        (click)="onConfirmDelete()"
+        [disabled]="isDeleting"
+      >
+        <ng-container *ngIf="!isDeleting; else deletingTemplate">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3,6 5,6 21,6"></polyline>
+            <path d="m19,6-1,14a2,2 0 0,1-2,2H8a2,2 0 0,1-2-2L5,6"></path>
+            <path d="m10,11 0,6"></path>
+            <path d="m14,11 0,6"></path>
+          </svg>
+          Eliminar
+        </ng-container>
+        <ng-template #deletingTemplate>
+          <span class="loading-text">
+            <span class="spinner"></span>
+            Eliminando...
+          </span>
+        </ng-template>
+      </button>
+    </div>
   </div>
 </div>

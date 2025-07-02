@@ -896,3 +896,127 @@ form[ngIf="albumTab==='songs'"] .cancel-button {
   outline: none;
   box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.2);
 }
+
+/* Estilos para el modal de confirmación de eliminación */
+.delete-confirm-modal {
+  max-width: 500px;
+  width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background: white;
+  overflow: hidden;
+}
+
+.delete-confirm-modal .modal-header {
+  background-color: #B71C1C;
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-confirm-modal .modal-header h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.delete-confirm-modal .modal-body {
+  padding: 2rem;
+  text-align: center;
+}
+
+.delete-warning svg {
+  color: #f39c12;
+  margin-bottom: 1.5rem;
+}
+
+.delete-warning p {
+  margin: 0.5rem 0;
+  color: #333;
+  line-height: 1.5;
+}
+
+.warning-text {
+  color: #d32f2f !important;
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-top: 1rem !important;
+}
+
+.delete-confirm-modal .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.delete-confirm-modal .cancel-button,
+.delete-confirm-modal .delete-button {
+  padding: 0.7rem 1.8rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.delete-confirm-modal .cancel-button {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.delete-confirm-modal .cancel-button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirm-modal .delete-button {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.delete-confirm-modal .delete-button:not(:disabled):hover {
+  background-color: #b71c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+.delete-confirm-modal .delete-button:disabled,
+.delete-confirm-modal .cancel-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.loading-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading-text .spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
