@@ -27,8 +27,8 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
   genreName: string = '';
   tab: 'info' | 'songs' = 'info';
 
-  // Canciones del álbum (mock por ahora)
-  songs: { id: number; name: string; artist: string; releaseDate: string; imageUrl?: string }[] = [];
+  // Canciones del álbum
+  songs: { id: number; name: string; artist: string; releaseDate: string; imageUrl?: string; isPublicSong?: boolean }[] = [];
   selectedSongIds: number[] = [];
 
 
@@ -46,15 +46,22 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
   loadSongs() {
     this.songService.getMySongs().subscribe({
       next: (songs: SongResponse[]) => {
-        this.songs = songs.map(song => ({
+        // Filtrar solo las canciones públicas
+        const publicSongs = songs.filter(song => song.isPublicSong === true);
+        
+        this.songs = publicSongs.map(song => ({
           id: song.id,
           name: song.title,
           artist: song.artistName,
           releaseDate: song.releaseDate || '',
-          imageUrl: song.imageUrl || ''
+          imageUrl: song.imageUrl || '',
+          isPublicSong: true // Asegurarse de que todas las canciones mostradas sean públicas
         }));
+        
+        console.log('Canciones públicas cargadas para selección:', this.songs);
       },
       error: (err) => {
+        console.error('Error al cargar las canciones:', err);
         this.songs = [];
       }
     });
@@ -129,27 +136,41 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
       if (auth) {
         const authObj = JSON.parse(auth);
         artistId = authObj?.user?.artistId;
+        if (!artistId) {
+          throw new Error('No se pudo obtener el ID del artista. Por favor, inicia sesión nuevamente.');
+        }
+      } else {
+        throw new Error('No se encontró la información de autenticación. Por favor, inicia sesión nuevamente.');
       }
-      // Preparar canciones (solo { title })
+      
+      // Obtener las canciones seleccionadas con toda su información
       const selectedSongs = this.songs.filter(song => this.selectedSongIds.includes(song.id));
+      
+      // Verificar que todas las canciones sean públicas
+      const nonPublicSongs = selectedSongs.filter(song => !song.isPublicSong);
+      if (nonPublicSongs.length > 0) {
+        throw new Error('Algunas canciones seleccionadas no son públicas. Por favor, verifica las canciones e inténtalo de nuevo.');
+      }
+      
+      // Preparar el array de canciones con el formato esperado por el backend
       const songs = selectedSongs.map(song => ({
-        title: song.name
+        title: song.name,
+        isPublicSong: true
       }));
+      
       // Portada (base64 o vacío)
       const cover = this.coverUrl || '';
       // Año actual
       const releaseYear = new Date().getFullYear();
-      // Construir AlbumRequest
-      const albumRequest: any = {
+      // Construir AlbumRequest con el formato esperado
+      const albumRequest = {
         title: this.title,
         releaseYear,
         cover,
-        genreId: this.genreId,
-        songs
+        genreId: Number(this.genreId), // Asegurar que sea un número
+        songs,
+        artistId: Number(artistId) // Incluir el artistId
       };
-      if (artistId) {
-        albumRequest.artistId = artistId;
-      }
       // Enviar al backend
       const response = await fetch('http://localhost:8080/api/v1/albums', {
         method: 'POST',
