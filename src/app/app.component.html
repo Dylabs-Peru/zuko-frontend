@@ -1,2 +1,6 @@
 <app-navbar *ngIf="!isAuthRoute"></app-navbar>
 <router-outlet />
+<app-footer *ngIf="!isAuthRoute"></app-footer>
+
+<!-- Reproductor global de YouTube (oculto) -->
+<div id="global-yt-player" style="display: none;"></div>

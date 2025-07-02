@@ -1,6 +1,6 @@
 import { PlaylistSummaryResponse } from './../../../../models/playlist.model';
 import { ConfirmDeleteDialogComponent } from './../../components/borrar-playlist/confirm-delete-dialog.component';
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, computed, effect } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
@@ -14,6 +14,7 @@ import { AlbumResponse } from '../../../../models/album.model';
 import { AddSongToPlaylistModalComponent } from '../../components/agregar-cancion-playlist/add-song-to-playlist.component';
 import { SongResponse } from '../../../../models/song.model';
 import { ShortcutsService } from '../../../../services/shortcuts.service';
+import { MusicPlayerService } from '../../../../services/music-player.service';
 
 @Component({
   selector: 'app-playlist-display',
@@ -37,8 +38,6 @@ export class PlaylistDisplayComponent implements OnInit {
   showAddToPlaylistModal = false;
   shortcutsPlaylists: PlaylistSummaryResponse[] = [];
   currentSong: SongResponse | null = null;
-  isPlaying = false;
-  playerRef: any;
   currentSongId: number | null = null;
   currentSongIndex: number | null = null;
   isShuffleMode = false; 
@@ -50,8 +49,58 @@ export class PlaylistDisplayComponent implements OnInit {
             private route: ActivatedRoute,
             private router: Router,
             private albumService: AlbumService,
-            private shortcutService: ShortcutsService
-  ) {}
+            private shortcutService: ShortcutsService,
+            private musicPlayerService: MusicPlayerService
+  ) {
+    // Effect para sincronizar el estado local con el servicio global
+    effect(() => {
+      const globalSong = this.musicPlayerService.currentSong();
+      
+      // Sincronizar currentSongId con la canción global
+      if (globalSong) {
+        this.currentSongId = globalSong.id;
+        // Encontrar el índice de la canción en la playlist actual
+        if (this.playlist && this.playlist.songs) {
+          const songIndex = this.playlist.songs.findIndex(s => s.id === globalSong.id);
+          this.currentSongIndex = songIndex >= 0 ? songIndex : null;
+        }
+      } else {
+        this.currentSongId = null;
+        this.currentSongIndex = null;
+      }
+    });
+  }
+
+  // Getter para acceder al estado de reproducción desde el servicio
+  get isPlaying(): boolean {
+    return this.musicPlayerService.isPlaying();
+  }
+
+  // Setter para mantener compatibilidad local
+  set isPlaying(value: boolean) {
+    // No hacer nada aquí, el estado se maneja a través del servicio
+  }
+
+  // Getter para acceder al playerRef desde el servicio
+  get playerRef(): any {
+    return this.musicPlayerService.playerRef();
+  }
+
+  // Computed para saber si la canción actual pertenece a esta playlist
+  get isCurrentSongFromThisPlaylist(): boolean {
+    const globalSong = this.musicPlayerService.currentSong();
+    if (!globalSong || !this.playlist || !this.playlist.songs) return false;
+    return this.playlist.songs.some(song => song.id === globalSong.id);
+  }
+
+  // Computed para saber si hay una canción reproduciéndose Y es de esta playlist de origen
+  get shouldShowPauseInPlayButton(): boolean {
+    const isPlaying = this.musicPlayerService.isPlaying();
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    const currentPlaylistId = this.playlist?.playlistId;
+    
+    return isPlaying && sourcePlaylistId === currentPlaylistId;
+  }
    
    ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -210,29 +259,26 @@ export class PlaylistDisplayComponent implements OnInit {
     const videoId = this.extractVideoId(song.youtubeUrl);
     console.log('🎬 Video ID extraído:', videoId);
     console.log('🔗 URL original:', song.youtubeUrl);
-    console.log('🎯 YouTube API disponible:', !!(window as any).YT);
     
     const songIndex = this.playlist!.songs.findIndex(s => s.id === song.id);
     
     // Si es la misma canción, solo pause/play
-    if (this.currentSongId === song.id && this.isPlaying) {
-      this.playerRef.pauseVideo();
-      this.isPlaying = false;
-    } else if (this.currentSongId === song.id && !this.isPlaying) {
-      this.playerRef.playVideo();
-      this.isPlaying = true;
+    if (this.currentSongId === song.id && this.musicPlayerService.isPlaying()) {
+      this.musicPlayerService.togglePlay();
+    } else if (this.currentSongId === song.id && !this.musicPlayerService.isPlaying()) {
+      this.musicPlayerService.togglePlay();
     } else {
       // Nueva canción
       this.currentSongIndex = songIndex;
       this.currentSongId = song.id;
-      this.isPlaying = true; // Actualiza inmediatamente para sincronizar iconos
       
       // Si está en modo shuffle, actualiza currentPlaybackIndex
       if (this.isShuffleMode) {
         this.currentPlaybackIndex = this.playbackOrder.findIndex(index => index === songIndex);
       }
       
-      this.initYouTubePlayer(videoId);
+      // Usar el reproductor global
+      this.musicPlayerService.loadSong(videoId, song, this.playlist!.playlistId);
     }
   }
 
@@ -241,90 +287,16 @@ export class PlaylistDisplayComponent implements OnInit {
     return match ? match[1] : '';
   }
 
-  initYouTubePlayer(videoId: string): void {
-    console.log('🚀 Inicializando player con video ID:', videoId);
-    if (this.playerRef && this.playerRef.loadVideoById) {
-      console.log('🔄 Reutilizando player existente');
-      this.playerRef.loadVideoById(videoId);
-      this.isPlaying = true; // Asegura que el estado se actualice inmediatamente
-      return;
-    }
-    setTimeout(() => {
-      if (!(window as any).YT) {
-      console.error('❌ YouTube API no está disponible');
-      return;
-    }
-      try {
-      this.playerRef = new (window as any).YT.Player('yt-player-playlist', {
-        videoId,
-        height: '0',
-        width: '0',
-        events: {
-          onReady: () => {
-            console.log('✅ Player listo, intentando reproducir...');
-            this.playerRef.playVideo();
-            this.isPlaying = true;
-          },
-          onError: (error: any) => {
-            console.error('❌ Error en el player:', error);
-          },
-         onStateChange: (event: any) => {
-            console.log('🎵 Estado del player cambió:', event.data);
-            if (event.data === (window as any).YT.PlayerState.ENDED) {
-              if (this.isShuffleMode) {
-                // Modo shuffle: usar el array de reproducción
-                if (this.currentPlaybackIndex < this.playbackOrder.length - 1) {
-                  this.currentPlaybackIndex++;
-                  const nextSongIndex = this.playbackOrder[this.currentPlaybackIndex];
-                  const nextSong = this.playlist!.songs[nextSongIndex];
-                  this.playSong(nextSong);
-                } else {
-                  // Última canción en shuffle
-                  this.isPlaying = false;
-                  this.currentSongId = null;
-                  this.currentSongIndex = null;
-                }
-              } else {
-                // Modo normal: orden secuencial
-                if (this.currentSongIndex !== null && this.currentSongIndex < this.playlist!.songs.length - 1) {
-                  const nextSong = this.playlist!.songs[this.currentSongIndex + 1];
-                  this.playSong(nextSong);
-                } else {
-                  this.isPlaying = false;
-                  this.currentSongId = null;
-                  this.currentSongIndex = null;
-                }
-              }
-            }
-          } 
-        }
-      });
-    } catch (error) {
-      console.error('❌ Error creando el player:', error);
-    }
-    }, 100);
-  }
-
   togglePlay(): void {
-    if (!this.playerRef) {
-      // Si no hay reproductor, reproduce una canción aleatoria si está en shuffle
-      if (this.isShuffleMode && this.playlist && this.playlist.songs.length > 0) {
-        const randomIndex = Math.floor(Math.random() * this.playlist.songs.length);
-        const randomSong = this.playlist.songs[randomIndex];
-        this.playSong(randomSong);
-      } else if (!this.isShuffleMode && this.playlist && this.playlist.songs.length > 0) {
-        // Si no está en shuffle, reproduce la primera canción
-        this.playSong(this.playlist.songs[0]);
-      }
-      return;
-    }
-    
-    if (this.isPlaying) {
-      this.playerRef.pauseVideo();
-      this.isPlaying = false;
+    // Si hay una canción reproduciéndose Y es de esta playlist de origen, hacer toggle
+    if (this.shouldShowPauseInPlayButton) {
+      this.musicPlayerService.togglePlay();
     } else {
-      this.playerRef.playVideo();
-      this.isPlaying = true;
+      // Si no hay canción reproduciéndose o es de otra playlist, reproducir la primera de esta playlist
+      if (this.playlist && this.playlist.songs.length > 0) {
+        const firstSong = this.playlist.songs[0];
+        this.playSong(firstSong);
+      }
     }
   }
 
@@ -352,7 +324,9 @@ export class PlaylistDisplayComponent implements OnInit {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
-}  
+}
+
+
 
 }
 

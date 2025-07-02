@@ -129,8 +129,10 @@ export class NavbarComponent {
           const matchesSearch = user.username.toLowerCase().includes(this.searchTerm.trim().toLowerCase());
           // Filtro 2: No incluir el usuario actual
           const isNotCurrentUser = !currentUser || user.username !== currentUser.username;
+          // Filtro 3: Solo usuarios activos
+          const isActiveUser = user.isActive === true;
           
-          return matchesSearch && isNotCurrentUser;
+          return matchesSearch && isNotCurrentUser && isActiveUser;
         });
       } else {
         this.userResults = [];
