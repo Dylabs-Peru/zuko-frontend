@@ -1,0 +1,1022 @@
+.admin-section-container {
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+.section-header {
+  max-width: 1200px;
+  margin: 0 auto 3rem auto;
+  text-align: center;
+}
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  border: 1px solid #B71C1C;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #B71C1C;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+}
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #B71C1C;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(183, 28, 28, 0.3);
+}
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #6c757d;
+  font-weight: 400;
+}
+.section-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.loading-container, .empty-state {
+  text-align: center;
+  margin-top: 3rem;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #B71C1C;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem auto;
+}
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.album-card-media {
+  height: 150px;
+  min-height: 150px;
+  max-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  width: 100%;
+}
+.album-cover {
+  margin-bottom: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.album-card-content {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 1rem;
+}
+
+.album-actions {
+  margin-top: 3.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.album-actions-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.edit-btn,
+.delete-btn,
+.create-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.edit-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.edit-btn:hover:not(:disabled) {
+  background: #bbdefb;
+}
+
+.delete-btn {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background: #ffcdd2;
+}
+
+.create-btn {
+  background: #B71C1C;
+  color: white;
+}
+
+.create-btn:hover:not(:disabled) {
+  background: #B71C1C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.3);
+}
+
+.edit-btn:disabled,
+.delete-btn:disabled,
+.create-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.album-card-media {
+  height: 150px;
+  min-height: 150px;
+  max-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  width: 100%;
+}
+.album-cover {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.album-cover-img {
+  display: block;
+  margin: auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  object-fit: cover;
+}
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.album-card-placeholder {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+
+  min-height: 400px; /* Ajusta según el contenido máximo esperado */
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(183, 28, 28, 0.15);
+  border: 2px solid rgba(183, 28, 28, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  animation: slideUp 0.6s ease-out;
+}
+
+.album-card-placeholder:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(183, 28, 28, 0.2);
+}
+
+.album-title, .album-meta, .album-songs, .songs-title, .album-year, .admin-albums-artist-component-genre {
+  text-align: center;
+  width: 100%;
+}
+.album-songs ul {
+  padding-left: 0;
+  list-style: none;
+}
+.album-songs li {
+  justify-content: center;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.album-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #B71C1C;
+  margin-bottom: 0.5rem;
+}
+.album-year {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+.album-description {
+  font-size: 0.97rem;
+  color: #444;
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  margin-top: 0.3rem;
+  min-height: 32px;
+  max-height: 80px;
+  overflow: auto;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #B71C1C;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background: #f5f5f5;
+  color: #666;
+}
+
+/* Tabs */
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 1rem;
+  position: relative;
+  gap: 1rem;
+  padding: 0 1.5rem;
+}
+
+.modal-tabs span {
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  color: #666;
+  font-weight: 500;
+  position: relative;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.modal-tabs span.active-tab {
+  color: #B71C1C;
+  font-weight: 500;
+  border-bottom-color: #B71C1C;
+}
+
+.modal-tabs span.disabled {
+  color: #999;
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Form Styles */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #B71C1C;
+  box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.1);
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.small-error {
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  background-color: #fff5f5;
+  border-left: 3px solid #e74c3c;
+  margin: 0.5rem 0;
+  border-radius: 0 4px 4px 0;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cover Upload */
+.cover-upload-section {
+  margin: 0.5rem auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  max-width: 400px;
+}
+
+.cover-preview-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px dashed #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+}
+
+.cover-preview {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.remove-cover-btn {
+  background: #f5f5f5;
+  color: #555;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  width: auto;
+  height: auto;
+  position: static;
+}
+
+.remove-cover-btn:hover {
+  background: #eee;
+  border-color: #999;
+}
+
+.album-cover-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  text-align: center;
+  padding: 1rem;
+}
+
+.cover-placeholder {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.cover-upload-text {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.cover-upload-btn-container {
+  display: flex;
+  justify-content: center;
+}
+
+.upload-cover-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f5f5f5;
+  color: #555;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  border: 1px dashed #ccc;
+}
+
+.upload-cover-label:hover {
+  background: #eee;
+  border-color: #999;
+}
+
+/* Song List */
+.songs-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.songs-header {
+  margin-bottom: 1.5rem;
+}
+
+.songs-header h4 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.songs-count {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.song-list-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.song-list-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  padding-right: 0.5rem;
+}
+
+.song-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.song-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+
+.song-item:hover {
+  background-color: #f9f9f9;
+}
+
+.song-cover {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.song-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.song-cover-placeholder {
+  font-size: 1.5rem;
+}
+
+.song-info {
+  flex: 1;
+  min-width: 0;
+  margin-right: 1rem;
+}
+
+.song-title {
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.25rem;
+}
+
+.song-artist,
+.song-date {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-checkbox {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding-left: 1.5rem;
+  margin-left: auto;
+}
+
+.song-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.song-checkbox:hover input ~ .checkmark {
+  background-color: #eee;
+}
+
+.song-checkbox input:checked ~ .checkmark {
+  background-color: #B71C1C;
+  border-color: #B71C1C;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.song-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.song-checkbox .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.no-songs {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  margin-top: 1.5rem;
+}
+
+.primary-btn,
+.secondary-btn,
+.cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 1rem;
+}
+
+.primary-btn {
+  background: #B71C1C;
+  color: white;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: #8B0000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(183, 28, 28, 0.3);
+}
+
+.primary-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.secondary-btn {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.secondary-btn:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.cancel-btn {
+  background: transparent;
+  color: #666;
+}
+
+.cancel-btn:hover {
+  background: #f5f5f5;
+}
+
+/* Spinner para botón */
+.spinner-btn {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para la previsualización de la portada */
+.cover-preview-container {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  margin: 0 auto 1rem;
+}
+
+.cover-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.album-cover-preview.no-cover {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  font-size: 3rem;
+  margin: 0 auto 1rem;
+}
+
+/* Estilos para los botones de la pestaña de Canciones */
+.modal-card form .save-section {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.modal-card form .save-button,
+.modal-card form .cancel-button {
+  padding: 0.6rem 1.8rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-card form .save-button {
+  background-color: #B71C1C;
+  color: white;
+}
+
+.modal-card form .save-button:not(:disabled):hover {
+  background-color: #8B0000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(183, 28, 28, 0.3);
+}
+
+.modal-card form .save-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+form[ngIf="albumTab==='songs'"] .cancel-button {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.modal-card form .cancel-button:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para los checkboxes de selección de canciones */
+.song-actions {
+  margin-left: 0.5rem;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.select-song-checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #B71C1C;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.select-song-checkbox:checked {
+  background-color: #B71C1C;
+  border-color: #B71C1C;
+}
+
+.select-song-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.select-song-checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.2);
+}
+
+/* Estilos para el modal de confirmación de eliminación */
+.delete-confirm-modal {
+  max-width: 500px;
+  width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background: white;
+  overflow: hidden;
+}
+
+.delete-confirm-modal .modal-header {
+  background-color: #B71C1C;
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-confirm-modal .modal-header h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.delete-confirm-modal .modal-body {
+  padding: 2rem;
+  text-align: center;
+}
+
+.delete-warning svg {
+  color: #f39c12;
+  margin-bottom: 1.5rem;
+}
+
+.delete-warning p {
+  margin: 0.5rem 0;
+  color: #333;
+  line-height: 1.5;
+}
+
+.warning-text {
+  color: #d32f2f !important;
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-top: 1rem !important;
+}
+
+.delete-confirm-modal .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.delete-confirm-modal .cancel-button,
+.delete-confirm-modal .delete-button {
+  padding: 0.7rem 1.8rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.delete-confirm-modal .cancel-button {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.delete-confirm-modal .cancel-button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirm-modal .delete-button {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.delete-confirm-modal .delete-button:not(:disabled):hover {
+  background-color: #b71c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+.delete-confirm-modal .delete-button:disabled,
+.delete-confirm-modal .cancel-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.loading-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading-text .spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

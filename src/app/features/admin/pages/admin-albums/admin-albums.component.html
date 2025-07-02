@@ -1,0 +1,33 @@
+<div class="admin-section-container">
+  <div class="section-header">
+    <button class="back-btn" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+      Volver
+    </button>
+    <h1 class="section-title">Gestión de Álbumes</h1>
+    <p class="section-subtitle">Selecciona un artista para gestionar sus álbumes</p>
+  </div>
+  <div class="section-content">
+    <div class="loading-container" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Cargando artistas...</p>
+    </div>
+    <div class="empty-state" *ngIf="!loading && artists.length === 0">
+      <div class="empty-icon">🧑‍🎤</div>
+      <h3>No hay artistas registrados</h3>
+      <p>Cuando registres artistas aparecerán aquí</p>
+    </div>
+    <div class="artists-grid" *ngIf="!loading && artists.length > 0">
+      <div class="artist-card-placeholder" *ngFor="let artist of artists" [routerLink]="['/admin/albums/artist', artist.id]" style="cursor:pointer;">
+        <div class="artist-avatar-placeholder">
+          <img [src]="getProfileImageUrl(artist.user?.url_image || artist.urlImage)" [alt]="artist.name" (error)="onImageError($event, artist.name)" loading="lazy" />
+        </div>
+        <div class="artist-name-placeholder">{{ artist.name }}</div>
+        <div class="artist-email-placeholder">{{ artist.user?.email }}</div>
+        <div class="artist-bio-placeholder">{{ artist.biography }}</div>
+      </div>
+    </div>
+  </div>
+</div>
