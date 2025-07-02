@@ -127,18 +127,28 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
   }
 
   async saveSongs() {
-    if (!this.title || !this.genreId || this.selectedSongIds.length < 2) return;
+    if (!this.title || !this.genreId || this.selectedSongIds.length < 2) {
+      alert('Por favor completa todos los campos obligatorios y selecciona al menos 2 canciones');
+      return;
+    }
     this.isSaving = true;
     try {
       // Obtener artistId del usuario autenticado
       const auth = localStorage.getItem('auth');
       let artistId: number | undefined = undefined;
+      
       if (auth) {
         const authObj = JSON.parse(auth);
-        artistId = authObj?.user?.artistId;
+        // Obtener el ID del artista desde la estructura del usuario
+        artistId = authObj?.user?.id;
+        
+        // Verificar que se obtuvo el ID
         if (!artistId) {
-          throw new Error('No se pudo obtener el ID del artista. Por favor, inicia sesión nuevamente.');
+          console.error('No se pudo obtener el ID del artista. Estructura de auth:', authObj);
+          throw new Error('No se pudo obtener la información del artista. Asegúrate de estar logueado correctamente.');
         }
+        
+        console.log('ID de artista obtenido:', artistId);
       } else {
         throw new Error('No se encontró la información de autenticación. Por favor, inicia sesión nuevamente.');
       }
