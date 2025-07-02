@@ -101,6 +101,18 @@ export class PlaylistDisplayComponent implements OnInit {
     
     return isPlaying && sourcePlaylistId === currentPlaylistId;
   }
+
+  // Método para saber si una canción específica debe mostrar pause (solo si se reprodujo desde ESTA playlist)
+  shouldShowPauseForSong(songId: number): boolean {
+    const isPlaying = this.musicPlayerService.isPlaying();
+    const globalSong = this.musicPlayerService.currentSong();
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    const currentPlaylistId = this.playlist?.playlistId;
+    
+    return isPlaying && 
+           globalSong?.id === songId && 
+           sourcePlaylistId === currentPlaylistId;
+  }
    
    ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -257,18 +269,17 @@ export class PlaylistDisplayComponent implements OnInit {
 
   playSong(song: SongResponse) {
     const videoId = this.extractVideoId(song.youtubeUrl);
-    console.log('🎬 Video ID extraído:', videoId);
-    console.log('🔗 URL original:', song.youtubeUrl);
     
     const songIndex = this.playlist!.songs.findIndex(s => s.id === song.id);
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    const currentPlaylistId = this.playlist?.playlistId;
+    const currentSong = this.musicPlayerService.currentSong();
     
-    // Si es la misma canción, solo pause/play
-    if (this.currentSongId === song.id && this.musicPlayerService.isPlaying()) {
-      this.musicPlayerService.togglePlay();
-    } else if (this.currentSongId === song.id && !this.musicPlayerService.isPlaying()) {
+    // Si la misma canción se está reproduciendo desde ESTA playlist específica, permitir toggle
+    if (currentSong?.id === song.id && sourcePlaylistId === currentPlaylistId) {
       this.musicPlayerService.togglePlay();
     } else {
-      // Nueva canción
+      // En cualquier otro caso: nueva canción O canción reproduciéndose desde otra fuente - reiniciar desde esta playlist
       this.currentSongIndex = songIndex;
       this.currentSongId = song.id;
       
@@ -277,7 +288,7 @@ export class PlaylistDisplayComponent implements OnInit {
         this.currentPlaybackIndex = this.playbackOrder.findIndex(index => index === songIndex);
       }
       
-      // Usar el reproductor global
+      // Usar el reproductor global y establecer esta playlist como origen
       this.musicPlayerService.loadSong(videoId, song, this.playlist!.playlistId);
     }
   }
