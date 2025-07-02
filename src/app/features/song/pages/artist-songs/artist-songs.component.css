@@ -326,3 +326,15 @@ input[type='checkbox'] {
   cursor: pointer;
   font-weight: bold;
 }
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 0.75rem;
+  margin: 1rem auto; /* ← centrado horizontal */
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  width: fit-content; /* ← necesario para que se centre */
+}

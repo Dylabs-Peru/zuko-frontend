@@ -7,12 +7,16 @@
     No tienes canciones disponibles.
   </div>
 
+  <div *ngIf="successMessage" class="success-message">
+  {{ successMessage }}
+  </div>
+
   <!-- Lista de canciones -->
   <ul *ngIf="songs.length > 0">
     <li *ngFor="let song of songs; let i = index" class="song-item">
       <!-- Portada de la canción -->
     <div class="song-cover">
-      <img *ngIf="song.imageUrl; else noCover" [src]="song.imageUrl" alt="Portada de {{ song.title }}" class="cover-image" />
+      <img [src]="getSafeImageUrl(song.imageUrl)" alt="Portada de {{ song.title }}" class="cover-image" />
       <ng-template #noCover>
         <div class="cover-placeholder">📷</div>
       </ng-template>

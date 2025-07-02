@@ -50,7 +50,7 @@ export class HomePageComponent implements OnInit{
 
 
   loadLatestSongsToday(): void {
-    this.songService.getTop3PublicSongsToday().subscribe({
+    this.songService.getTop3PublicSongs().subscribe({
       next: (songs) => {
         this.latestSongsToday = songs;
         if (songs.length > 0) {
@@ -152,6 +152,12 @@ goToSong(songId: number): void {
 
   goToPlaylist(playlistId: number) {
      this.router.navigate(['/playlist', playlistId]);
+  }
+
+  defaultCoverUrl = 'https://res.cloudinary.com/dgrrhrvbq/image/upload/v1751432187/Group_25_rnsf9v.png';
+
+  getSafeImageUrl(imageUrl?: string | null): string {
+    return imageUrl || this.defaultCoverUrl;
   }
 
 }

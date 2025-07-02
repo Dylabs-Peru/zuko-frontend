@@ -1,5 +1,5 @@
 <div class="song-detail-container" *ngIf="!loading && song">
-  <h2 class="song-title">🎵 {{ song.title }}</h2>
+  <h2 class="song-title">{{ song.title }}</h2>
 
   <div class="song-detail-card">
     <img [src]="safeImageUrl" alt="Portada" class="song-cover" />
@@ -17,7 +17,7 @@
         <div id="yt-player-detail" style="width: 0; height: 0; overflow: hidden;"></div>
       </div>
 
-      <button (click)="openAddToPlaylist(song)" class="add-to-playlist-btn">➕ Agregar a playlist</button>
+      <button (click)="openAddToPlaylist(song)" class="add-to-playlist-btn">Agregar a playlist</button>
     </div>
   </div>
 </div>

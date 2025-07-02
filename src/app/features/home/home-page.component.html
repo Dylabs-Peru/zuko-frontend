@@ -10,7 +10,7 @@
       [class.slide-in-right]="i === currentSongIndex && slideDirection === 'right'"
       [class.hidden]="i !== currentSongIndex"
     >
-      <img class="banner-image" [src]="song.imageUrl" alt="Portada de la canción" />
+      <img class="banner-image" [src]="getSafeImageUrl(song.imageUrl)" alt="Portada de {{ song.title }}" />
       <div class="banner-text">
         <div class="new-label">🎉 NUEVO LANZAMIENTO</div>
         <div class="new-release-title">{{ song.title }}</div>
