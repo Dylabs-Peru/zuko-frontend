@@ -269,7 +269,7 @@ export class AdminAlbumsArtistComponent implements OnInit {
       }
     });
   }
-  // Cargar canciones del artista
+  // Cargar canciones públicas del artista
   loadSongs(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.artist?.id) {
@@ -279,19 +279,25 @@ export class AdminAlbumsArtistComponent implements OnInit {
         return;
       }
       
-      console.log('Cargando canciones para el artista ID:', this.artist.id);
+      console.log('Cargando canciones públicas para el artista ID:', this.artist.id);
       
       this.songService.getSongsByArtist(this.artist.id).subscribe({
         next: (songs: any[]) => {
           console.log('Canciones recibidas del servicio:', songs);
-          this.songs = songs.map(song => ({
+          
+          // Filtrar solo las canciones públicas
+          const publicSongs = songs.filter(song => song.isPublicSong === true);
+          
+          this.songs = publicSongs.map(song => ({
             id: song.id,
             name: song.title,
             artist: song.artistName || 'Artista desconocido',
             releaseDate: song.releaseDate || '',
-            imageUrl: song.imageUrl || ''
+            imageUrl: song.imageUrl || '',
+            isPublicSong: true // Asegurarse de que todas las canciones mostradas sean públicas
           }));
-          console.log('Lista de canciones procesada:', this.songs);
+          
+          console.log('Lista de canciones públicas procesada:', this.songs);
           resolve();
         },
         error: (error: any) => { 
@@ -321,6 +327,7 @@ export class AdminAlbumsArtistComponent implements OnInit {
     
     // Validar que todos los campos requeridos estén completos
     if (!this.albumForm.title || !this.albumForm.genreId || this.albumForm.selectedSongIds.length < this.minSongsRequired) {
+      alert(`Por favor completa todos los campos obligatorios y asegúrate de seleccionar al menos ${this.minSongsRequired} canciones.`);
       console.log('Validación fallida:', {
         title: this.albumForm.title,
         genreId: this.albumForm.genreId,
@@ -343,6 +350,12 @@ export class AdminAlbumsArtistComponent implements OnInit {
         this.albumForm.selectedSongIds.includes(song.id)
       );
       
+      // Verificar que todas las canciones seleccionadas sean públicas
+      const nonPublicSongs = selectedSongs.filter(song => song.isPublicSong === false);
+      if (nonPublicSongs.length > 0) {
+        throw new Error('No se pueden incluir canciones privadas en un álbum. Por favor, verifica las canciones seleccionadas.');
+      }
+      
       // Crear el objeto del álbum para enviar al backend
       const albumData = {
         title: this.albumForm.title,
@@ -351,17 +364,13 @@ export class AdminAlbumsArtistComponent implements OnInit {
         genreId: parseInt(this.albumForm.genreId, 10),
         artistId: artistId,
         // Enviar las canciones en el formato que espera el backend
-        songs: this.albumForm.selectedSongIds.map(songId => {
-          const song = this.songs.find(s => s.id === songId);
-          // Si encontramos la canción, usamos sus datos, si no, creamos un objeto con el ID
-          return song ? {
-            id: song.id,
-            title: song.name || song.title,
-            artistId: artistId,
-            isPublicSong: true // Asumimos que es pública por defecto
-          } : { id: songId } // Si no encontramos la canción, solo enviamos el ID
-        })
+        songs: selectedSongs.map(song => ({
+          title: song.name || song.title,
+          isPublicSong: true // Asegurar que solo se envíen canciones públicas
+        }))
       };
+      
+      console.log('Datos del álbum a guardar:', JSON.stringify(albumData, null, 2));
       
       console.log('Datos que se enviarán al backend:', JSON.stringify(albumData, null, 2));
       

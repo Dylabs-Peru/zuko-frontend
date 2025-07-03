@@ -3,6 +3,7 @@ body {
     font-family: Arial, sans-serif;
     color: white;
     background: linear-gradient(to bottom, #2b0000, #550000);
+    min-height: 100vh;
 }
 
 :host, .album-detail-root, table, th, td, .header, .controls, .song-title, .artist {
@@ -11,14 +12,14 @@ body {
 
 .album-detail-root {
     min-height: 100vh;
-    min-width: 100vw;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
     box-sizing: border-box;
     background: linear-gradient(to bottom, #2b0000, #550000);
-    margin:0;
-    padding: 0;
+    margin: 0;
+    padding: 0 0 100px 0; /* Añadido padding inferior para asegurar espacio al final */
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -90,6 +91,7 @@ body {
     gap: 50px;
     padding: 20px;
     background: none;
+    position: relative;
 }
 
 .controls button {
@@ -136,6 +138,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    flex-grow: 1;
 }
 
 th, td {
