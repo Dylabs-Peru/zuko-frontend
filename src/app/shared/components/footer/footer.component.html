@@ -35,7 +35,7 @@
   <!-- Info de la canción actual (derecha) -->
   <div class="player-song-info">
     <img
-      [src]="currentSong.imageUrl"
+      [src]="getSafeImageUrl(currentSong.imageUrl)"
       alt="cover"
       class="player-song-cover"
       width="35"
