@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { SongResponse } from '../../../../models/song.model';
 import { SongService } from '../../../../services/Song.service';
+import { MusicPlayerService } from '../../../../services/music-player.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AddSongToPlaylistModalComponent } from '../../../playlist/components/agregar-cancion-playlist/add-song-to-playlist.component';
@@ -17,30 +18,58 @@ export class SongDetailComponent implements OnInit {
   song!: SongResponse;
   loading = true;
   error = '';
-  apiReady = false;
 
   selectedSongForPlaylist: SongResponse | null = null;
   showAddToPlaylistModal = false;
 
-  isPlaying = false;
-  playerRef: any;
+  // Variables para sincronización con el reproductor global
+  currentSongId: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private songService: SongService
-  ) {}
+    private songService: SongService,
+    private musicPlayerService: MusicPlayerService
+  ) {
+    // Effect para sincronizar el estado local con el servicio global
+    effect(() => {
+      const globalSong = this.musicPlayerService.currentSong();
+      
+      // Sincronizar currentSongId con la canción global
+      if (globalSong) {
+        this.currentSongId = globalSong.id;
+      } else {
+        this.currentSongId = null;
+      }
+    });
+  }
+
+  // Getters para acceder al estado global
+  get isPlaying(): boolean {
+    return this.musicPlayerService.isPlaying();
+  }
+
+  get playerRef(): any {
+    return this.musicPlayerService.playerRef();
+  }
+
+  // Método para saber si esta canción específica está reproduciéndose Y se reprodujo desde este componente
+  get isSongPlaying(): boolean {
+    const isPlaying = this.musicPlayerService.isPlaying();
+    const globalSong = this.musicPlayerService.currentSong();
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    
+    // Solo mostrar como reproduciéndose si:
+    // 1. Se está reproduciendo
+    // 2. Es la canción correcta
+    // 3. NO se reprodujo desde una playlist (sourcePlaylistId debe ser null)
+    return isPlaying && 
+           globalSong?.id === this.song?.id && 
+           sourcePlaylistId === null;
+  }
 
   ngOnInit(): void {
-  if (!(window as any).YT) {
-    (window as any).onYouTubeIframeAPIReady = () => {
-      this.apiReady = true;
-      this.subscribeToRouteChanges(); // escuchar cambios
-    };
-  } else {
-    this.apiReady = true;
-    this.subscribeToRouteChanges(); // escuchar cambios
+    this.subscribeToRouteChanges();
   }
-}
 
 subscribeToRouteChanges(): void {
   this.route.paramMap.subscribe(params => {
@@ -57,11 +86,6 @@ subscribeToRouteChanges(): void {
         next: (data) => {
           this.song = data;
           this.loading = false;
-
-          const videoId = this.extractVideoId(this.song.youtubeUrl);
-          if (videoId && this.apiReady) {
-            this.initYouTubePlayer(videoId);
-          }
         },
         error: (err) => {
           this.error = 'No se pudo cargar la canción';
@@ -76,31 +100,20 @@ subscribeToRouteChanges(): void {
     return match ? match[1] : '';
   }
 
-  initYouTubePlayer(videoId: string): void {
-    setTimeout(() => {
-      this.playerRef = new (window as any).YT.Player('yt-player-detail', {
-        videoId,
-        height: '0',
-        width: '0',
-        events: {
-          onReady: () => {
-            console.log('Player ready');
-          }
-        }
-      });
-    }, 100);
-  }
-
   togglePlay(): void {
-    if (!this.playerRef) return;
-
-    if (this.isPlaying) {
-      this.playerRef.pauseVideo();
-      this.isPlaying = false;
+    if (!this.song) return;
+    
+    const videoId = this.extractVideoId(this.song.youtubeUrl);
+    
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    const currentSong = this.musicPlayerService.currentSong();
+    
+    // Si la misma canción se está reproduciendo desde este componente (sin playlist), permitir toggle
+    if (currentSong?.id === this.song.id && sourcePlaylistId === null) {
+      this.musicPlayerService.togglePlay();
     } else {
-      this.playerRef.seekTo(0);
-      this.playerRef.playVideo();
-      this.isPlaying = true;
+      // En cualquier otro caso: nueva canción O canción reproduciéndose desde playlist - reproducir desde este componente
+      this.musicPlayerService.loadSong(videoId, this.song); // Sin playlistId para indicar que es individual
     }
   }
 

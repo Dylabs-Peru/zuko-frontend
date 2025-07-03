@@ -210,13 +210,10 @@ export class MusicPlayerService {
       return;
     }
 
-    console.log('🎵 Cargando canción:', song.title, 'Video ID:', videoId, 'Playlist ID:', playlistId);
     this.setCurrentSong(song);
     
-    // Establecer la playlist de origen
-    if (playlistId !== undefined) {
-      this.sourcePlaylistIdSignal.set(playlistId);
-    }
+    // Establecer la playlist de origen (null si no viene de playlist)
+    this.sourcePlaylistIdSignal.set(playlistId || null);
     
     if (player.loadVideoById) {
       player.loadVideoById(videoId);

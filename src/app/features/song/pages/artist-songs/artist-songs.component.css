@@ -45,10 +45,30 @@
   cursor: pointer;
   margin-top: 8px;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .play-button:hover {
   background-color: #a50000;
+}
+
+.icon-play-playlist {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin-left: 2px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="white"/></svg>') no-repeat center/contain;
+  background: #fff;
+}
+
+.icon-pause-playlist {
+  display: block;
+  width: 18px;
+  height: 18px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="20" fill="white"/><rect x="17" y="4" width="5" height="20" fill="white"/></svg>') no-repeat center/contain;
+  background: #fff;
 }
 
 .title {

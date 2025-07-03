@@ -88,12 +88,12 @@
           <button 
            (click)="playSong(song)"
            class="song-play-btn" 
-           [title]="currentSongId === song.id && isPlaying ? 'Pausar' : 'Reproducir canción'">
+           [title]="shouldShowPauseForSong(song.id) ? 'Pausar' : 'Reproducir canción'">
           <span 
-            *ngIf="currentSongId === song.id && isPlaying" 
+            *ngIf="shouldShowPauseForSong(song.id)" 
             class="icon-pause-playlist"></span>
           <span 
-            *ngIf="!(currentSongId === song.id && isPlaying)" 
+            *ngIf="!shouldShowPauseForSong(song.id)" 
             class="icon-play-playlist"></span>
           </button>
         </td>
