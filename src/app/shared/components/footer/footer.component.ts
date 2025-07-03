@@ -75,4 +75,8 @@ export class FooterComponent implements OnInit, OnDestroy {
     console.log('🎯 Seeking to:', seekTime, 'seconds');
     this.musicPlayerService.seekTo(seekTime);
   }
+
+  getSafeImageUrl(imageUrl?: string | null): string {
+    return imageUrl || 'https://res.cloudinary.com/dgrrhrvbq/image/upload/v1751432187/Group_25_rnsf9v.png';
+  }
 }

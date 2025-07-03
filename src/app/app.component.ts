@@ -49,6 +49,9 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // Detener el monitoreo al destruir el componente
     this.tokenMonitorService.stopMonitoring();
+    
+    // Destruir el reproductor global al destruir la app
+    this.musicPlayerService.destroyGlobalPlayer();
   }
 
   get isAuthRoute(): boolean {

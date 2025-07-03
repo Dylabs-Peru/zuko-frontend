@@ -159,6 +159,32 @@ export class MusicPlayerService {
     this.stopTimeUpdates();
   }
 
+  // Método para destruir el reproductor global (útil en logout)
+  destroyGlobalPlayer(): void {
+    console.log('🔥 Destruyendo reproductor global');
+    
+    // Detener la reproducción actual
+    const player = this.playerRef();
+    if (player && player.stopVideo) {
+      player.stopVideo();
+    }
+    
+    // Limpiar todos los estados
+    this.setCurrentSong(null);
+    this.setPlayingState(false);
+    this.currentTimeSignal.set(0);
+    this.durationSignal.set(0);
+    this.sourcePlaylistIdSignal.set(null);
+    
+    // Detener actualizaciones de tiempo
+    this.stopTimeUpdates();
+    
+    // Limpiar referencia del player
+    this.setPlayerRef(null);
+    
+    console.log('✅ Reproductor global destruido');
+  }
+
   // Método para inicializar el reproductor global
   initializeGlobalPlayer(elementId: string): void {
     console.log('🚀 Inicializando reproductor global en elemento:', elementId);
