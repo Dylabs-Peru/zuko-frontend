@@ -62,7 +62,7 @@
             </div>
           </li>
         </ul>
-        <div *ngIf="songs.length === 0" class="no-songs">No tienes canciones disponibles.</div>
+        <div *ngIf="songs.length === 0" class="no-songs">No hay canciones disponibles.</div>
       </div>
       <div class="save-section">
         <button class="save-button" type="button" (click)="onSave()" [disabled]="selectedSongIds.length < 2 || isSaving">
