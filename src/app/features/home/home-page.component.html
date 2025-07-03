@@ -1,36 +1,67 @@
 <div class="library-container">
 
 <!-- 🔔 Nuevo Lanzamiento (Carrusel) -->
-<div class="carousel-banner" *ngIf="latestSongsToday.length > 0">
+<div class="carousel-banner" *ngIf="latestReleases.length > 0">
   <div class="carousel-slider">
     <div
       class="banner-content"
-      *ngFor="let song of latestSongsToday; let i = index"
-      [class.slide-in-left]="i === currentSongIndex && slideDirection === 'left'"
-      [class.slide-in-right]="i === currentSongIndex && slideDirection === 'right'"
-      [class.hidden]="i !== currentSongIndex"
+      *ngFor="let release of latestReleases; let i = index"
+      [class.slide-in-left]="i === currentItemIndex && slideDirection === 'left'"
+      [class.slide-in-right]="i === currentItemIndex && slideDirection === 'right'"
+      [class.hidden]="i !== currentItemIndex"
     >
-      <img class="banner-image" [src]="getSafeImageUrl(song.imageUrl)" alt="Portada de {{ song.title }}" />
+      <img 
+        class="banner-image" 
+        [src]="getSafeImageUrl(release?.imageUrl)" 
+        (error)="onImageError($event)"
+        [alt]="'Portada de ' + release.title"
+        (click)="goToRelease(release)"
+      />
       <div class="banner-text">
-        <div class="new-label">🎉 NUEVO LANZAMIENTO</div>
-        <div class="new-release-title">{{ song.title }}</div>
-        <div class="artist-name">por {{ song.artistName }}</div>
-        <div class="subtitle">¡Escucha lo nuevo de {{ song.artistName }}!</div>
+        <div class="release-header">
+          <span class="new-label">🎉 NUEVO LANZAMIENTO</span>
+          <span class="release-type">
+            {{ release.type === 'song' ? 'CANCIÓN' : 'ÁLBUM' }}
+          </span>
+        </div>
+        <div class="new-release-title">{{ release.title }}</div>
+        <div class="artist-name">por {{ release.artistName }}</div>
+        <div class="subtitle">¡Escucha lo nuevo de {{ release.artistName }}!</div>
         
-        <button class="play-btn" style="margin-left: 0.5rem" (click)="goToSong(song.id)">
-          Ver canción
-        </button>
+        <div class="release-actions">
+          <button 
+            *ngIf="release.type === 'song'"
+            class="view-btn" 
+            (click)="playRelease(release, $event)"
+            [attr.aria-label]="'Reproducir ' + release.title"
+          >
+            <i class="fas fa-play"></i>
+            Reproducir
+          </button>
+          
+          <button 
+            class="view-btn" 
+            (click)="goToRelease(release, $event)"
+            [attr.aria-label]="(release.type === 'song' ? 'Ver canción' : 'Ver álbum') + ' ' + release.title"
+          >
+            {{ release.type === 'song' ? 'Ver canción' : 'Ver álbum' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- 🔁 Controles -->
-  <div class="carousel-controls" *ngIf="latestSongsToday.length > 1">
-    <button class="carousel-btn prev" (click)="prevBanner()">‹</button>
-    <button class="carousel-btn next" (click)="nextBanner()">›</button>
+  <div class="carousel-controls" *ngIf="latestReleases.length > 1">
+    <button class="carousel-btn prev" (click)="prevBanner($event)" aria-label="Anterior">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="carousel-btn next" (click)="nextBanner($event)" aria-label="Siguiente">
+      <i class="fas fa-chevron-right"></i>
+    </button>
   </div>
 
-  <!-- 🎬 YouTube player oculto -->
+  <!-- Reproductor de YouTube oculto -->
   <div style="display: none">
     <div id="yt-player-detail"></div>
   </div>
