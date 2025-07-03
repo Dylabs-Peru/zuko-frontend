@@ -211,27 +211,24 @@ export class AlbumDetailPageComponent implements OnInit {
   shufflePlay(): void {
     if (!this.album?.songs?.length) return;
     
-    const availableSongs = this.album.songs;
+    // Filtrar solo canciones con URL de YouTube
+    const availableSongs = this.album.songs.filter((song: Song) => song.youtubeUrl);
     
-    // Si solo hay una canción, reproducirla
-    if (availableSongs.length === 1) {
-      this.playSong(availableSongs[0]);
+    if (availableSongs.length === 0) {
+      console.error('No hay canciones con URL de YouTube disponibles para reproducir');
       return;
     }
     
-    // Si ya hay una canción de este álbum reproduciéndose, pausar/reanudar
-    if (this.isCurrentSongFromThisAlbum) {
-      this.musicPlayerService.togglePlay();
-      return;
+    // Seleccionar una canción aleatoria
+    const randomIndex = Math.floor(Math.random() * availableSongs.length);
+    const randomSong = availableSongs[randomIndex];
+    
+    if (randomSong) {
+      console.log('Reproduciendo canción aleatoria:', randomSong);
+      this.playSong(randomSong as Song);
+    } else {
+      console.error('No se pudo seleccionar una canción aleatoria');
     }
-    
-    // Si no hay canción reproduciéndose o es de otro álbum, empezar una aleatoria
-    let randomIndex: number;
-    do {
-      randomIndex = Math.floor(Math.random() * availableSongs.length);
-    } while (availableSongs.length > 1 && availableSongs[randomIndex].id === this.currentSongId);
-    
-    this.playSong(availableSongs[randomIndex] as Song);
   }
 
   togglePlay(): void {
@@ -260,16 +257,8 @@ export class AlbumDetailPageComponent implements OnInit {
       console.error('Canción o URL de YouTube no válida');
       return;
     }
-
-    const songIndex = this.album?.songs?.findIndex((s: Song) => s.id === song.id) ?? -1;
     
-    // Si es la misma canción, solo pausar/reanudar
-    if (this.currentSongId === song.id) {
-      this.musicPlayerService.togglePlay();
-      return;
-    }
-    
-    // Nueva canción
+    // Siempre establecer la nueva canción, incluso si es la misma que la actual
     this.currentSongId = song.id;
     
     // Crear objeto de canción compatible con SongResponse
