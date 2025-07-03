@@ -53,12 +53,8 @@
 
   <!-- 🔁 Controles -->
   <div class="carousel-controls" *ngIf="latestReleases.length > 1">
-    <button class="carousel-btn prev" (click)="prevBanner($event)" aria-label="Anterior">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button class="carousel-btn next" (click)="nextBanner($event)" aria-label="Siguiente">
-      <i class="fas fa-chevron-right"></i>
-    </button>
+    <button class="carousel-btn prev" (click)="prevBanner($event)">‹</button>
+    <button class="carousel-btn next" (click)="nextBanner($event)">›</button>
   </div>
 
   <!-- Reproductor de YouTube oculto -->

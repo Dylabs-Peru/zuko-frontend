@@ -139,7 +139,14 @@ export class HomePageComponent implements OnInit, OnDestroy {
     if (event) {
       event.stopPropagation();
     }
-    this.router.navigate([release.type === 'song' ? '/songs' : '/albums', release.id]);
+    
+    if (release.type === 'song') {
+      // Navegar a la página de detalle de la canción
+      this.router.navigate(['/songs/detail', release.id]);
+    } else {
+      // Navegar a la página de detalle del álbum
+      this.router.navigate(['/album', release.id]);
+    }
   }
 
   async playRelease(release: ReleaseItem, event: Event): Promise<void> {
