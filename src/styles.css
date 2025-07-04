@@ -6,4 +6,5 @@ html, body {
   box-sizing: border-box;
   overflow-x: hidden; 
   font-family: 'Manjari', sans-serif;
+  padding-bottom: 53px; /* Espacio para el footer - igual a la altura del footer */
 }
