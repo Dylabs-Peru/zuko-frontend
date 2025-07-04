@@ -26,4 +26,24 @@ export class SongService {
   deleteSong(id: number): Observable<void> {
     return this.api.delete(`${this.endpoint}/${id}`);
   }
+
+  searchPublicSongsByTitle(title: string): Observable<SongResponse[]> {
+    return this.api.get<SongResponse[]>(`/songs/search?title=${encodeURIComponent(title)}`);
+  }
+
+  getSongsByArtist(artistId: number): Observable<SongResponse[]> {
+    return this.api.get<SongResponse[]>(`${this.endpoint}/by-artist?artistId=${artistId}`);
+  }
+
+  getSongById(id: number): Observable<SongResponse> {
+    return this.api.get<SongResponse>(`/songs/${id}`);
+  }
+
+  getAllSongs(): Observable<SongResponse[]> {
+    return this.api.get<SongResponse[]>('/songs/all');
+  }
+
+  getTop3PublicSongs(): Observable<SongResponse[]> {
+  return this.api.get<SongResponse[]>('/songs/top3-latest');
+  }
 }

@@ -1,43 +1,55 @@
 <div class="profile-container" *ngIf="user; else noUser">
+
+  <!-- Mensaje de éxito barra fija arriba -->
+  <div *ngIf="artistaCreadoExitoso" class="success-message success-fixed">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:8px;"><polyline points="20,6 9,17 4,12"></polyline></svg>
+    ¡Artista creado exitosamente!
+  </div>
+
   <div class="profile-title-row" style="display: flex; align-items: center; gap: 16px;">
     <h1 class="profile-title" style="margin: 0;">Mi Perfil</h1>
     <app-activate-status-artist
       *ngIf="artistInactivo"
       [artistId]="artistInactivo.id">
     </app-activate-status-artist>
-    <button class="dots-btn" (click)="openEditModal()" style="margin-left: auto;">&#8230;</button>
   </div>
   
-  <div class="profile-header">    <div class="profile-avatar">
+  <div class="profile-header">
+    <div class="profile-avatar">
       <img 
-        [src]="user.url_image || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'" 
+        [src]="getProfileImageUrl(user.url_image)" 
         alt="Avatar" 
-        (error)="$any($event.target).src='https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'"
+        (error)="onImageError($event)"
+        loading="lazy"
       />
     </div>
     
     <div class="profile-info">
       <div class="profile-name">{{ user.username }}</div>
       <div class="profile-email">{{ user.email }}</div>
-      <button class="artist-btn" (click)="openArtistModal()" *ngIf="!user?.isArtist">
+      <button class="artist-btn" (click)="openArtistModal()" *ngIf="!user?.isArtist && !artistInactivo">
         Convertirse en artista
       </button>
     </div>
-    
-    <!-- El modal debe ir FUERA del div profile-info, al mismo nivel -->
-    <div id="artistModal" class="modal" [ngStyle]="{display: isArtistModalOpen ? 'block' : 'none'}">
-      <div class="modal-content">
-        <span class="close" (click)="closeArtistModal()">&times;</span>
-        <h2>Crear Perfil de Artista</h2>
-        <app-create-artist 
+
+    <div class="profile-actions">
+      <div class="profile-dots" (click)="openEditModal()" title="Editar perfil">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal del artista movido fuera del profile-header -->
+  <div id="artistModal" class="modal" [ngStyle]="{display: isArtistModalOpen ? 'block' : 'none'}">
+    <div class="modal-content">
+      <span class="close" (click)="closeArtistModal()">&times;</span>
+      <h2>Crear Perfil de Artista</h2>
+      <app-create-artist 
         [username]="user.username" 
         (artistCreated)="onArtistCreated($event)" 
         (close)="closeArtistModal()">
-        </app-create-artist>
-      </div>
+      </app-create-artist>
     </div>
-
-    <!-- Eliminado: profile-actions, ahora el botón está junto al título -->
   </div>
 
   <div class="profile-bio-section">

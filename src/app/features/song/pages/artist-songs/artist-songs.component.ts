@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SongService } from '../../../../services/Song.service';
 import { SongResponse, SongRequest } from '../../../../models/song.model';
+import { MusicPlayerService } from '../../../../services/music-player.service';
 import { AddSongToPlaylistModalComponent } from '../../../playlist/components/agregar-cancion-playlist/add-song-to-playlist.component';
 
 @Component({
@@ -15,39 +16,98 @@ import { AddSongToPlaylistModalComponent } from '../../../playlist/components/ag
 export class ArtistSongsComponent implements OnInit {
   @Input() artistId!: number;
   @Input() isOwnProfile = false;
-
-  songs: SongResponse[] = [];
+  @Input() songs: SongResponse[] = [];
   loading = true;
 
   openMenuIndex: number | null = null;
   showDeleteConfirm = false;
   songToDelete: SongResponse | null = null;
+  successMessage: string | null = null;
 
-  playerRefs: { [key: number]: any } = {};
-  isPlaying: { [key: number]: boolean } = {};
+  // Variables para sincronización con el reproductor global
+  currentSongId: number | null = null;
+
   showSongForm = false;
   editingSong: Partial<SongResponse> = { title: '', isPublicSong: false, youtubeUrl: '' };
   formError: string | null = null;
 
   selectedSongForPlaylist: SongResponse | null = null;
   showAddToPlaylistModal = false;
+  previewImageUrl: string | null = null;
 
-  constructor(private songService: SongService) {}
+  constructor(private songService: SongService, private musicPlayerService: MusicPlayerService) {
+    // Effect para sincronizar el estado local con el servicio global
+    effect(() => {
+      const globalSong = this.musicPlayerService.currentSong();
+      
+      // Sincronizar currentSongId con la canción global
+      if (globalSong) {
+        this.currentSongId = globalSong.id;
+      } else {
+        this.currentSongId = null;
+      }
+    });
+  }
+
+  // Getters para acceder al estado global
+  get isPlaying(): boolean {
+    return this.musicPlayerService.isPlaying();
+  }
+
+  get playerRef(): any {
+    return this.musicPlayerService.playerRef();
+  }
+
+  // Método para saber si una canción específica está reproduciéndose Y se reprodujo desde este componente
+  isSongPlaying(songId: number): boolean {
+    const isPlaying = this.musicPlayerService.isPlaying();
+    const globalSong = this.musicPlayerService.currentSong();
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    
+    // Solo mostrar como reproduciéndose si:
+    // 1. Se está reproduciendo
+    // 2. Es la canción correcta
+    // 3. NO se reprodujo desde una playlist (sourcePlaylistId debe ser null)
+    // Si sourcePlaylistId no es null, significa que se reprodujo desde una playlist, no desde este componente
+    return isPlaying && 
+           globalSong?.id === songId && 
+           sourcePlaylistId === null;
+  }
 
   ngOnInit(): void {
     this.loadSongs();
   }
 
+  showSuccess(message: string): void {
+  this.successMessage = message;
+  setTimeout(() => {
+    this.successMessage = null;
+  }, 3000); // Oculta después de 3 segundos
+}
+
   loadSongs(): void {
-    this.songService.getMySongs().subscribe({
-      next: (songs) => {
-        this.songs = songs;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      }
-    });
+    if (this.artistId) {
+      this.songService.getSongsByArtist(this.artistId).subscribe({
+        next: (songs) => {
+          this.songs = songs;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        }
+      });
+    } else {
+      // fallback por si quieres usarlo en "mis canciones"
+      this.songService.getMySongs().subscribe({
+        next: (songs) => {
+          this.songs = songs;
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        }
+      });
+    }
   }
 
   openCreateForm(): void {
@@ -87,7 +147,7 @@ export class ArtistSongsComponent implements OnInit {
 
     const songPayload = {
       title,
-      isPublicSong: this.editingSong.isPublicSong!, youtubeUrl: this.editingSong.youtubeUrl || ''
+      isPublicSong: this.editingSong.isPublicSong!, youtubeUrl: this.editingSong.youtubeUrl || '', imageUrl: this.editingSong.imageUrl || ''
     };
 
     const request$ = this.editingSong.id
@@ -95,14 +155,16 @@ export class ArtistSongsComponent implements OnInit {
       : this.songService.createSong(songPayload);
 
     request$.subscribe({
-      next: () => {
-        this.loadSongs();
-        this.closeForm();
-      },
-      error: (err) => {
-        console.error('Error al guardar la canción', err);
-        this.formError = err.error?.message || 'Error al procesar la canción.';
-      }
+    next: () => {
+      this.loadSongs();
+      this.closeForm();
+      const msg = this.editingSong.id ? 'Canción editada correctamente' : 'Canción creada correctamente';
+      this.showSuccess(msg);
+    },
+    error: (err) => {
+      console.error('Error al guardar la canción', err);
+      this.formError = err.error?.message || 'Error al procesar la canción.';
+  }
     });
   }
 
@@ -127,6 +189,7 @@ export class ArtistSongsComponent implements OnInit {
       next: () => {
         this.loadSongs();
         this.cancelDelete();
+        this.showSuccess('Canción eliminada correctamente');
       },
       error: (err) => {
         console.error('Error al eliminar canción', err);
@@ -151,52 +214,71 @@ export class ArtistSongsComponent implements OnInit {
   }
 
   extractVideoId(url: string): string {
-  const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-  const match = url.match(regex);
-  return match ? match[1] : '';
+    const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : '';
   }
 
-  initYouTubePlayer(index: number, videoId: string): void {
-  if (this.playerRefs[index]) return; // Ya existe
-
-  const player = new (window as any).YT.Player(`yt-player-${index}`, {
-    height: '0', // oculto
-    width: '0',
-    videoId: videoId,
-    events: {
-      onReady: () => {
-        this.playerRefs[index] = player;
-      }
+  playSong(song: SongResponse): void {
+    const videoId = this.extractVideoId(song.youtubeUrl);
+    
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    const currentSong = this.musicPlayerService.currentSong();
+    const isPlaying = this.musicPlayerService.isPlaying();
+    
+    // Si la misma canción se está reproduciendo desde este componente (sin playlist), permitir toggle
+    if (currentSong?.id === song.id && sourcePlaylistId === null) {
+      this.musicPlayerService.togglePlay();
+    } else {
+      // En cualquier otro caso: nueva canción O canción reproduciéndose desde playlist - reproducir desde este componente
+      this.musicPlayerService.loadSong(videoId, song); // Sin playlistId para indicar que es individual
     }
-  });
-}
-
-togglePlay(index: number, youtubeUrl: string): void {
-  const videoId = this.extractVideoId(youtubeUrl);
-  if (!videoId) return;
-
-  const player = this.playerRefs[index];
-
-  // Si no hay reproductor, inicialízalo y luego reproduce
-  if (!player) {
-    this.initYouTubePlayer(index, videoId);
-    setTimeout(() => this.play(index), 500);
-    return;
   }
 
-  if (this.isPlaying[index]) {
-    player.pauseVideo();
-    this.isPlaying[index] = false;
-  } else {
-    player.seekTo(0); // ✅ Esto reinicia el video desde el inicio
-    this.play(index);
-  }
+coverFile: File | null = null;
+uploading = false;
+
+onImageSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.[0]) return;
+
+  const file = input.files[0];
+  this.coverFile = file;
+
+  // Vista previa inmediata
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    this.previewImageUrl = e.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  // Subir a Cloudinary
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'zuko_pfps');
+
+  this.uploading = true;
+  fetch('https://api.cloudinary.com/v1_1/dqk8inmwe/image/upload', {
+    method: 'POST',
+    body: formData
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      this.uploading = false;
+      if (data.secure_url) {
+        this.editingSong.imageUrl = data.secure_url; // ← Guarda la URL para enviar
+      } else {
+        alert('Error al subir la imagen');
+      }
+    })
+    .catch(() => {
+      this.uploading = false;
+      alert('Error al subir la imagen');
+    });
 }
 
-play(index: number): void {
-  const player = this.playerRefs[index];
-  player.playVideo();
-  this.isPlaying[index] = true;
+defaultCoverUrl = 'https://res.cloudinary.com/dgrrhrvbq/image/upload/v1751432187/Group_25_rnsf9v.png';
+getSafeImageUrl(imageUrl?: string | null): string {
+  return imageUrl || this.defaultCoverUrl;
 }
-
 }

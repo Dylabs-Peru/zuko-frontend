@@ -23,15 +23,18 @@
    <div *ngIf="isLoading" class="loading-state">Cargando...</div>
   <div *ngIf="error" class="error-state">{{ error }}</div>
 
-  <div *ngIf="!isLoading && !error && filteredPlaylists.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && !error && playlists.length === 0 && !isSearching" class="empty-state">
     No tienes playlists aún.
   </div>
 
+  <div *ngIf="!isLoading && !error && playlists.length === 0 && isSearching" class="empty-state">
+    No se encontraron coincidencias
+  </div>
 
-  <div class="playlists-grid" *ngIf="filteredPlaylists.length > 0">
+  <div class="playlists-grid" *ngIf="playlists.length > 0">
     <div 
     class="playlist-card"
-    *ngFor="let playlist of filteredPlaylists"
+    *ngFor="let playlist of playlists"
     tabindex="0"
     
     (click)="goToPlaylist(playlist.playlistId)"

@@ -43,10 +43,12 @@
       <div class="users-grid" *ngIf="users.length > 0">
         <div class="user-card" *ngFor="let user of users">
           <div class="user-header">
-            <div class="user-avatar">              <img 
-                [src]="user.url_image || 'assets/default-avatar.png'" 
+            <div class="user-avatar">
+              <img 
+                [src]="getProfileImageUrl(user.url_image)" 
                 [alt]="user.username"
-                (error)="$any($event.target).src='assets/default-avatar.png'"
+                (error)="onImageError($event)"
+                loading="lazy"
               />
             </div>
             <div class="user-info">
@@ -139,7 +141,7 @@
               placeholder="Nombre de usuario único"
             />
             <div class="error-message" *ngIf="createUserForm.get('username')?.invalid && createUserForm.get('username')?.touched">
-              El nombre de usuario es requerido (mínimo 3 caracteres)
+              {{ getCreateFieldError('username') }}
             </div>
           </div>
 
@@ -152,7 +154,7 @@
               placeholder="usuario@ejemplo.com"
             />
             <div class="error-message" *ngIf="createUserForm.get('email')?.invalid && createUserForm.get('email')?.touched">
-              Ingresa un correo electrónico válido
+              {{ getCreateFieldError('email') }}
             </div>
           </div>
         </div>
@@ -163,10 +165,10 @@
             id="createPassword" 
             formControlName="password" 
             type="password" 
-            placeholder="Mínimo 6 caracteres"
+            placeholder="Mínimo 6 caracteres, letras y números"
           />
           <div class="error-message" *ngIf="createUserForm.get('password')?.invalid && createUserForm.get('password')?.touched">
-            La contraseña debe tener al menos 6 caracteres
+            {{ getCreateFieldError('password') }}
           </div>
         </div>
 
@@ -241,6 +243,11 @@
               </small>
             </div>
           </div>
+        </div>
+
+        <!-- Error message -->
+        <div class="error-message general-error" *ngIf="createUserError">
+          {{ createUserError }}
         </div>
 
         <div class="form-actions">

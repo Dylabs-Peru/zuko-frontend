@@ -4,10 +4,14 @@
   <h1 class="profile-title">Perfil de Artista</h1>
   <div class="profile-header">
     <div class="profile-avatar">
-      <img *ngIf="artist.urlImage; else defaultAvatar" [src]="artist.urlImage" alt="Foto de perfil">
-      <ng-template #defaultAvatar>
-        <div class="avatar-placeholder">&#128100;</div>
-      </ng-template>
+      <img *ngIf="userOwner?.url_image && userOwner?.id === artist?.userId; else defaultAvatar"
+     [src]="userOwner.url_image"
+     alt="Foto de perfil"
+     (error)="$any($event.target).src='https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg'"
+     loading="lazy">
+<ng-template #defaultAvatar>
+  <div class="avatar-placeholder">&#128100;</div>
+</ng-template>
     </div>
     <div class="profile-info">
       <span class="role">Artista</span>
@@ -23,4 +27,19 @@
   </section>
   <div *ngIf="artist.isActive"><span style="color:green;">Artista activo</span></div>
   <div *ngIf="!artist.isActive"><span style="color:red;">Artista inactivo</span></div>
+
+<!-- Canciones del artista -->
+<!-- Canciones del artista -->
+  <div class="artist-songs-section">
+    <div *ngIf="songsLoading">Cargando canciones...</div>
+    <div *ngIf="songsError && !songsLoading" style="color:red;">{{ songsError }}</div>
+    <div *ngIf="!songsLoading && songs.length === 0">Este artista no tiene canciones aún.</div>
+
+    <app-artist-songs
+      *ngIf="!songsLoading && songs.length > 0"
+      [songs]="songs"
+      [isOwnProfile]="false"
+    ></app-artist-songs>
+  </div>
+
 </div>

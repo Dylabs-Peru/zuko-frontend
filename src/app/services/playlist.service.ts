@@ -52,7 +52,7 @@ export class PlaylistService {
 }
 
   // 8. Obtener playlist propia por nombre (autenticado)
-  getMyPlaylistByName(playlistName: string): Observable<PlaylistResponse> {
+  getPlaylistByName(playlistName: string): Observable<PlaylistResponse> {
     return this.api.get<{ data: PlaylistResponse }>(`${this.endpoint}/by-name/${playlistName}`)
       .pipe(map(response => response.data));
   }
@@ -67,6 +67,13 @@ export class PlaylistService {
     return this.api.patch<{ data: PlaylistResponse }>(`${this.endpoint}/${playlistId}`, request)
       .pipe(map(response => response.data));
   }
+
+  searchMyPlaylistsByName(query: string): Observable<PlaylistResponse[]> {
+    return this.api.get<{ data: PlaylistResponse[] }>(
+      `${this.endpoint}/mine/search?name=${encodeURIComponent(query)}`
+    ).pipe(map(res => res.data));
+  }
+
 }
   
 

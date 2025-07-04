@@ -1,0 +1,425 @@
+<div class="admin-section-container">
+    <div class="section-header">
+      <button class="back-btn" (click)="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15,18 9,12 15,6"></polyline>
+        </svg>
+        Volver
+      </button>
+      <h1 class="section-title">Gestión de Artistas</h1>
+      <p class="section-subtitle">Administra artistas y gestiona permisos</p>
+    </div>
+  
+    <div class="section-content">
+      <!-- Actions Bar -->
+      <div class="actions-bar">
+        <button 
+          class="create-btn" 
+          (click)="openCreateForm()"
+          [disabled]="loading"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Crear Nuevo Artista
+        </button>
+      </div>
+  
+      <!-- Users List -->
+      <div class="users-container">
+        <div class="loading-container" *ngIf="loading && artists.length === 0">
+          <div class="spinner"></div>
+          <p>Cargando artistas...</p>
+        </div>
+  
+        <div class="empty-state" *ngIf="!loading && artists.length === 0">
+          <div class="empty-icon">🧑‍🎤</div>
+          <h3>No hay artistas registrados</h3>
+          <p>Crea el primer artista del sistema</p>
+          <button class="create-btn" (click)="openCreateForm()">Crear Primer Artista</button>
+        </div>
+  
+        <div class="users-grid" *ngIf="artists.length > 0">
+          <div class="user-card" *ngFor="let artist of artists">
+            <div class="user-header">
+              <div class="user-avatar">
+                <img 
+                  [src]="getProfileImageUrl(artist.user?.url_image || artist.urlImage)" 
+                  [alt]="artist.name"
+                  (error)="onImageError($event)"
+                  loading="lazy"
+                />
+              </div>
+              <div class="user-info">
+                <h3 class="user-name">{{ artist.name }}</h3>
+                <p class="user-email">{{ artist.user?.email }}</p>
+              </div>
+              <div class="user-status">
+                <span 
+                  class="status-badge"
+                  [class.active]="artist.isActive"
+                  [class.inactive]="!artist.isActive"
+                >
+                  {{ artist.isActive ? 'Activo' : 'Inactivo' }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="user-description" *ngIf="artist.biography">
+              <p>{{ artist.biography }}</p>
+            </div>
+            
+            <div class="user-actions">
+              <button 
+                class="edit-btn" 
+                (click)="openEditForm(artist)"
+                [disabled]="loading"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m18 2 4 4-14 14H4v-4z"></path>
+                  <path d="m14.5 5.5 4 4"></path>
+                </svg>
+                Editar
+              </button>
+              
+              <button 
+                class="toggle-btn"
+                [class.activate]="!artist.isActive"
+                [class.deactivate]="artist.isActive"
+                (click)="toggleArtistStatus(artist)"
+                [disabled]="loading"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"></path>
+                </svg>
+                {{ artist.isActive ? 'Desactivar' : 'Activar' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Create User Modal -->
+    <div class="modal-overlay" *ngIf="showCreateForm" (click)="closeCreateForm()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Crear Nuevo Artista</h3>
+          <button class="close-btn" (click)="closeCreateForm()">×</button>
+        </div>
+        
+        <form [formGroup]="createArtistForm" (ngSubmit)="onCreateArtist()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="createUser">Usuario</label>
+              <select id="createUser" formControlName="userId">
+                <option value="" disabled selected>Selecciona un usuario</option>
+                <option *ngFor="let user of eligibleUsers" [value]="user.id">
+                  {{ user.username }} ({{ user.email }})
+                </option>
+              </select>
+              <div class="error-message" *ngIf="createArtistForm.get('userId')?.invalid && createArtistForm.get('userId')?.touched">
+                Debes seleccionar un usuario.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="createUsername">Nombre de Artista</label>
+              <input 
+                id="createUsername" 
+                formControlName="name" 
+                type="text" 
+                placeholder="Nombre de artista único"
+              />
+              <div class="error-message" *ngIf="createArtistForm.get('name')?.invalid && createArtistForm.get('name')?.touched">
+                {{ getCreateFieldError('name') }}
+              </div>
+            </div>
+          </div>
+  
+          
+  
+          <div class="form-group">
+  <label for="createCountry">País</label>
+  <select id="createCountry" formControlName="country">
+  <option value="" disabled selected>Selecciona un país</option>
+  <option value="Alemania">Alemania</option>
+  <option value="Argentina">Argentina</option>
+  <option value="Australia">Australia</option>
+  <option value="Bolivia">Bolivia</option>
+  <option value="Brasil">Brasil</option>
+  <option value="Canadá">Canadá</option>
+  <option value="Chile">Chile</option>
+  <option value="China">China</option>
+  <option value="Colombia">Colombia</option>
+  <option value="Corea del Sur">Corea del Sur</option>
+  <option value="Costa Rica">Costa Rica</option>
+  <option value="Cuba">Cuba</option>
+  <option value="Dinamarca">Dinamarca</option>
+  <option value="Ecuador">Ecuador</option>
+  <option value="Egipto">Egipto</option>
+  <option value="El Salvador">El Salvador</option>
+  <option value="España">España</option>
+  <option value="Estados Unidos">Estados Unidos</option>
+  <option value="Filipinas">Filipinas</option>
+  <option value="Finlandia">Finlandia</option>
+  <option value="Francia">Francia</option>
+  <option value="Guatemala">Guatemala</option>
+  <option value="Honduras">Honduras</option>
+  <option value="India">India</option>
+  <option value="Inglaterra">Inglaterra</option>
+  <option value="Italia">Italia</option>
+  <option value="Japón">Japón</option>
+  <option value="México">México</option>
+  <option value="Nicaragua">Nicaragua</option>
+  <option value="Noruega">Noruega</option>
+  <option value="Nueva Zelanda">Nueva Zelanda</option>
+  <option value="Países Bajos">Países Bajos</option>
+  <option value="Panamá">Panamá</option>
+  <option value="Paraguay">Paraguay</option>
+  <option value="Perú">Perú</option>
+  <option value="Polonia">Polonia</option>
+  <option value="Portugal">Portugal</option>
+  <option value="Puerto Rico">Puerto Rico</option>
+  <option value="República Dominicana">República Dominicana</option>
+  <option value="Rusia">Rusia</option>
+  <option value="Sudáfrica">Sudáfrica</option>
+  <option value="Suecia">Suecia</option>
+  <option value="Suiza">Suiza</option>
+  <option value="Uruguay">Uruguay</option>
+  <option value="Venezuela">Venezuela</option>
+</select>
+</div>
+
+<div class="form-group">
+  <label for="createBiography">Biografía (Opcional)</label>
+  <textarea 
+    id="createBiography" 
+    formControlName="biography" 
+    placeholder="Biografía del artista"
+    rows="3"
+  ></textarea>
+</div>
+
+<div class="form-group">
+  <label class="checkbox-label">
+    <input type="checkbox" formControlName="isActive" />
+    <span class="checkmark"></span>
+    Artista Activo
+  </label>
+</div>
+
+    <!--      <div class="form-group">
+            <label>Foto de Perfil</label>
+            <div class="image-upload-section">
+              <div class="image-preview" (click)="createFileInput.click()">
+                <img 
+                  *ngIf="createImagePreview" 
+                  [src]="createImagePreview" 
+                  alt="Preview"
+                  class="preview-image"
+                />
+                <div *ngIf="!createImagePreview" class="upload-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21,15 16,10 5,21"></polyline>
+                  </svg>
+                  <p>Seleccionar imagen</p>
+                </div>
+                <input 
+                  #createFileInput 
+                  type="file" 
+                  accept="image/*" 
+                  style="display: none"
+                  (change)="onCreateImageSelected($event)"
+                />
+                <div *ngIf="uploadingImage" class="upload-overlay">
+                  <div class="spinner"></div>
+                  <p>Subiendo...</p>
+                </div>
+              </div>
+              <div class="image-upload-actions">
+                <button 
+                  type="button" 
+                  class="upload-btn" 
+                  (click)="createFileInput.click()"
+                  [disabled]="uploadingImage"
+                >
+                  {{ createImagePreview ? 'Cambiar imagen' : 'Seleccionar imagen' }}
+                </button>
+                <small class="upload-hint">
+                  Formatos soportados: JPG, PNG, GIF (máx. 10MB)
+                </small>
+              </div>
+            </div>
+          </div>-->
+  
+          <!-- Error message -->
+          <div class="error-message general-error" *ngIf="createArtistError">
+            {{ createArtistError }}
+          </div>
+  
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="closeCreateForm()">Cancelar</button>
+            <button 
+              type="submit" 
+              class="submit-btn"
+              [disabled]="createArtistForm.invalid || loading"
+            >
+              {{ loading ? 'Creando...' : 'Crear Artista' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Edit Artist Modal -->
+    <div class="modal-overlay" *ngIf="showEditForm" (click)="closeEditForm()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Editar Artista: {{ editingArtist?.name }}</h3>
+          <button class="close-btn" (click)="closeEditForm()">×</button>
+        </div>
+        
+        <form [formGroup]="editArtistForm" (ngSubmit)="onEditArtist()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editName">Nombre del Artista</label>
+              <input 
+                id="editName" 
+                formControlName="name" 
+                type="text" 
+                placeholder="Nombre del artista"
+              />
+              <div class="error-message" *ngIf="editArtistForm.get('name')?.invalid && editArtistForm.get('name')?.touched">
+                El nombre del artista es requerido (mínimo 3 caracteres)
+              </div>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="editCountry">País</label>
+            <select id="editCountry" formControlName="country">
+              <option value="" disabled selected>Selecciona un país</option>
+              <option value="Alemania">Alemania</option>
+              <option value="Argentina">Argentina</option>
+              <option value="Australia">Australia</option>
+              <option value="Bolivia">Bolivia</option>
+              <option value="Brasil">Brasil</option>
+              <option value="Canadá">Canadá</option>
+              <option value="Chile">Chile</option>
+              <option value="China">China</option>
+              <option value="Colombia">Colombia</option>
+              <option value="Corea del Sur">Corea del Sur</option>
+              <option value="Costa Rica">Costa Rica</option>
+              <option value="Cuba">Cuba</option>
+              <option value="Dinamarca">Dinamarca</option>
+              <option value="Ecuador">Ecuador</option>
+              <option value="Egipto">Egipto</option>
+              <option value="El Salvador">El Salvador</option>
+              <option value="España">España</option>
+              <option value="Estados Unidos">Estados Unidos</option>
+              <option value="Filipinas">Filipinas</option>
+              <option value="Finlandia">Finlandia</option>
+              <option value="Francia">Francia</option>
+              <option value="Guatemala">Guatemala</option>
+              <option value="Honduras">Honduras</option>
+              <option value="India">India</option>
+              <option value="Inglaterra">Inglaterra</option>
+              <option value="Italia">Italia</option>
+              <option value="Japón">Japón</option>
+              <option value="México">México</option>
+              <option value="Nicaragua">Nicaragua</option>
+              <option value="Noruega">Noruega</option>
+              <option value="Nueva Zelanda">Nueva Zelanda</option>
+              <option value="Países Bajos">Países Bajos</option>
+              <option value="Panamá">Panamá</option>
+              <option value="Paraguay">Paraguay</option>
+              <option value="Perú">Perú</option>
+              <option value="Polonia">Polonia</option>
+              <option value="Portugal">Portugal</option>
+              <option value="Puerto Rico">Puerto Rico</option>
+              <option value="República Dominicana">República Dominicana</option>
+              <option value="Rusia">Rusia</option>
+              <option value="Sudáfrica">Sudáfrica</option>
+              <option value="Suecia">Suecia</option>
+              <option value="Suiza">Suiza</option>
+              <option value="Uruguay">Uruguay</option>
+              <option value="Venezuela">Venezuela</option>
+            </select>
+          </div>
+  
+          
+          <div class="form-group">
+            <label for="editBiography">Biografía (Opcional)</label>
+            <textarea 
+              id="editBiography" 
+              formControlName="biography" 
+              placeholder="Biografía del artista"
+              rows="3"
+            ></textarea>
+          </div>
+  
+          <div class="form-group">
+            <label>Foto de Perfil</label>
+            <div class="image-upload-section">
+              <div class="image-preview" (click)="editFileInput.click()">
+                <img 
+                  *ngIf="editImagePreview" 
+                  [src]="editImagePreview" 
+                  alt="Preview"
+                  class="preview-image"
+                />
+                <div *ngIf="!editImagePreview" class="upload-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21,15 16,10 5,21"></polyline>
+                  </svg>
+                  <p>Seleccionar imagen</p>
+                </div>
+                <input 
+                  #editFileInput 
+                  type="file" 
+                  accept="image/*" 
+                  style="display: none"
+                  (change)="onEditImageSelected($event)"
+                />
+                <div *ngIf="uploadingImage" class="upload-overlay">
+                  <div class="spinner"></div>
+                  <p>Subiendo...</p>
+                </div>
+              </div>
+              <div class="image-upload-actions">
+                <button 
+                  type="button" 
+                  class="upload-btn" 
+                  (click)="editFileInput.click()"
+                  [disabled]="uploadingImage"
+                >
+                  {{ editImagePreview ? 'Cambiar imagen' : 'Seleccionar imagen' }}
+                </button>
+                <small class="upload-hint">
+                  Formatos soportados: JPG, PNG, GIF (máx. 10MB)
+                </small>
+              </div>
+            </div>
+          </div>
+  
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="closeEditForm()">Cancelar</button>
+            <button 
+              type="submit" 
+              class="submit-btn"
+              [disabled]="editArtistForm.invalid || loading"
+            >
+              {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+  </div>

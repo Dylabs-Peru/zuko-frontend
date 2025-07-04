@@ -1,9 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { RouterLink } from '@angular/router';
 import { UserService } from "../../../../services/User.service";
+import { GoogleAuthService } from "../../../../services/GoogleAuth.service";
 
 @Component({
     selector: 'app-register',
@@ -13,15 +14,17 @@ import { UserService } from "../../../../services/User.service";
     styleUrls: ['./register.component.css']
 })
 
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   loading: boolean = false;
   errorMessages: string[] = [];
   successMessage: string = '';
+  showFallbackButton: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private UserService: UserService,
+    private googleAuthService: GoogleAuthService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
@@ -40,6 +43,21 @@ export class RegisterComponent {
       ]]
     });
   }
+
+  ngOnInit() {
+    // Renderizar el botón de Google después de que el componente se inicialice
+    setTimeout(() => {
+      this.googleAuthService.renderGoogleButton('google-signin-button-register');
+      // Mostrar botón fallback después de 3 segundos si Google no carga
+      setTimeout(() => {
+        const googleButton = document.getElementById('google-signin-button-register');
+        if (!googleButton || googleButton.children.length === 0) {
+          this.showFallbackButton = true;
+        }
+      }, 3000);
+    }, 500);
+  }
+
   onSubmit() {
     this.errorMessages = [];
     this.successMessage = '';
@@ -141,5 +159,25 @@ export class RegisterComponent {
       }
     }
     return '';
+  }
+
+  /**
+   * Inicia sesión con Google
+   */
+  signInWithGoogle(): void {
+    if (this.loading) return;
+    
+    this.loading = true;
+    this.errorMessages = [];
+    console.log('🔍 Iniciando Google Auth desde /auth/register');
+    
+    this.googleAuthService.signInWithGoogle().then(() => {
+      console.log('Proceso de Google Auth iniciado desde register');
+      // El resto del proceso se maneja en el GoogleAuthService
+    }).catch((error) => {
+      console.error('Error al iniciar registro con Google:', error);
+      this.loading = false;
+      this.errorMessages = ['Error al conectar con Google. Por favor, intenta de nuevo.'];
+    });
   }
 } 

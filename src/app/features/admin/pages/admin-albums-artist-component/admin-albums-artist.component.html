@@ -1,0 +1,239 @@
+<div class="admin-section-container">
+  <div class="section-header">
+    <button class="back-btn" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+      Volver
+    </button>
+    <h1 class="section-title" *ngIf="artist">Lista de Álbumes de "{{ artist.name }}"</h1>
+    <h1 class="section-title" *ngIf="!artist">Lista de Álbumes</h1>
+    <p class="section-subtitle">Todos los álbumes registrados para este artista</p>
+
+  </div>
+  <div class="section-content">
+    <div class="loading-container" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Cargando álbumes...</p>
+    </div>
+    <div class="album-actions-bar">
+      <button class="create-btn" (click)="onCreateAlbum()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Crear Nuevo Álbum
+      </button>
+    </div>
+    <div class="empty-state" *ngIf="!loading && albums.length === 0">
+      <div class="empty-icon">💿</div>
+      <h3>No hay álbumes registrados para este artista</h3>
+    </div>
+
+    <div class="albums-grid" *ngIf="!loading && albums.length > 0">
+      <div class="album-card-placeholder" *ngFor="let album of albums">
+        <div class="album-card-media">
+          <div class="album-cover" *ngIf="album.cover">
+            <img [src]="album.cover" [alt]="album.title" class="album-cover-img" />
+          </div>
+        </div>
+        <div class="album-card-content">
+          <div class="album-title">{{ album.title }}</div>
+          <div class="album-meta">
+            <div class="album-year">Año: {{ album.releaseYear }}</div>
+            <div class="album-artist">Artista: {{ album.artistName }}</div>
+            <div class="album-genre">Género: {{ album.genreName }}</div>
+          </div>
+          <div class="album-actions">
+            <button class="edit-btn" (click)="onEditAlbum(album)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m18 2 4 4-14 14H4v-4z"></path>
+                <path d="m14.5 5.5 4 4"></path>
+              </svg>
+              Editar
+            </button>
+            <button class="delete-btn" (click)="onDeleteAlbum(album)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3,6 5,6 21,6"></polyline>
+                <path d="m19,6-1,14a2,2 0 0,1-2,2H8a2,2 0 0,1-2-2L5,6"></path>
+                <path d="m10,11 0,6"></path>
+                <path d="m14,11 0,6"></path>
+              </svg>
+              Eliminar
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showCreateAlbumModal" (click)="onCloseCreateAlbumModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ isEditing ? ('Editar Álbum: ' + albumToEdit?.title) : 'Crear Nuevo Álbum' }}</h3>
+      <button class="close-btn" (click)="onCloseCreateAlbumModal()">×</button>
+    </div>
+    <div class="modal-tabs">
+      <span [class.active-tab]="albumTab==='info'" (click)="onTabClick('info')">Información Básica</span>
+      <span [class.active-tab]="albumTab==='songs'" (click)="onTabClick('songs')" [class.disabled]="!canGoToSongsTab()">Canciones</span>
+    </div>
+    <div class="error-message small-error" *ngIf="showTabError">
+      Por favor completa todos los campos obligatorios antes de continuar.
+    </div>
+    <form *ngIf="albumTab==='info'" (ngSubmit)="onNextAlbumInfo()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="albumTitle">Título del álbum</label>
+          <input id="albumTitle" type="text" [(ngModel)]="albumForm.title" name="albumTitle" required placeholder="Título del álbum" (blur)="onFieldTouched('title')" />
+          <div class="error-message" *ngIf="shouldShowError('title')">El título es obligatorio</div>
+        </div>
+        <div class="form-group">
+          <label for="albumGenre">Género</label>
+          <select id="albumGenre" [(ngModel)]="albumForm.genreId" name="albumGenre" required (blur)="onFieldTouched('genreId')" (change)="onFieldTouched('genreId')">
+            <option value="" disabled selected>Selecciona un género</option>
+            <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
+          </select>
+          <div class="error-message" *ngIf="shouldShowError('genreId')">El género es obligatorio</div>
+        </div>
+      </div>
+      <div class="form-group" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center;">
+        <label style="margin-bottom: 0.5rem;">Portada</label>
+        <div class="cover-upload-section">
+          <div class="cover-preview-container" *ngIf="albumForm.coverUrl; else noCover">
+            <img [src]="albumForm.coverUrl" alt="Portada" class="cover-preview" />
+          </div>
+          <ng-template #noCover>
+            <div class="album-cover-preview no-cover">
+              <span class="cover-placeholder">📷</span>
+            </div>
+          </ng-template>
+          <div class="cover-upload-btn-container">
+            <label class="save-button upload-cover-label">
+              <input type="file" accept="image/*" (change)="onAlbumCoverSelected($event)" hidden />
+              <span>Subir portada</span>
+            </label>
+          </div>
+          <div class="cover-upload-btn-container" *ngIf="albumForm.coverUrl">
+            <button type="button" class="remove-cover-btn" (click)="removeAlbumCover()">
+              <span>Quitar portada</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <form *ngIf="albumTab==='songs'" (ngSubmit)="onSaveAlbum()">
+      <div class="song-list-scroll">
+        <ul class="song-list" *ngIf="songs.length > 0">
+          <li class="song-item" *ngFor="let song of songs; let i = index">
+            <div class="song-cover">
+              <img *ngIf="song.imageUrl; else noCover2" [src]="song.imageUrl" alt="Portada de {{ song.name }}" class="cover-image" />
+              <ng-template #noCover2>
+                <div class="cover-placeholder">📷</div>
+              </ng-template>
+            </div>
+            <div class="song-info">
+              <div class="song-title">
+                <span class="song-index">{{ i + 1 }}.</span>
+                <strong class="song-name">{{ song.name }}</strong>
+              </div>
+              <small class="meta">
+                Fecha: {{ song.releaseDate | date: 'dd/MM/yyyy' }}
+              </small>
+            </div>
+            <div class="song-actions">
+              <input 
+                type="checkbox" 
+                [checked]="albumForm.selectedSongIds.includes(song.id)" 
+                (change)="toggleAlbumSongSelection(song.id)" 
+                class="select-song-checkbox" 
+                id="song-{{song.id}}"
+                [attr.aria-label]="'Seleccionar ' + song.name"
+              />
+            </div>
+          </li>
+        </ul>
+        <div *ngIf="songs.length === 0" class="no-songs">No hay canciones disponibles.</div>
+      </div>
+      
+      <!-- Mensaje de validación de canciones -->
+      <div class="error-message" *ngIf="shouldShowError('songs')">
+        Debes seleccionar al menos {{minSongsRequired}} canciones para crear el álbum
+      </div>
+      
+      <div class="save-section">
+        <button 
+          class="cancel-button" 
+          type="button" 
+          (click)="onCloseCreateAlbumModal()"
+        >
+          Cancelar
+        </button>
+        <button 
+          class="save-button" 
+          type="submit" 
+          [disabled]="albumForm.selectedSongIds.length < minSongsRequired || isSaving"
+          (click)="fieldTouched.songs = true"
+        >
+          {{ isSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal de confirmación para eliminar álbum -->
+<div class="modal-overlay" *ngIf="showDeleteConfirmModal" (click)="onCancelDelete()">
+  <div class="modal-card delete-confirm-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Eliminar Álbum</h3>
+      <button class="close-btn" (click)="onCancelDelete()" [disabled]="isDeleting">×</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="delete-warning">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <p>¿Estás seguro de que deseas eliminar el álbum <strong>"{{ albumToDelete?.title }}"</strong>?</p>
+        <p class="warning-text">Esta acción no se puede deshacer.</p>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button 
+        class="cancel-button" 
+        type="button" 
+        (click)="onCancelDelete()"
+        [disabled]="isDeleting"
+      >
+        Cancelar
+      </button>
+      <button 
+        class="delete-button" 
+        type="button" 
+        (click)="onConfirmDelete()"
+        [disabled]="isDeleting"
+      >
+        <ng-container *ngIf="!isDeleting; else deletingTemplate">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3,6 5,6 21,6"></polyline>
+            <path d="m19,6-1,14a2,2 0 0,1-2,2H8a2,2 0 0,1-2-2L5,6"></path>
+            <path d="m10,11 0,6"></path>
+            <path d="m14,11 0,6"></path>
+          </svg>
+          Eliminar
+        </ng-container>
+        <ng-template #deletingTemplate>
+          <span class="loading-text">
+            <span class="spinner"></span>
+            Eliminando...
+          </span>
+        </ng-template>
+      </button>
+    </div>
+  </div>
+</div>

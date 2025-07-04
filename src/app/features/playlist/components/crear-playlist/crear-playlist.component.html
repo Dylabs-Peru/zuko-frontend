@@ -29,13 +29,20 @@
       maxlength="40"
       placeholder="Nombre de playlist"
     />
+
+    <div
+    *ngIf="playlistName && playlistName.trim().length > 0 && playlistName.trim().length < 3"
+    class="playlist-name-error"
+    >
+    El nombre de la playlist debe tener al menos 3 caracteres.
+  </div>
     <textarea
       class="playlist-description-input"
       [(ngModel)]="playlistDescription"
       maxlength="200"
       placeholder="Descripción de playlist"
     ></textarea>
-    <button class="create-playlist-btn" (click)="onCreatePlaylist()">
+    <button *ngIf="playlistName && playlistName.trim().length >= 3" class="create-playlist-btn" (click)="onCreatePlaylist()">
       Listo
     </button>
   </div>

@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap');
+
+.album-library-container {
+  padding: 0;
+  margin: 0;
+  font-family: 'Manjari', Arial, sans-serif;
+}
+
+.playlist-searchbar {
+  display: flex;
+  align-items: center;
+  width: 394px;
+  height: 39px;
+  background: #F3F3F3;
+  border-radius: 8px;
+  margin-bottom: 36px;
+  padding-left: 12px;
+  position: relative;
+}
+.playlist-searchbar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 340px;
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 16px;
+  padding: 8px 0;
+}
+.search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 8px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+.search-btn img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.loading-state, .error-state, .empty-state {
+  margin-left: 8px;
+  font-size: 15px;
+  color: #b71c1c;
+  font-family: 'Manjari', Arial, sans-serif;
+}
+.albums-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 36px;
+  cursor: pointer;
+}
+.album-card {
+  width: 236px;
+  height: 297px;
+  background: rgba(15, 1, 1, 0);
+  border-radius: 14px;
+  box-shadow: 0 0 0 2px transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+  position: relative;
+  transition: box-shadow 0.13s, background 0.13s, transform 0.13s;
+}
+.album-card:hover {
+  background: #f2f2f2;
+  box-shadow: 0 4px 16px rgba(216,0,0,0.11);
+  transform: translateY(-4px) scale(1.03);
+}
+.album-cover {
+  width: 207px;
+  height: 207px;
+  background: #B8B8B8;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  background-size: cover;
+  background-position: center;
+}
+.album-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding-left: 16px;
+  position: relative;
+}
+.album-title {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #000;
+  margin-bottom: 4px;
+}
+.album-artist {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #8C8C8C;
+  margin-bottom: 4px;
+}

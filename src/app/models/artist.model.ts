@@ -2,12 +2,14 @@ export interface CreateArtistRequest {
     name: string;
     country: string;
     biography: string;
+    urlImage?: string;
   }
 
   export interface UpdateArtistRequest {
     name?: string;
     country?: string;
     biography?: string;
+    urlImage?: string;
   }
 
   export interface ArtistResponse {
@@ -20,6 +22,7 @@ export interface CreateArtistRequest {
     urlImage?: string;
     user?: {
         email: string;
+        url_image?: string;
         // otras propiedades del usuario
       };
       albums?: any[]; // Ajusta según tu modelo

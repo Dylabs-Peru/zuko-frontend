@@ -1,10 +1,21 @@
 <div class="albums-list-container">
+  <div class="playlist-searchbar">
+    <input type="text"
+      [(ngModel)]="albumSearchQuery"
+      (input)="onSearch()"
+      placeholder="Buscar álbum"
+    />
+    <button class="search-btn" (click)="onSearch()" aria-label="Buscar álbum">
+      <img src="https://res.cloudinary.com/dqk8inmwe/image/upload/v1750644489/WhatsApp_Image_2025-06-22_at_21.04.57-removebg-preview_uv7sbq.png" alt="Buscar" />
+    </button>
+  </div>
+
   <ng-container *ngIf="isLoading">
     <p>Cargando álbumes...</p>
   </ng-container>
 
   <ng-container *ngIf="!isLoading && albums.length === 0">
-    <p class="no-albums">No tienes álbumes disponibles.</p>
+    <p class="no-albums">No hay álbumes disponibles.</p>
   </ng-container>
   <ng-container *ngIf="!isLoading && albums.length > 0">
     <div class="albums-list">
@@ -13,19 +24,17 @@
         <div class="album-info">
           <p class="album-name">{{ album.title }}</p>
           <p class="album-owner">{{ album.artistName }}</p>
-<ng-container *ngIf="isOwnProfile">
-  <div class="dots" (click)="toggleAlbumMenu(album)">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <div *ngIf="openMenuAlbumId === album.id" class="dropdown-menu">
-    <button (click)="editAlbum(album)">Editar Álbum</button>
-    <button (click)="confirmDeleteAlbum(album)">Eliminar Álbum</button>
-  </div>
-</ng-container>
+          <div *ngIf="isOwnProfile" class="dots" (click)="toggleAlbumMenu(album)">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div *ngIf="isOwnProfile && openMenuAlbumId === album.id" class="dropdown-menu">
+            <button (click)="editAlbum(album)">Editar Álbum</button>
+            <button (click)="confirmDeleteAlbum(album)">Eliminar Álbum</button>
+          </div>
+          <button class="play-button" [routerLink]="['/album', album.id]" title="Ver álbum"></button>
         </div>
-        <button class="play-button" [routerLink]="['/album', album.id]" title="Ver álbum"></button>
       </div>
     </div>
   </ng-container>

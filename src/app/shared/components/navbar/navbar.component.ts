@@ -13,6 +13,7 @@ import { ArtistResponse } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/Artist.service';
 import { AuthService } from '../../../services/Auth.service';
 import { AlbumService } from '../../../services/Album.service';
+import { environment } from '../../../../environments/environment';
 import { filter } from 'rxjs/operators';
 import { PlaylistResponse } from '../../../models/playlist.model';
 import { PlaylistService } from '../../../services/playlist.service';
@@ -84,7 +85,14 @@ export class NavbarComponent {
 
   get userProfileImage(): string {
     const user = this.currentUser;
-    return user?.url_image || 'https://res.cloudinary.com/dqk8inmwe/image/upload/v1750800568/pfp_placeholder_hwwumb.jpg';
+    return user?.url_image || environment.defaultProfileImage;
+  }
+
+  /**
+   * Maneja errores de carga de imagen y establece el placeholder
+   */
+  onImageError(event: any): void {
+    event.target.src = environment.defaultProfileImage;
   }
 
   get username(): string {
@@ -103,17 +111,35 @@ export class NavbarComponent {
     this.playlistResults = [];
 
     forkJoin({
-      user: this.userService.getUserByUsername(this.searchTerm.trim()).pipe(catchError(() => of(null))),
-      songs: this.songService.getMySongs().pipe(catchError(() => of([]))),
+      users: this.userService.searchUsersByUsername(this.searchTerm.trim()).pipe(catchError(() => of([]))),
+      songs: this.songService.searchPublicSongsByTitle(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       artist: this.artistService.getArtistByName(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       albums: this.albumService.getAlbumsByTitle(this.searchTerm.trim()).pipe(catchError(() => of([]))),
       playlists: this.playlistService.getPublicPlaylistsByName(this.searchTerm.trim()).pipe(catchError(() => of([])))
-    }).subscribe(({ user, songs, artist, albums, playlists }) => {
+    }).subscribe(({ users, songs, artist, albums, playlists }) => {
+      console.log("Users:", users);
       console.log("Playlists:", playlists);
 
-      if (user) this.userResults = [user];
+      // Ahora users es un array, no un solo usuario
+      if (users && Array.isArray(users) && users.length > 0) {
+        // Filtrar usuarios case-insensitive y excluir el usuario actual
+        const currentUser = this.currentUser;
+        this.userResults = users.filter(user => {
+          // Filtro 1: Case-insensitive
+          const matchesSearch = user.username.toLowerCase().includes(this.searchTerm.trim().toLowerCase());
+          // Filtro 2: No incluir el usuario actual
+          const isNotCurrentUser = !currentUser || user.username !== currentUser.username;
+          // Filtro 3: Solo usuarios activos
+          const isActiveUser = user.isActive === true;
+          
+          return matchesSearch && isNotCurrentUser && isActiveUser;
+        });
+      } else {
+        this.userResults = [];
+      }
       if (artist && Array.isArray(artist) && artist.length > 0) {
-        this.artistResults = artist;
+        // Solo artistas activos
+        this.artistResults = artist.filter(a => a.isActive !== false);
       } else {
         this.artistResults = [];
       }
@@ -128,7 +154,13 @@ export class NavbarComponent {
        if (playlists && Array.isArray(playlists)) {
         this.playlistResults = playlists
       }
-      if (!user && (!this.songResults || this.songResults.length === 0) && (!this.artistResults || this.artistResults.length === 0) && (!this.albumResults || this.albumResults.length === 0) && (!this.playlistResults || this.playlistResults.length === 0)) {
+      
+      // Verificar si no hay resultados en ninguna categoría
+      if ((!this.userResults || this.userResults.length === 0) && 
+          (!this.songResults || this.songResults.length === 0) && 
+          (!this.artistResults || this.artistResults.length === 0) && 
+          (!this.albumResults || this.albumResults.length === 0) && 
+          (!this.playlistResults || this.playlistResults.length === 0)) {
         this.errorMsg = 'No se encontraron resultados';
       }
 
@@ -157,9 +189,10 @@ export class NavbarComponent {
   }
 
   goToSong(songId: number) {
-    this.router.navigate(['/songs', songId]);
-    this.showResults = false;
-  }
+  this.router.navigate(['/songs/detail', songId]);
+  this.showResults = false;
+  this.searchTerm = '';
+}
 
   goToArtist(artistName: string) {
     this.router.navigate(['/artist/profile-artist', artistName]);

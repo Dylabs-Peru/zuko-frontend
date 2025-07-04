@@ -15,6 +15,13 @@ export class ListGenresComponent implements OnInit {
   genres: GenreResponse[] = [];
   error: string = '';
   @Input() selectedGenre: number | null = null;
+
+  ngOnChanges() {
+    console.log('DEBUG ListGenresComponent ngOnChanges:', { selectedGenre: this.selectedGenre });
+    if (this.selectedGenre !== null) {
+      this.selectedGenre = Number(this.selectedGenre);
+    }
+  }
   @Output() selectedGenreChange = new EventEmitter<number>();
   @Output() genreSelected = new EventEmitter<number>();
 
@@ -28,6 +35,15 @@ export class ListGenresComponent implements OnInit {
     this.genreService.get_genres().subscribe({
       next: (data) => {
         this.genres = data;
+        console.log('DEBUG ListGenresComponent loadGenres:', { selectedGenre: this.selectedGenre, genres: this.genres });
+      // Asegura que el valor seleccionado sea number y esté en la lista
+      if (this.selectedGenre !== null) {
+        this.selectedGenre = Number(this.selectedGenre);
+        const match = this.genres.find(g => Number(g.id) === this.selectedGenre);
+        if (!match) {
+          this.selectedGenre = null;
+        }
+      }
       },
       error: (err) => {
         this.error = 'Error al cargar géneros';

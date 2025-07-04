@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { MusicPlayerService } from './music-player.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private musicPlayerService: MusicPlayerService) {}
 
   /**
    * Verifica si existe un token válido en localStorage
@@ -110,6 +111,10 @@ export class AuthService {
    */
   logout(reason: string = 'Manual logout'): void {
     console.log(`Realizando logout: ${reason}`);
+    
+    // Destruir el reproductor global antes de limpiar datos
+    this.musicPlayerService.destroyGlobalPlayer();
+    
     this.clearAuthData();
     this.router.navigate(['/auth/login']);
   }

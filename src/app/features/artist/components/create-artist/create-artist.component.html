@@ -17,18 +17,25 @@
           </div>
         </div>
   
-        <div class="form-group">
-          <label for="country">País</label>
-          <input 
-            type="text" 
-            id="country" 
-            formControlName="country"
-            [ngClass]="{'is-invalid': submitted && artistForm.get('country')?.errors}"
-          />
-          <div *ngIf="submitted && artistForm.get('country')?.errors" class="error-message">
-            <small>El país es obligatorio</small>
-          </div>
-        </div>
+        <div class="form-group selector-container">
+  <label for="country">País</label>
+  <div class="dropdown" [class.open]="dropdownOpen">
+    <div class="dropdown-header" (click)="toggleDropdown()">
+      {{ selectedCountry || 'Selecciona un país' }}<span style="margin-left:8px;">▼</span>
+    </div>
+    <ul class="dropdown-list" *ngIf="dropdownOpen">
+      <li *ngFor="let country of countries" (click)="selectCountry(country)">{{ country }}</li>
+    </ul>
+  </div>
+  <!-- Select oculto para validación del formulario -->
+  <select id="country" formControlName="country" style="display:none">
+    <option value="" disabled>Selecciona un país</option>
+    <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+  </select>
+  <div *ngIf="submitted && artistForm.get('country')?.errors" class="error-message">
+    <small>El país es obligatorio</small>
+  </div>
+</div>
   
         <div class="form-group">
           <label for="biography">Biografía</label>

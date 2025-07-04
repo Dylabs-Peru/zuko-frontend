@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from './Api.service';
 import { CreateArtistRequest, UpdateArtistRequest, ArtistResponse } from '../models/artist.model';
 
@@ -29,7 +30,8 @@ export class ArtistService {
 
   // Listar todos los artistas
   getAllArtists(): Observable<ArtistResponse[]> {
-    return this.apiService.get<ArtistResponse[]>(this.endpoint);
+    return this.apiService.get<{ message: string, data: ArtistResponse[] }>(this.endpoint)
+      .pipe(map((res: { message: string, data: ArtistResponse[] }) => res.data));
   }
 
   // Buscar artistas por nombre

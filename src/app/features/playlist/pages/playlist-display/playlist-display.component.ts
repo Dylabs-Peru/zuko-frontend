@@ -1,5 +1,6 @@
+import { PlaylistSummaryResponse } from './../../../../models/playlist.model';
 import { ConfirmDeleteDialogComponent } from './../../components/borrar-playlist/confirm-delete-dialog.component';
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, computed, effect } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
@@ -12,7 +13,8 @@ import { AlbumService } from '../../../../services/Album.service';
 import { AlbumResponse } from '../../../../models/album.model';
 import { AddSongToPlaylistModalComponent } from '../../components/agregar-cancion-playlist/add-song-to-playlist.component';
 import { SongResponse } from '../../../../models/song.model';
-import { ShortcutService } from '../../../../services/shortcuts.service';
+import { ShortcutsService } from '../../../../services/shortcuts.service';
+import { MusicPlayerService } from '../../../../services/music-player.service';
 
 @Component({
   selector: 'app-playlist-display',
@@ -34,17 +36,86 @@ export class PlaylistDisplayComponent implements OnInit {
   songs: SongResponse[] = [];
   selectedSongForPlaylist: SongResponse | null = null;
   showAddToPlaylistModal = false;
+  shortcutsPlaylists: PlaylistSummaryResponse[] = [];
+  currentSong: SongResponse | null = null;
+  currentSongId: number | null = null;
+  currentSongIndex: number | null = null;
+  isShuffleMode = false; 
+  playbackOrder: number[] = []; 
+  currentPlaybackIndex = 0; 
 
   constructor(
             private playlistService: PlaylistService, 
             private route: ActivatedRoute,
             private router: Router,
             private albumService: AlbumService,
-            private shortcutService: ShortcutService
-  ) {}
+            private shortcutService: ShortcutsService,
+            private musicPlayerService: MusicPlayerService
+  ) {
+    // Effect para sincronizar el estado local con el servicio global
+    effect(() => {
+      const globalSong = this.musicPlayerService.currentSong();
+      
+      // Sincronizar currentSongId con la canción global
+      if (globalSong) {
+        this.currentSongId = globalSong.id;
+        // Encontrar el índice de la canción en la playlist actual
+        if (this.playlist && this.playlist.songs) {
+          const songIndex = this.playlist.songs.findIndex(s => s.id === globalSong.id);
+          this.currentSongIndex = songIndex >= 0 ? songIndex : null;
+        }
+      } else {
+        this.currentSongId = null;
+        this.currentSongIndex = null;
+      }
+    });
+  }
+
+  // Getter para acceder al estado de reproducción desde el servicio
+  get isPlaying(): boolean {
+    return this.musicPlayerService.isPlaying();
+  }
+
+  // Setter para mantener compatibilidad local
+  set isPlaying(value: boolean) {
+    // No hacer nada aquí, el estado se maneja a través del servicio
+  }
+
+  // Getter para acceder al playerRef desde el servicio
+  get playerRef(): any {
+    return this.musicPlayerService.playerRef();
+  }
+
+  // Computed para saber si la canción actual pertenece a esta playlist
+  get isCurrentSongFromThisPlaylist(): boolean {
+    const globalSong = this.musicPlayerService.currentSong();
+    if (!globalSong || !this.playlist || !this.playlist.songs) return false;
+    return this.playlist.songs.some(song => song.id === globalSong.id);
+  }
+
+  // Computed para saber si hay una canción reproduciéndose Y es de esta playlist de origen
+  get shouldShowPauseInPlayButton(): boolean {
+    const isPlaying = this.musicPlayerService.isPlaying();
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    const currentPlaylistId = this.playlist?.playlistId;
+    
+    return isPlaying && sourcePlaylistId === currentPlaylistId;
+  }
+
+  // Método para saber si una canción específica debe mostrar pause (solo si se reprodujo desde ESTA playlist)
+  shouldShowPauseForSong(songId: number): boolean {
+    const isPlaying = this.musicPlayerService.isPlaying();
+    const globalSong = this.musicPlayerService.currentSong();
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    const currentPlaylistId = this.playlist?.playlistId;
+    
+    return isPlaying && 
+           globalSong?.id === songId && 
+           sourcePlaylistId === currentPlaylistId;
+  }
    
    ngOnInit(): void {
-    this.route.snapshot.params['id'];this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(params => {
     const playlistId = params.get('id');
     if (!playlistId) {
       this.error = 'ID de playlist no especificado';
@@ -59,6 +130,10 @@ export class PlaylistDisplayComponent implements OnInit {
       const authObj = JSON.parse(auth);
       this.userID = authObj.user?.id || null;
     }
+      this.shortcutService.playlists$.subscribe(playlists => {
+      this.shortcutsPlaylists = playlists;
+    });
+      this.shortcutService.getShortcutsByUser().subscribe();
     }
 
     onEditPlaylist() {
@@ -74,7 +149,7 @@ export class PlaylistDisplayComponent implements OnInit {
     onConfirmDelete() {
     this.playlistService.deletePlaylist(this.playlist!.playlistId).subscribe({
       next: () => {
-        this.shortcutService.removeShortcut(this.playlist!.playlistId);
+        this.shortcutService.removePlaylistFromShortcuts(this.playlist!.playlistId);
         this.showDeleteDialog = false;
         this.router.navigate(['/playlist/library']);
       },
@@ -87,6 +162,7 @@ export class PlaylistDisplayComponent implements OnInit {
 
     onCancelDelete() {
       this.showDeleteDialog = false;
+      this.showMenu = false;
     }
 
     onSongRemoved(songId: number) {
@@ -101,7 +177,7 @@ export class PlaylistDisplayComponent implements OnInit {
 
     onPlaylistEdited(editedPlaylist: PlaylistResponse) {
       this.playlist = editedPlaylist;
-     this.showEditDialog = false;
+      this.showEditDialog = false;
     }
 
     canEdit(): boolean {
@@ -154,19 +230,118 @@ export class PlaylistDisplayComponent implements OnInit {
 
     onAddToShortcut() {
       if (!this.playlist) return;
-      const userId = this.userID;
-      if (!userId) return;
-      const key = `shortcuts_${userId}`;
-      const current = JSON.parse(localStorage.getItem(key) || '[]');
-      if (!current.find((p: any) => p.playlistId === this.playlist!.playlistId)) {
-        current.push(this.playlist);
-        localStorage.setItem(key, JSON.stringify(current));
-      }
-      this.showMenu = false;
-      alert('Playlist agregada a accesos directos');
-    
+      const request = {playlistId: this.playlist.playlistId}
+      this.shortcutService.addPlaylistToShortcuts(request).subscribe({
+        next: (response) => {
+          console.log('Playlist agregada a accesos directos:', response);
+          this.shortcutService.getShortcutsByUser().subscribe();
+          this.showMenu = false;
+          alert('Playlist agregada a accesos directos');
+        },
+        error: (err) => {
+          console.error('Error al agregar playlist a accesos directos:', err);
+          alert(this.error = err.error?.detail || 'No se pudo agregar la playlist a accesos directos');
+        }
+      });
     }
+
+    onRemoveFromShortcut() {
+    if (!this.playlist) return;
+    this.shortcutService.removePlaylistFromShortcuts(this.playlist.playlistId).subscribe({
+      next: () => {
+        this.shortcutService.getShortcutsByUser().subscribe();
+        this.showMenu = false;
+        alert('Playlist eliminada de accesos directos');
+      },
+      error: (err) => {
+        alert('No se pudo eliminar la playlist de accesos directos');
+      }
+    });
+  }
+
+  isInShortcuts(): boolean {  
+    return this.shortcutsPlaylists?.some(p => p.playlistId === this.playlist?.playlistId);
+  }
+
+   goToHome(): void  {
+    this.router.navigate(['/home']);
+  }
+
+  playSong(song: SongResponse) {
+    const videoId = this.extractVideoId(song.youtubeUrl);
+    
+    const songIndex = this.playlist!.songs.findIndex(s => s.id === song.id);
+    const sourcePlaylistId = this.musicPlayerService.sourcePlaylistId();
+    const currentPlaylistId = this.playlist?.playlistId;
+    const currentSong = this.musicPlayerService.currentSong();
+    
+    // Si la misma canción se está reproduciendo desde ESTA playlist específica, permitir toggle
+    if (currentSong?.id === song.id && sourcePlaylistId === currentPlaylistId) {
+      this.musicPlayerService.togglePlay();
+    } else {
+      // En cualquier otro caso: nueva canción O canción reproduciéndose desde otra fuente - reiniciar desde esta playlist
+      this.currentSongIndex = songIndex;
+      this.currentSongId = song.id;
+      
+      // Si está en modo shuffle, actualiza currentPlaybackIndex
+      if (this.isShuffleMode) {
+        this.currentPlaybackIndex = this.playbackOrder.findIndex(index => index === songIndex);
+      }
+      
+      // Usar el reproductor global y establecer esta playlist como origen
+      this.musicPlayerService.loadSong(videoId, song, this.playlist!.playlistId);
+    }
+  }
+
+  extractVideoId(url: string): string {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : '';
+  }
+
+  togglePlay(): void {
+    // Si hay una canción reproduciéndose Y es de esta playlist de origen, hacer toggle
+    if (this.shouldShowPauseInPlayButton) {
+      this.musicPlayerService.togglePlay();
+    } else {
+      // Si no hay canción reproduciéndose o es de otra playlist, reproducir la primera de esta playlist
+      if (this.playlist && this.playlist.songs.length > 0) {
+        const firstSong = this.playlist.songs[0];
+        this.playSong(firstSong);
+      }
+    }
+  }
+
+  toggleShuffle(): void {
+    this.isShuffleMode = !this.isShuffleMode;
+    
+    if (this.isShuffleMode) {
+      // Crea array de índices y lo baraja
+      this.playbackOrder = Array.from({length: this.playlist!.songs.length}, (_, i) => i);
+      this.shuffleArray(this.playbackOrder);
+
+      // Si hay una canción reproduciéndose, encuentra su posición en el array shuffleado
+      if (this.currentSongIndex !== null) {
+        this.currentPlaybackIndex = this.playbackOrder.findIndex(index => index === this.currentSongIndex);
+      }
+    } else {
+      // Modo normal: resetea las variables de shuffle
+      this.playbackOrder = [];
+      this.currentPlaybackIndex = 0;
+    }
+  }
+
+  private shuffleArray(array: number[]): void {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
+
+
+
+}
+
+
 
 
 

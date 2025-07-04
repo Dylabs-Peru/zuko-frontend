@@ -20,6 +20,14 @@ export class AdminDashboardComponent {
       color: '#B71C1C'
     },
     {
+      id: 'artists',
+      title: 'Gestión de Artistas',
+      description: 'Administrar artistas y permisos',
+      icon: '🧑‍🎤',
+      route: '/admin/artists',
+      color: '#B71C1C'
+    },
+    {
       id: 'genres',
       title: 'Gestión de Géneros',
       description: 'Crear, editar y eliminar géneros musicales',
@@ -28,11 +36,27 @@ export class AdminDashboardComponent {
       color: '#D32F2F'
     },
     {
+      id: 'albums',
+      title: 'Gestión de Álbumes',
+      description: 'Crear, editar y eliminar álbumes',
+      icon: '💿',
+      route: '/admin/albums',
+      color: '#B71C1C'
+    },
+    {
       id: 'roles',
       title: 'Gestión de Roles',
       description: 'Configurar roles y permisos del sistema',
       icon: '🔐',
       route: '/admin/roles',
+      color: '#C62828'
+    },
+    {
+      id: 'canciones',
+      title: 'Gestión de Canciones',
+      description: 'Crear, editar y eliminar canciones',
+      icon: '🎤',
+      route: '/admin/songs',
       color: '#C62828'
     }
   ];

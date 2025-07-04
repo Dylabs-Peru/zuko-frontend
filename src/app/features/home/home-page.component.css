@@ -1,1 +1,674 @@
 @import url("../playlist/pages/biblioteca/biblioteca.component.css");
+
+/* Estilos para el carrusel de lanzamientos */
+.carousel-banner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffe6e6, #fff5f5);
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.carousel-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.banner-content {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 1rem 2rem;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+}
+
+/* Cuando está activo */
+.slide-in-left,
+.slide-in-right {
+  opacity: 1;
+}
+
+.slide-in-left {
+  animation: slideFromLeft 0.6s forwards;
+}
+
+.slide-in-right {
+  animation: slideFromRight 0.6s forwards;
+}
+
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+.banner-image {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 3px solid #B71C1C;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.banner-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.banner-text {
+  flex: 1;
+  max-width: 500px;
+  color: #333;
+}
+
+.release-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.new-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #D80000;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.release-type {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+}
+
+.release-type {
+  background-color: #D80000;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 0.5rem;
+  transform: translateY(-1px);
+}
+
+.new-release-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #222;
+  line-height: 1.2;
+  font-family: 'Manjari', sans-serif;
+}
+
+.artist-name {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #888;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.release-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.play-btn, .view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Estilos para los botones del carrusel */
+.release-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.play-btn, .view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.25rem;
+  border: 1.5px solid #D80000;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  min-width: 44px;
+  min-height: 44px;
+  gap: 8px;
+  line-height: 1;
+  background: transparent;
+  color: #D80000;
+}
+
+/* Botón de reproducción ahora usa la clase view-btn */
+
+.play-action-btn,
+.view-btn {
+  background: transparent;
+  color: #D80000;
+  border: 2px solid #D80000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px; /* Ancho mínimo para mantener consistencia */
+}
+
+.view-btn:hover {
+  background: rgba(216, 0, 0, 0.05);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.view-btn:active,
+.play-btn:active {
+  transform: translateY(1px);
+}
+
+.play-btn:active {
+  transform: scale(0.98) translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.view-btn {
+  background: transparent;
+  color: #D80000;
+  border: 2px solid #D80000;
+  border-radius: 50px;
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.view-btn:hover {
+  background: rgba(216, 0, 0, 0.05);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.view-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-controls {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 10;
+  padding: 0 1rem;
+}
+
+.carousel-btn {
+  pointer-events: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  z-index: 10;
+  border-radius: 4px;
+  margin: 0 1rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.carousel-btn:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+}
+
+.carousel-btn:active {
+  background-color: rgba(0, 0, 0, 0.7);
+  transform: translateY(1px);
+}
+
+/* Estilos para las pestañas */
+.library-tabs {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+}
+
+.tab-link {
+  font-family: 'Manjari', Arial, sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: #000;
+  cursor: pointer;
+  margin-right: 36px;
+  padding-bottom: 2px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-link:hover {
+  color: #D80000;
+}
+
+.tab-active {
+  font-weight: 700;
+  color: #D80000;
+  border-bottom: 4px solid #D80000;
+}
+
+/* Estilos responsivos */
+@media (max-width: 992px) {
+  .banner-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+  }
+  
+  .banner-text {
+    max-width: 100%;
+  }
+  
+  .new-release-title {
+    font-size: 1.5rem;
+  }
+  
+  .artist-name, .subtitle {
+    font-size: 1rem;
+  }
+  
+  .play-btn, .view-btn {
+    margin: 0.25rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .carousel-banner {
+    padding: 1.25rem 0.75rem;
+    min-height: auto;
+  }
+  
+  .banner-image {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .new-release-title {
+    font-size: 1.4rem;
+  }
+  
+  .carousel-btn {
+    height: 50px;
+    font-size: 1.8rem;
+    margin: 0 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel-btn {
+    height: 40px;
+    font-size: 1.5rem;
+    margin: 0 0.25rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .release-header {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .new-label {
+    font-size: 0.9rem;
+  }
+  
+  .release-type {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
+    margin-left: 0.3rem;
+  }
+}
+
+/* Estilos para la cuadrícula de álbumes */
+.albums-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
+  margin-top: 1.5rem;
+}
+
+.album-card {
+  width: 220px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.14);
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: left;
+  position: relative;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.album-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.album-cover {
+  width: 100%;
+  height: 0;
+  padding-top: 100%; /* Cuadrado */
+  background-color: #f0f0f0;
+  background-size: cover;
+  background-position: center;
+  border-radius: 7px;
+  margin-bottom: 12px;
+}
+
+.album-info {
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.album-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.2;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-artist {
+  color: #666;
+  font-size: 13px;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-play-btn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 40px;
+  height: 40px;
+  background: #D80000;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  color: white;
+  opacity: 1;
+  transition: background-color 0.2s ease;
+}
+
+.album-play-btn:hover {
+  background: #ff1a1a;
+}
+
+.album-play-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.carousel-banner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffe6e6, #fff5f5);
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  min-height: 220px; /* asegura espacio del banner */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Separamos los banners con posicionamiento absoluto pero dejamos espacio en el padre */
+.banner-content {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 1rem 2rem;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+}
+
+/* Cuando está activo */
+.slide-in-left,
+.slide-in-right {
+  opacity: 1;
+}
+
+.slide-in-left {
+  animation: slideFromLeft 0.6s forwards;
+}
+
+.slide-in-right {
+  animation: slideFromRight 0.6s forwards;
+}
+
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+.banner-content img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 3px solid #B71C1C;
+}
+
+.banner-text {
+  max-width: 400px;
+}
+
+.new-label {
+  font-weight: 700;
+  color: #B71C1C;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.new-release-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.artist-name {
+  color: #555;
+  font-style: italic;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0.5rem 0;
+}
+
+/* Estilos de botones movidos a la sección principal */
+
+.carousel-controls {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  padding: 0 1rem;
+}
+
+.carousel-btn {
+  pointer-events: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 60px;
+  border-radius: 4px;
+}
+
+.carousel-btn:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.carousel-btn:active {
+  transform: scale(0.95);
+}
+
+.carousel-arrow {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  margin-top: -1px; /* Ajuste fino para centrar verticalmente */
+}
+
+.carousel-btn.prev .carousel-arrow {
+  margin-left: -1px; /* Ajuste fino para centrar la flecha izquierda */
+}
+
+.carousel-btn.next .carousel-arrow {
+  margin-left: 1px; /* Ajuste fino para centrar la flecha derecha */
+  margin-top: -1px; /* Ajuste fino para centrar verticalmente */
+}
+
+.hidden {
+  display: none;
+}

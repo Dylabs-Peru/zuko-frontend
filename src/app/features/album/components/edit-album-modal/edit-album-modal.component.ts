@@ -39,7 +39,8 @@ export class EditAlbumModalComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['album'] && this.album) {
       this.editTitle = this.album.title || '';
-      this.editGenreId = this.album.genreId || null;
+
+      this.editGenreId = this.album.genreId !== undefined && this.album.genreId !== null ? Number(this.album.genreId) : null;
       // Portada actual
       this.coverUrl = this.album.cover || '';
       this.coverFile = null;
@@ -53,16 +54,23 @@ export class EditAlbumModalComponent implements OnChanges {
     this.isLoadingSongs = true;
     this.songService.getMySongs().subscribe({
       next: (songs: SongResponse[]) => {
-        this.songs = songs;
+        // Filtrar solo las canciones públicas
+        const publicSongs = songs.filter(song => song.isPublicSong === true);
+        this.songs = publicSongs;
+        
         // Preselecciona por id si hay, si no por title
         if (this.album?.songs?.length) {
-          this.selectedSongIds = songs
+          this.selectedSongIds = publicSongs
             .filter(song => this.album.songs.some((alSong: any) => (alSong.id && alSong.id === song.id) || (alSong.title && alSong.title === song.title)))
             .map(song => song.id);
+            
+          console.log('Canciones públicas cargadas para edición:', this.songs);
+          console.log('Canciones seleccionadas en el álbum:', this.selectedSongIds);
         }
         this.isLoadingSongs = false;
       },
-      error: () => {
+      error: (error) => {
+        console.error('Error al cargar las canciones:', error);
         this.songs = [];
         this.isLoadingSongs = false;
       }
@@ -86,29 +94,57 @@ export class EditAlbumModalComponent implements OnChanges {
   }
 
   onSave() {
-    if (!this.editTitle || !this.editGenreId || !this.album || this.selectedSongIds.length < 2) return;
-    // Validar canciones seleccionadas
+    if (!this.editTitle || !this.editGenreId || this.selectedSongIds.length < 2) {
+      alert('Por favor completa todos los campos obligatorios y selecciona al menos 2 canciones.');
+      return;
+    }
+    
+    // Verificar que todas las canciones seleccionadas existan en la lista actual
     const selectedSongs = this.songs.filter(song => this.selectedSongIds.includes(song.id));
     if (selectedSongs.length !== this.selectedSongIds.length) {
       alert('Una o más canciones seleccionadas no existen o no pertenecen al artista. Actualiza la lista y vuelve a intentarlo.');
       return;
     }
+    
+    // Verificar que todas las canciones sean públicas
+    const nonPublicSongs = selectedSongs.filter(song => !song.isPublicSong);
+    if (nonPublicSongs.length > 0) {
+      alert('Algunas canciones seleccionadas no son públicas. Por favor, verifica las canciones e inténtalo de nuevo.');
+      return;
+    }
+    
     this.isSaving = true;
+    
     // Si la portada es base64 y no URL, no la envíes (o envía la original)
     let coverToSend = this.coverUrl;
     if (this.coverUrl && this.coverUrl.startsWith('data:image')) {
       coverToSend = this.album.cover || '';
     }
-    this.albumService.updateAlbum(this.album.id, {
+    
+    // Obtener el artistId del álbum actual
+    const artistId = this.album.artistId;
+    if (!artistId) {
+      alert('No se pudo obtener el ID del artista. Por favor, inténtalo de nuevo.');
+      this.isSaving = false;
+      return;
+    }
+
+    // Preparar el payload con el formato esperado por el backend
+    const updateData = {
       title: this.editTitle,
-      releaseYear: this.album.releaseYear,
-      artistId: this.album.artistId,
-      genreId: this.editGenreId,
+      releaseYear: this.album.releaseYear || new Date().getFullYear(),
+      artistId: Number(artistId), // Asegurar que sea un número
+      genreId: Number(this.editGenreId), // Asegurar que sea un número
       cover: coverToSend,
       songs: selectedSongs.map(song => ({
-        title: song.title
+        id: song.id, // Incluir el ID de la canción
+        title: song.title,
+        isPublicSong: true, // Asegurar que solo se envíen canciones públicas
+        artistId: Number(artistId) // Incluir el artistId en cada canción
       }))
-    }).subscribe({
+    };
+    
+    this.albumService.updateAlbum(this.album.id, updateData).subscribe({
       next: () => {
         this.isSaving = false;
         this.albumEdited.emit();

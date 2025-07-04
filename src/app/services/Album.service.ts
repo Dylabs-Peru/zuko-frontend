@@ -5,6 +5,10 @@ import { ApiService } from './Api.service';
 
 @Injectable({ providedIn: 'root' })
 export class AlbumService {
+  // Obtener álbumes por artistId (perfil de otro artista)
+  getAlbumsByArtist(artistId: number): Observable<AlbumResponse[]> {
+    return this.apiService.get<AlbumResponse[]>(`${this.endpoint}/by-artist/${artistId}`);
+  }
   private endpoint = '/albums';
 
   constructor(private apiService: ApiService) {}
@@ -27,6 +31,16 @@ export class AlbumService {
   // Buscar álbumes por título y usuario/artista
   getAlbumsByTitleAndUser(title: string): Observable<any> {
     return this.apiService.get<any>(`${this.endpoint}/search/artist?title=${encodeURIComponent(title)}`);
+  }
+
+  // Buscar álbumes del artista autenticado
+  searchMyAlbums(title: string): Observable<AlbumResponse[]> {
+    return this.apiService.get<AlbumResponse[]>(`${this.endpoint}/search/artist?title=${encodeURIComponent(title)}`);
+  }
+
+  // Listar todos los álbumes del artista autenticado
+  getMyAlbums(): Observable<AlbumResponse[]> {
+    return this.apiService.get<AlbumResponse[]>(`${this.endpoint}/artist`);
   }
 
   // Listar todos los álbumes

@@ -90,13 +90,30 @@
   margin-left: auto;
 }
 
-.dots-btn {
-  font-size: 50px;
-  color: #666;
-  background: none;
-  border: none;
-  cursor: pointer;
+.profile-actions {
+  margin-left: auto;
+}
+
+.profile-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
   margin-right: 80px;
+  cursor: pointer;
+  height: 24px;
+}
+
+.profile-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: #888;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background 0.2s;
+}
+
+.profile-dots:hover span {
+  background-color: #b71c1c;
 }
 
 .profile-bio-section {
@@ -130,4 +147,54 @@
   padding: 32px;
   color: red;
   text-align: center;
+}
+
+.success-message.success-fixed {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #388e3c;
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(56, 142, 60, 0.15);
+  padding: 1rem 2.5rem 1.5rem 1.5rem;
+  z-index: 9999;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-direction: column;
+  min-width: 300px;
+  max-width: 90vw;
+  animation: slideDown 0.5s;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) translateX(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+}
+
+.success-btn {
+  margin-top: 0.5rem;
+  background: #fff;
+  color: #388e3c;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px rgba(56,142,60,0.07);
+}
+.success-btn:hover {
+  background: #388e3c;
+  color: #fff;
 }

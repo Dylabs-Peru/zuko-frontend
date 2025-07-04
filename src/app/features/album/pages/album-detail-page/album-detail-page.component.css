@@ -3,6 +3,7 @@ body {
     font-family: Arial, sans-serif;
     color: white;
     background: linear-gradient(to bottom, #2b0000, #550000);
+    min-height: 100vh;
 }
 
 :host, .album-detail-root, table, th, td, .header, .controls, .song-title, .artist {
@@ -11,9 +12,16 @@ body {
 
 .album-detail-root {
     min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
     background: linear-gradient(to bottom, #2b0000, #550000);
+    margin: 0;
+    padding: 0 0 100px 0; /* Añadido padding inferior para asegurar espacio al final */
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
+
 
 .close-btn {
     position: absolute;
@@ -43,7 +51,7 @@ body {
 
 .header {
     background-size: cover;
-    background-position: center;
+    background-position: center center;
     padding: 40px;
     position: relative;
     display: flex;
@@ -51,13 +59,22 @@ body {
     justify-content: flex-end;
     height: 300px;
     color: white;
+    box-sizing: border-box;
+}
+
+.header h1, .header .details {
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.46), 0 1px 2px rgba(0,0,0,0.28);
 }
 
 .header h1 {
-    font-size: 3rem;
+    font-size: 4rem;
     margin: 0;
     color: #fff;
-    font-weight: bold;
+    font-family: 'Manjari', Arial, sans-serif;
+    font-weight: 800;
+    letter-spacing: -1px;
 }
 
 .header .details {
@@ -66,13 +83,48 @@ body {
     opacity: 1;
 }
 
+
+
 .controls {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 50px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.4);
+    background: none;
+    position: relative;
 }
+
+.controls button {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.play-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #fff !important;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.play-btn:hover {
+  background: #D80000 !important;
+}
+
+.play-btn .icon-play, .play-btn .icon-pause {
+  background: #000;
+}
+.play-btn:hover .icon-play, .play-btn:hover .icon-pause {
+  background: #fff;
+}
+
+
 
 .controls button {
     background: none;
@@ -86,6 +138,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    flex-grow: 1;
 }
 
 th, td {
@@ -104,17 +157,16 @@ th {
     width: 30px;
 }
 
-.genre {
-    width: 150px;
-    text-align: center;
-    vertical-align: middle;
-    position: relative;
-    left: -700px;
+.release-date {
+    min-width: 120px;
+    font-size: 0.98rem;
+    color: #bbb;
+    padding-left: 40px;
 }
 
 .play-col {
     width: 60px;
-    text-align: right;
+    text-align: center;
     vertical-align: middle;
 }
 
@@ -122,18 +174,98 @@ th {
     background: none;
     border: none;
     color: #fff;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     cursor: pointer;
-    transition: color 0.2s, background 0.2s;
-    padding: 6px 10px;
+    transition: color 0.18s, background 0.18s, box-shadow 0.2s;
+    padding: 8px 12px;
     border-radius: 50%;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .song-play-btn:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.10);
     color: #ff5252;
+    box-shadow: 0 2px 8px rgba(255,82,82,0.16);
 }
 
+.icon-play-playlist, .icon-pause-playlist {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0px;
+}
+.icon-play-playlist {
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="white"/></svg>') no-repeat center/contain;
+  background: #fff;
+}
+.icon-pause-playlist {
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="20" fill="white"/><rect x="17" y="4" width="5" height="20" fill="white"/></svg>') no-repeat center/contain;
+  background: #fff;
+}
 
+.icon-play {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="black"/></svg>') no-repeat center/contain;
+  background: #000;
+}
+
+.icon-shuffle {
+  width: 40px;
+  height: 40px;
+  display: block;
+  background: url("https://res.cloudinary.com/dqk8inmwe/image/upload/v1750791783/CITYPNG.COM_HD_Random_White_Icon_Transparent_Background_-_600x600_eypzjk.png") center/contain no-repeat;
+  filter: brightness(100) invert(0);
+}
+
+.icon-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 10px;
+}
+.icon-options::before,
+.icon-options::after,
+.icon-options span {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 2.5px;
+  background: #fff;
+  border-radius: 50%;
+}
+.icon-options span {
+  /* Punto central */
+  margin: 0 2.5px;
+}
+
+tr {
+    transition: background 0.25s, box-shadow 0.18s;
+}
+tr:hover {
+    background: rgba(255, 82, 82, 0.08) !important;
+    box-shadow: 0 2px 12px rgba(255,82,82,0.07);
+}
+tr.playing {
+    background: linear-gradient(90deg, #ff5252 0%, #b90000 100%) !important;
+    color: #fff;
+    box-shadow: 0 4px 16px 0 rgba(255,82,82,0.13);
+    animation: playing-row-glow 1.2s linear infinite alternate;
+}
+@keyframes playing-row-glow {
+    0% {
+        box-shadow: 0 0px 16px 0 rgba(255,82,82,0.10);
+    }
+    100% {
+        box-shadow: 0 0px 32px 0 rgba(255,82,82,0.23);
+    }
+}
 
 .song-title {
     font-weight: bold;
@@ -141,8 +273,9 @@ th {
 }
 
 .artist {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: #fff;
     font-weight: normal;
-    opacity: 1;
+    opacity: 0.95;
 }
+

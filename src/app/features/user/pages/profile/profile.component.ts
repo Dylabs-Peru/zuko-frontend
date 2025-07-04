@@ -9,6 +9,7 @@ import { CreateArtistComponent } from '../../../artist/components/create-artist/
 import { ActivateStatusArtistComponent } from '../../../artist/components/activate-status-artist/activate-status-artist.component';
 import { ArtistResponse } from '../../../../models/artist.model';
 import { AuthService } from '../../../../services/Auth.service';
+import { environment } from '../../../../../environments/environment';
 
 
 @Component({
@@ -23,6 +24,8 @@ export class ProfileComponent implements OnInit {
   isEditModalOpen = false;
   isArtistModalOpen = false;
   artistInactivo: any = null;
+  artistaCreadoExitoso = false;
+
 
   constructor(
     private UserService: UserService,
@@ -94,17 +97,65 @@ export class ProfileComponent implements OnInit {
   onArtistCreated(artist: ArtistResponse) {
     if (this.user) {
       this.user.isArtist = true;
+      // Actualizar el usuario en localStorage
+      const auth = localStorage.getItem('auth');
+      if (auth) {
+        const authObj = JSON.parse(auth);
+        authObj.user.isArtist = true;
+        // Guardar el nombre de artista
+        if (artist && artist.name) {
+          authObj.user.artistName = artist.name;
+        }
+        localStorage.setItem('auth', JSON.stringify(authObj));
+      }
     }
     this.closeArtistModal();
-
-    // Espera un ciclo de eventos para asegurar que el modal se cierre antes de navegar
+    this.artistaCreadoExitoso = true;
+    //  tras 2 segundos
     setTimeout(() => {
-      this.logout();
-    }, 0);
+      // Siempre navegar a /artist/profile-artist/:name
+      let artistName = '';
+      const auth = localStorage.getItem('auth');
+      if (auth) {
+        const authObj = JSON.parse(auth);
+        artistName = authObj?.user?.artistName;
+      }
+      // Si no está en localStorage, toma el nombre recién creado
+      if (!artistName && artist && artist.name) {
+        artistName = artist.name;
+      }
+      this.artistaCreadoExitoso = false;
+      if (artistName) {
+        console.log('artistName para navegación:', artistName);
+        this.router.navigate(['/artist/profile-artist', artistName]);
+      } else {
+        alert('No se pudo determinar el nombre de artista para navegar al perfil.');
+      }
+    }, 2000);
   }
+  cerrarMensajeExito() {
+    this.artistaCreadoExitoso = false;
+  }
+
+  /**
+   * Obtiene la URL de la imagen de perfil o el placeholder por defecto
+   */
+  getProfileImageUrl(url_image: string | null | undefined): string {
+    if (!url_image || url_image.trim() === '') {
+      return environment.defaultProfileImage;
+    }
+    return url_image;
+  }
+
+  /**
+   * Maneja errores de carga de imagen y establece el placeholder
+   */
+  onImageError(event: any): void {
+    event.target.src = environment.defaultProfileImage;
+  }
+
 
   logout() {
     this.authService.logout('Logout tras crear artista');
   }
 }
-

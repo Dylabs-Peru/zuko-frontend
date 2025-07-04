@@ -1,27 +1,37 @@
 <div *ngIf="playlist && !loading" class="playlist-detail-root">
-  <div class="header" [ngStyle]="{'background-image': 'url(' + playlist.url_image + ')'}">
+  <div class="header">
+  <div class="playlist-cover-large"
+      [ngStyle]="{'background-image': 'url(' + playlist.url_image + ')'}">
+  </div>
+  <div class="playlist-header-info" >
     <h1>{{ playlist.name }}</h1>
     <div class="details">
-       {{ playlist.createdAt | date }} &bull; {{ playlist.songs.length }} Canciones
+       {{ playlist.createdAt | date }} &bull; {{ playlist.songs.length }} Canciones &bull; {{ playlist.description }}
     </div>
   </div>
-
+</div>
   <div class="controls">
-  <button class="play-btn" title="Reproducir">
-    <span class="icon-play"></span>
+  <button (click) = "togglePlay()" class="play-btn" title="Reproducir">
+    <span *ngIf = "shouldShowPauseInPlayButton" class="icon-pause"></span>
+    <span *ngIf = "!shouldShowPauseInPlayButton" class="icon-play"></span>
   </button>
-  <button class="shuffle-btn" title="Aleatorio">
+  <button (click)="toggleShuffle()" class="shuffle-btn" 
+          [class.active]="isShuffleMode"
+          title="Aleatorio">
     <span class="icon-shuffle"></span>
   </button>
-  <button class="options-btn" title="Más opciones" (click)="showMenu = true" *ngIf="canEdit()">
+  <button class="options-btn" title="Más opciones" (click)="showMenu = true">
     <span class="icon-options"><span></span></span>
   </button>
 </div>
   <app-playlist-options-popup
     [visible]="showMenu"
+    [canEdit]="canEdit()"
     (edit)="onEditPlaylist()"
+    [isInShortcuts]="isInShortcuts()"
     (delete)="onDeletePlaylist()"
     (addShortcut)="onAddToShortcut()"
+    (removeShortcut)="onRemoveFromShortcut()"
     (close)="showMenu = false">
   </app-playlist-options-popup>
 
@@ -75,7 +85,17 @@
           </button>
         </td>
         <td class="play-col">
-          <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
+          <button 
+           (click)="playSong(song)"
+           class="song-play-btn" 
+           [title]="shouldShowPauseForSong(song.id) ? 'Pausar' : 'Reproducir canción'">
+          <span 
+            *ngIf="shouldShowPauseForSong(song.id)" 
+            class="icon-pause-playlist"></span>
+          <span 
+            *ngIf="!shouldShowPauseForSong(song.id)" 
+            class="icon-play-playlist"></span>
+          </button>
         </td>
       </tr>
       </ng-container>

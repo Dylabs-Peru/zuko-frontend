@@ -1,18 +1,39 @@
 <div *ngIf="loading" class="album-loading">Cargando álbum...</div>
 <div *ngIf="error" class="album-error">{{ error }}</div>
 <div *ngIf="album && !loading" class="album-detail-root">
-  <button class="close-btn" (click)="goToArtistProfile()" title="Cerrar">&#10005;</button>
   <div class="header" [ngStyle]="{'background-image': 'url(' + album.cover + ')'}">
     <h1>{{ album.title }}</h1>
     <div class="details">
-      {{ album.artistName }} &bull; {{ album.releaseYear }} &bull; {{ album.totalSongs }} Canciones
+      {{ album.artistName }} &bull; {{ album.releaseDate ? (album.releaseDate | date:'yyyy') : album.releaseYear }} &bull; {{ album.genreName }} &bull; {{ album.songs?.length || album.totalSongs }} Canciones
     </div>
   </div>
 
   <div class="controls">
-    <button title="Reproducir">&#9654;</button>
-    <button title="Aleatorio">🔀</button>
-    <button title="Más opciones">&#8942;</button>
+    <button (click)="togglePlay()" class="play-btn" title="Reproducir">
+      <span class="icon-play"></span>
+    </button>
+    <button (click)="shufflePlay()" class="shuffle-btn" title="Aleatorio">
+      <span class="icon-shuffle"></span>
+    </button>
+    <div class="options-container">
+      <button class="options-btn" title="Más opciones" (click)="showMenu = !showMenu">
+        <span class="icon-options"><span></span></span>
+      </button>
+      <app-album-options-popup
+        [visible]="showMenu"
+        [canEdit]="true"
+        [isInShortcuts]="isInShortcuts"
+        [editText]="'Editar Álbum'"
+        [deleteText]="'Eliminar Álbum'"
+        [addShortcutText]="'Añadir a acceso directo'"
+        [removeShortcutText]="'Eliminar de acceso directo'"
+        (edit)="onEditAlbum()"
+        (delete)="onDeleteAlbum()"
+        (addShortcut)="onAddAlbumToShortcut()"
+        (removeShortcut)="onRemoveAlbumFromShortcut()"
+        (close)="showMenu = false"
+      ></app-album-options-popup>
+    </div>
   </div>
 
   <table>
@@ -20,22 +41,46 @@
       <tr>
         <th>#</th>
         <th>Título</th>
-        <th class="genre">Género</th>
+        <th>Fecha de lanzamiento</th>
         <th class="play-col"></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let song of album.songs; let i = index">
+      <tr *ngFor="let song of album.songs; let i = index" [ngClass]="{'playing': currentSongId === song.id && isPlaying}" (mouseenter)="hoveredSong = song.id" (mouseleave)="hoveredSong = null">
         <td class="number">{{ i + 1 }}</td>
         <td>
           <div class="song-title">{{ song.title }}</div>
           <div class="artist">{{ album.artistName }}</div>
         </td>
-        <td class="genre">{{ album.genreName }}</td>
+        <td class="release-date">
+          {{ song.releaseDate ? (song.releaseDate | date:'MMM dd, yyyy') : '' }}
+        </td>
         <td class="play-col">
-          <button class="song-play-btn" title="Reproducir canción">&#9654;</button>
+          <button 
+            class="song-play-btn" 
+            [title]="currentSongId === song.id && isPlaying ? 'Pausar' : 'Reproducir canción'"
+            (click)="playSong(song)">
+            <span *ngIf="currentSongId === song.id && isPlaying" class="icon-pause-playlist"></span>
+            <span *ngIf="!(currentSongId === song.id && isPlaying)" class="icon-play-playlist"></span>
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
+  <div id="yt-player-album" style="width:0; height:0; overflow:hidden;"></div>
+
+  <app-edit-album-modal
+    [show]="showEditModal"
+    [album]="album"
+    (close)="closeEditModal()"
+    (albumEdited)="onAlbumEdited()"
+  ></app-edit-album-modal>
+
+  <app-delete-album-modal
+    [show]="showDeleteModal"
+    [albumTitle]="album?.title || ''"
+    [albumId]="album?.id"
+    (close)="closeDeleteModal()"
+    (albumDeleted)="onAlbumDeleted()"
+  ></app-delete-album-modal>
 </div>

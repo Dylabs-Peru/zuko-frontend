@@ -20,30 +20,60 @@ body {
     padding: 0;
 }
 
+
+.playlist-cover-large {
+  width: 220px;
+  height: 220px;
+  min-width: 220px;
+  min-height: 220px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+.playlist-header-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  padding-bottom: 24px;
+}
+
+.playlist-type {
+  font-size: 1rem;
+  color: #fff;
+  opacity: 0.8;
+  margin-bottom: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 .header {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 40px;
-    position: relative;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    height: 300px;
-    color: white;
+    flex-direction: row;
+    background: linear-gradient(to bottom, #2b0000, #550000);
+    padding: 40px 40px 32px 40px;
+    height: 320px;
+    box-sizing: border-box;
+    gap: 40px;    
 }
 
 .header h1 {
-    font-size: 3rem;
-    margin: 0;
+    font-size: 4rem;
+    margin: 0 0 18px 0;
     color: #fff;
     font-weight: bold;
+    line-height: 1.1;
 }
 
 .header .details {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #fff;
-    opacity: 1;
+    opacity: 0.95;
+    margin-top: 8px;
 }
 
 .controls {
@@ -82,7 +112,7 @@ body {
   display: block;
   width: 28px;
   height: 28px;
-  margin-left: 4px; 
+  margin-left: 0px; 
   mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="black"/></svg>') no-repeat center/contain;
   background: #000;
 }
@@ -104,6 +134,15 @@ body {
   display: block;
   background: url("https://res.cloudinary.com/dqk8inmwe/image/upload/v1750791783/CITYPNG.COM_HD_Random_White_Icon_Transparent_Background_-_600x600_eypzjk.png") center/contain no-repeat;
   filter: brightness(100) invert(0); 
+}
+
+.shuffle-btn.active {
+  background: rgba(185, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.shuffle-btn.active .icon-shuffle {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(7500%) hue-rotate(0deg) brightness(90%) contrast(120%);
 }
 
 .options-btn {
@@ -250,4 +289,30 @@ tr:hover {
   font-size: 18px;
   margin-right: 4px;
   vertical-align: middle;
+}
+
+.icon-pause {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="20" fill="black"/><rect x="17" y="4" width="5" height="20" fill="black"/></svg>') no-repeat center/contain;
+  background: #000;
+}
+.icon-play-playlist {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="7,4 25,14 7,24" fill="white"/></svg>') no-repeat center/contain;
+  background: #fff;
+}
+
+.icon-pause-playlist {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-left: 0px;
+  mask: url('data:image/svg+xml;utf8,<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="20" fill="white"/><rect x="17" y="4" width="5" height="20" fill="white"/></svg>') no-repeat center/contain;
+  background: #fff;
 }

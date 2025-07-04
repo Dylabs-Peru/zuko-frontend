@@ -1,27 +1,132 @@
 <div class="library-container">
+
+<!-- 🔔 Nuevo Lanzamiento (Carrusel) -->
+<div class="carousel-banner" *ngIf="latestReleases.length > 0">
+  <div class="carousel-slider">
+    <div
+      class="banner-content"
+      *ngFor="let release of latestReleases; let i = index"
+      [class.slide-in-left]="i === currentItemIndex && slideDirection === 'left'"
+      [class.slide-in-right]="i === currentItemIndex && slideDirection === 'right'"
+      [class.hidden]="i !== currentItemIndex"
+    >
+      <img 
+        class="banner-image" 
+        [src]="getSafeImageUrl(release?.imageUrl)" 
+        (error)="onImageError($event)"
+        [alt]="'Portada de ' + release.title"
+        (click)="goToRelease(release)"
+      />
+      <div class="banner-text">
+        <div class="release-header">
+          <span class="new-label">🎉 NUEVO LANZAMIENTO</span>
+          <span class="release-type">
+            {{ release.type === 'song' ? 'CANCIÓN' : 'ÁLBUM' }}
+          </span>
+        </div>
+        <div class="new-release-title">{{ release.title }}</div>
+        <div class="artist-name">por {{ release.artistName }}</div>
+        <div class="subtitle">¡Escucha lo nuevo de {{ release.artistName }}!</div>
+        
+        <div class="release-actions">
+          <button 
+            *ngIf="release.type === 'song'"
+            class="view-btn" 
+            (click)="playRelease(release, $event)"
+            [attr.aria-label]="'Reproducir ' + release.title"
+          >
+            <i class="fas fa-play"></i>
+            Reproducir
+          </button>
+          
+          <button 
+            class="view-btn" 
+            (click)="goToRelease(release, $event)"
+            [attr.aria-label]="(release.type === 'song' ? 'Ver canción' : 'Ver álbum') + ' ' + release.title"
+          >
+            {{ release.type === 'song' ? 'Ver canción' : 'Ver álbum' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔁 Controles -->
+  <div class="carousel-controls" *ngIf="latestReleases.length > 1">
+    <button class="carousel-btn prev" (click)="prevBanner($event)">‹</button>
+    <button class="carousel-btn next" (click)="nextBanner($event)">›</button>
+  </div>
+
+  <!-- Reproductor de YouTube oculto -->
+  <div style="display: none">
+    <div id="yt-player-detail"></div>
+  </div>
+</div>
+
 <h1 class="shortcut-title">Accesos directos</h1>
 
 <div class="library-tabs">
-    <span class="tab-active">Playlists</span>
- </div>
+    <span 
+        [class.tab-active]="activeTab === 'playlists'"
+        (click)="setActiveTab('playlists')"
+        class="tab-link"
+    >
+        Playlists
+    </span>
+    <span 
+        [class.tab-active]="activeTab === 'albums'"
+        (click)="setActiveTab('albums')"
+        class="tab-link"
+    >
+        Álbumes
+    </span>
+</div>
 
- <div class="playlists-grid">
+<!-- Sección de Playlists -->
+<div class="playlists-grid" *ngIf="activeTab === 'playlists'">
     <div 
         class="playlist-card"
-        *ngFor="let playlist of shortcuts"
+        *ngFor="let playlist of playlists"    
         tabindex="0"
+        (click)="goToPlaylist(playlist.playlistId)"
+        [attr.aria-label]="'Abrir playlist ' + playlist.name"
     >
         <div class="playlist-cover"
-        [ngStyle]="{ 'background-image': playlist.url_image ? 'url(' + playlist.url_image + ')' : '' }" 
+        [ngStyle]="{ 'background-image': playlist.urlImage ? 'url(' + playlist.urlImage + ')' : '' }" 
         ></div>
-            <div class="playlist-info">
+        <div class="playlist-info">
             <span class="playlist-name">{{ playlist.name }}</span>
-            <span class="playlist-owner"></span>
+            <span class="playlist-owner">{{playlist.owner}}</span>
             <button class="playlist-play-btn" 
-            aria-label="Reproducir playlist"
-            (click)="goToPlaylist(playlist.playlistId); $event.stopPropagation()">
+                aria-label="Reproducir playlist"
+                (click)="goToPlaylist(playlist.playlistId); $event.stopPropagation()">
             </button>
-            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Álbumes -->
+<div class="albums-grid" *ngIf="activeTab === 'albums'">
+    <div 
+        class="album-card"
+        *ngFor="let album of albums"
+        tabindex="0"
+        (click)="goToAlbum(album.id)"
+        [attr.aria-label]="'Abrir álbum ' + album.title"
+    >
+        <div 
+            class="album-cover"
+            [ngStyle]="{ 'background-image': album.cover ? 'url(' + album.cover + ')' : '' }"
+        >
+            <button class="album-play-btn" (click)="goToAlbum(album.id); $event.stopPropagation()" aria-label="Reproducir álbum">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+        <div class="album-info">
+            <h3 class="album-title">{{ album.title }}</h3>
+            <p class="album-artist">{{ album.artistName }}</p>
         </div>
     </div>
 </div>
