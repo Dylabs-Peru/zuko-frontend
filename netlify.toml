@@ -3,7 +3,7 @@
   command = "npm run build -- --configuration=production"
   
   # Directorio donde se generan los archivos estáticos
-  publish = "dist/zuko-frontend"
+  publish = "dist/zuko-frontend/browser"
 
 [build.environment]
   # Versión de Node.js para el build
