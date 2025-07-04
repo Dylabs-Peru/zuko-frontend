@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ListGenresComponent } from '../../../genre/pages/list_genres/list-genres.component';
 import { SongService } from '../../../../services/Song.service';
 import { SongResponse } from '../../../../models/song.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-create-album-modal',
@@ -182,7 +183,7 @@ export class CreateAlbumModalComponent implements OnInit, OnChanges {
         artistId: Number(artistId) // Incluir el artistId
       };
       // Enviar al backend
-      const response = await fetch('http://localhost:8080/api/v1/albums', {
+      const response = await fetch(`${environment.apiUrl}/albums`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
