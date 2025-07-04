@@ -8,6 +8,7 @@ import { AlbumService } from '../../../../services/Album.service';
 import { ArtistService } from '../../../../services/Artist.service';
 import { AlbumResponse } from '../../../../models/album.model';
 import { ArtistResponse } from '../../../../models/artist.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-admin-albums-artist-component',
@@ -376,8 +377,8 @@ export class AdminAlbumsArtistComponent implements OnInit {
       
       // Determinar la URL y el método HTTP según si es edición o creación
       const url = this.isEditing && this.currentAlbumId
-        ? `http://localhost:8080/api/v1/albums/${this.currentAlbumId}`
-        : 'http://localhost:8080/api/v1/albums';
+        ? `${environment.apiUrl}/albums/${this.currentAlbumId}`
+        : `${environment.apiUrl}/albums`;
         
       const method = this.isEditing && this.currentAlbumId ? 'PUT' : 'POST';
       
