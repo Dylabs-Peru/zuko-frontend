@@ -44,6 +44,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Inicializar el reproductor global
     this.initializeGlobalPlayer();
+    
+    // Manejar la clase del footer según la ruta
+    this.toggleFooterPadding();
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
+      this.toggleFooterPadding();
+    });
   }
 
   ngOnDestroy(): void {
@@ -52,17 +58,22 @@ export class AppComponent implements OnInit, OnDestroy {
     
     // Destruir el reproductor global al destruir la app
     this.musicPlayerService.destroyGlobalPlayer();
+    
+    // Limpiar la clase del footer
+    document.body.classList.remove('with-footer');
   }
 
   get isAuthRoute(): boolean {
     // Debug: muestra la url current
-    // Oculta navbar si la url contiene /auth, /login o /register en cualquier parte
+    // Oculta navbar y footer si la url contiene /auth, /login, /register o es la landing page
     return (
       this.currentUrl.includes('/auth/login') ||
       this.currentUrl.includes('/auth/register') ||
       this.currentUrl === '/auth' ||
       this.currentUrl === '/login' ||
-      this.currentUrl === '/register'
+      this.currentUrl === '/register' ||
+      this.currentUrl === '/' ||
+      this.currentUrl === '/landing'
     );
   }
 
@@ -76,5 +87,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
     console.log('🎯 Inicializando reproductor global');
     this.musicPlayerService.initializeGlobalPlayer('global-yt-player');
+  }
+
+  private toggleFooterPadding(): void {
+    if (this.isAuthRoute) {
+      document.body.classList.remove('with-footer');
+    } else {
+      document.body.classList.add('with-footer');
+    }
   }
 }

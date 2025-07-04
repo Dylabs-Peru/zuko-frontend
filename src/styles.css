@@ -6,5 +6,9 @@ html, body {
   box-sizing: border-box;
   overflow-x: hidden; 
   font-family: 'Manjari', sans-serif;
+}
+
+/* Solo agregar padding cuando el footer está visible */
+body.with-footer {
   padding-bottom: 53px; /* Espacio para el footer - igual a la altura del footer */
 }
