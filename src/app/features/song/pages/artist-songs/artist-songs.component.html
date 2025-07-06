@@ -45,11 +45,11 @@
         </div>
 
       <!-- Acciones solo si es su perfil -->
-      <div class="actions" *ngIf="isOwnProfile">
+      <div class="actions">
         <button (click)="toggleMenu(i)" class="menu-button" title="Opciones">&#8942;</button>
         <div *ngIf="openMenuIndex === i" class="dropdown-menu">
-          <button (click)="openEditForm(song)">Editar canción</button>
-          <button (click)="confirmDelete(song)">Eliminar canción</button>
+          <button *ngIf="isOwnProfile" (click)="openEditForm(song)">Editar canción</button>
+          <button *ngIf="isOwnProfile" (click)="confirmDelete(song)">Eliminar canción</button>
           <button (click)="openAddToPlaylist(song)">Agregar a Playlist</button>
         </div>
       </div>
