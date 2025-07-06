@@ -9,6 +9,7 @@ import { MusicPlayerService } from '../../../../services/music-player.service';
 import { ShortcutsService } from '../../../../services/shortcuts.service';
 import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UserResponse } from '../../../../models/user.model';
 
 // Interfaz para la respuesta de accesos directos
 interface ShortcutsResponse {
@@ -68,6 +69,7 @@ export class AlbumDetailPageComponent implements OnInit {
   }
   isInShortcuts = false;
   loadingShortcuts = false;
+  canEditAlbum = false;
 
   async onAddAlbumToShortcut() {
     if (!this.album?.id || this.loadingShortcuts) return;
@@ -177,6 +179,27 @@ export class AlbumDetailPageComponent implements OnInit {
   ngOnInit() {
     this.fetchAlbum();
     this.checkIfInShortcuts();
+    this.setCanEditAlbum();
+  }
+
+  setCanEditAlbum() {
+    // Obtener usuario actual del localStorage (ajusta si usas AuthService)
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+      this.canEditAlbum = false;
+      return;
+    }
+    let user: UserResponse | null = null;
+    try {
+      user = JSON.parse(userStr);
+    } catch {
+      this.canEditAlbum = false;
+      return;
+    }
+    // Si el álbum ya está cargado, comparar
+    if (this.album && user) {
+      this.canEditAlbum = this.album.artistId === user.id;
+    }
   }
 
   fetchAlbum() {
@@ -190,14 +213,13 @@ export class AlbumDetailPageComponent implements OnInit {
     this.error = '';
     this.albumService.getAlbumById(Number(albumId)).subscribe({
       next: (res) => {
-
         const rawAlbum = res.data || res;
-
-        // Corrige el campo genreId para el modal de edición
         this.album = {
           ...rawAlbum,
           genreId: rawAlbum.genreId ?? (rawAlbum.genre ? rawAlbum.genre.id : null)
         };
+        // Actualizar canEditAlbum cuando se carga el álbum
+        this.setCanEditAlbum();
         console.log('DEBUG fetchAlbum this.album:', this.album);
         this.loading = false;
       },
