@@ -106,7 +106,7 @@
 }
 
 .icon-restart { 
-  background: #fff url('https://res.cloudinary.com/dqk8inmwe/image/upload/v1751999857/ChatGPT_Image_Jul_8_2025_01_36_55_PM_srvxpa.png') center/contain no-repeat; 
+  background: url('https://res.cloudinary.com/dqk8inmwe/image/upload/v1751999857/ChatGPT_Image_Jul_8_2025_01_36_55_PM_srvxpa.png') center/contain no-repeat;
   transform: rotate(180deg);
 }
 .icon-next { background: #fff url('https://res.cloudinary.com/dqk8inmwe/image/upload/v1751325166/SAVE_20250630_181020_qzvl73.jpg') center/contain no-repeat; }
