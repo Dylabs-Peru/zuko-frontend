@@ -279,3 +279,33 @@ tr.playing {
     opacity: 0.95;
 }
 
+/* Botón para añadir canción a playlist */
+.add-to-playlist-btn {
+  background: #550000;            
+  color: #fff;
+  border: none;
+  border-radius: 18px;            
+  font-family: 'Manjari', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 7px 18px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.16s;
+  box-shadow: 0 2px 8px rgba(185,0,0,0.07);
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.add-to-playlist-btn:hover,
+.add-to-playlist-btn:focus {
+  background: #b90000;
+  box-shadow: 0 3px 12px rgba(183,28,28,0.15);
+}
+
+.add-to-playlist-btn:active {
+  background: #550000;
+}
+

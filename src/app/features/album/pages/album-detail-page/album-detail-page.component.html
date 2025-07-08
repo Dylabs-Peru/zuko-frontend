@@ -42,6 +42,7 @@
         <th>#</th>
         <th>Título</th>
         <th>Fecha de lanzamiento</th>
+        <th></th>
         <th class="play-col"></th>
       </tr>
     </thead>
@@ -54,6 +55,14 @@
         </td>
         <td class="release-date">
           {{ song.releaseDate ? (song.releaseDate | date:'MMM dd, yyyy') : '' }}
+        </td>
+        <td>
+          <button 
+            class="add-to-playlist-btn" 
+            (click)="openAddToPlaylist(song)"
+            title="Añadir a playlist">
+            Añadir a playlist
+          </button>
         </td>
         <td class="play-col">
           <button 
@@ -83,4 +92,11 @@
     (close)="closeDeleteModal()"
     (albumDeleted)="onAlbumDeleted()"
   ></app-delete-album-modal>
+
+  <app-add-song-to-playlist-modal
+    *ngIf="showAddToPlaylistModal && selectedSongForPlaylist"
+    [songId]="selectedSongForPlaylist.id"
+    (close)="onCloseAddToPlaylist()"
+    (songAdded)="onSongAddedToPlaylist()">
+  </app-add-song-to-playlist-modal>
 </div>
