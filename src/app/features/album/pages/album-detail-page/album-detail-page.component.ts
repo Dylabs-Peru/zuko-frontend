@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AlbumOptionsPopupComponent } from '../../components/album-options-popup/album-options-popup.component';
 import { EditAlbumModalComponent } from '../../components/edit-album-modal/edit-album-modal.component';
 import { DeleteAlbumModalComponent } from '../../components/delete-album-modal/delete-album-modal.component';
+import { AddSongToPlaylistModalComponent } from '../../../playlist/components/agregar-cancion-playlist/add-song-to-playlist.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlbumService } from '../../../../services/Album.service';
 import { MusicPlayerService } from '../../../../services/music-player.service';
@@ -10,6 +11,7 @@ import { ShortcutsService } from '../../../../services/shortcuts.service';
 import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserResponse } from '../../../../models/user.model';
+import { SongResponse } from '../../../../models/song.model';
 
 // Interfaz para la respuesta de accesos directos
 interface ShortcutsResponse {
@@ -37,7 +39,8 @@ interface Song {
     CommonModule, 
     AlbumOptionsPopupComponent, 
     EditAlbumModalComponent, 
-    DeleteAlbumModalComponent
+    DeleteAlbumModalComponent,
+    AddSongToPlaylistModalComponent
   ],
   templateUrl: './album-detail-page.component.html',
   styleUrls: ['./album-detail-page.component.css']
@@ -160,6 +163,10 @@ export class AlbumDetailPageComponent implements OnInit {
   get shouldShowPauseInPlayButton(): boolean {
     return this.isPlaying && this.isCurrentSongFromThisAlbum;
   }
+
+  // Propiedades para añadir canciones a playlists
+  selectedSongForPlaylist: SongResponse | null = null;
+  showAddToPlaylistModal = false;
 
   constructor(
     private route: ActivatedRoute, 
@@ -350,5 +357,34 @@ export class AlbumDetailPageComponent implements OnInit {
         }
       });
     });
+  }
+
+  // Métodos para añadir canciones a playlists
+  openAddToPlaylist(song: Song) {
+    // Convertir Song a SongResponse para compatibilidad
+    this.selectedSongForPlaylist = {
+      id: song.id,
+      title: song.title || song.name || '',
+      artistId: song.artistId || this.album?.artistId || 0,
+      artistName: song.artistName || this.album?.artistName || '',
+      youtubeUrl: song.youtubeUrl,
+      imageUrl: song.imageUrl || this.album?.cover || '',
+      releaseDate: song.releaseDate || '',
+      isPublicSong: song.isPublicSong !== undefined ? song.isPublicSong : true
+    } as SongResponse;
+    
+    this.showAddToPlaylistModal = true;
+  }
+
+  onCloseAddToPlaylist() {
+    this.showAddToPlaylistModal = false;
+    this.selectedSongForPlaylist = null;
+  }
+
+  onSongAddedToPlaylist() {
+    this.showAddToPlaylistModal = false;
+    this.selectedSongForPlaylist = null;
+    // Opcional: mostrar mensaje de éxito
+    console.log('Canción añadida a playlist(s) exitosamente');
   }
 }
